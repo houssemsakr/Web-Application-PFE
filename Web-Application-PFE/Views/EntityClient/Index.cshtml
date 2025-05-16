@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Web_Application_PFE.ViewModels.EntityClientViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/Gestion-RFQ.css" />
+}
+
+<main role="main" class="pb-3">
+ 
+<div class="container-fluid">
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4"style="margin-right:499px;">
+        <div class="card-header py-3 d-flex justify-content-end">
+            <div class="d-grid gap-2 d-md-block">
+                <a class="btn btn-primary" asp-action="Create">Create New</a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.Sales)</th>
+                            <th>@Html.DisplayNameFor(model => model.Customer)</th>
+                            <th>@Html.DisplayNameFor(model => model.EmailClient)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.Sales)</th>
+                            <th>@Html.DisplayNameFor(model => model.Customer)</th>
+                            <th>@Html.DisplayNameFor(model => model.EmailClient)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Sales)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Customer)</td>
+                                <td>@Html.DisplayFor(modelItem => item.EmailClient)</td>
+                                <td>
+                                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+ </div>
+   
+ </main> 

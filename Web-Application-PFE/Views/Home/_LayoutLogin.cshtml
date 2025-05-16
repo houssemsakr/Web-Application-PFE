@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="@System.Threading.Thread.CurrentThread.CurrentUICulture.Name">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+
+    <!-- Lucide Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/lucide-icons@latest/dist/umd/lucide-icons.min.js" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Numans">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true">
+
+
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+ 
+    <div class="login-background">
+
+        @RenderBody()
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/lucide-icons@latest/dist/umd/lucide-icons.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+
+    @RenderSection("Scripts", required: false)
+
+    <script>
+        // Initialize Lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+        // Language switch functionality
+        document.querySelectorAll('.language-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.language-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

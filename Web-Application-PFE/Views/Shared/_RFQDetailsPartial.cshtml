@@ -1,0 +1,29 @@
+﻿@model Web_Application_PFE.ViewModels.AddRFQViewModel
+
+<div class="rfq-details">
+    <h4>Détails de la RFQ</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateCreation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateCreation)
+        </dd>
+        <!-- Ajoutez d'autres champs ici -->
+        @if (Model.Id == -1)
+        {
+            <p>RFQ non trouvée</p>
+        }
+        else
+        {
+            <!-- Afficher les détails de la RFQ -->
+        }
+    </dl>
+</div>

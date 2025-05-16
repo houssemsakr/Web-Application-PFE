@@ -1,0 +1,127 @@
+﻿@model IEnumerable<Web_Application_PFE.ViewModels.AddRFQViewModel>
+
+<div class="rfq-content-panel">
+    <h5 class="rfq-section-title">Consulter RFQ</h5>
+    <div class="rfq-search-container">
+        <div class="rfq-search-box">
+            <i class="fa-solid fa-search rfq-search-icon"></i>
+            <input type="text" id="rfqSearchInput" class="rfq-search-input" placeholder="Rechercher" aria-label="Rechercher" style="height:11px">
+        </div>
+
+        <div class="rfq-section-divider"></div>
+
+        <h6 class="rfq-section-title">Consulter par Statut</h6>
+        <div>
+            <div class="rfq-status-section">
+                <div class="rfq-doc-header">
+                    <span class="rfq-doc-header-text">Documents</span>
+                    <div class="rfq-header-line"></div>
+                </div>
+                <div class="rfq-status-container">
+                    <div class="rfq-status-badge rfq-status-invalid">
+                        <h6 class="rfq-status-text">Not Started</h6>
+                    </div>
+                    <div class="rfq-status-badge rfq-status-pending">
+                        <h6 class="rfq-status-text">In Progress</h6>
+                    </div>
+                    <div class="rfq-status-badge rfq-status-valid">
+                        <h6 class="rfq-status-text">Complete</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="rfq-data-table" id="rfqDataTable">
+            <thead class="rfq-table-head">
+                <tr class="rfq-table-row">
+                    <th scope="col" class="rfq-table-header rfq-col-name">
+                        <div class="rfq-header-content">
+                            <i class="bi bi-file-earmark fs-4 rfq-header-icon"></i>
+                            <span class="rfq-header-text">Nom</span>
+                        </div>
+                    </th>
+                    <th scope="col" class="rfq-table-header rfq-col-status">Statut</th>
+                    <th scope="col" class="rfq-table-header rfq-col-date">Date de création</th>
+                </tr>
+            </thead>
+            <tbody class="rfq-table-body">
+                @foreach (var item in Model)
+                {
+                    <tr class="rfq-table-row">
+                        <td class="rfq-table-cell">
+                            <div class="rfq-doc-card">
+                                <div class="rfq-doc-header">
+                                    <div class="rfq-doc-content">
+                                        <div class="rfq-doc-icon-container">
+                                            <img src="/images/RFQ.png" alt="Logo RFQ" class="rfq-doc-image">
+                                        </div>
+                                        <div class="rfq-doc-info">
+                                            <div class="rfq-doc-title">
+                                                <span class="rfq-doc-number">RFQ N°00 @Html.DisplayFor(modelItem => item.RFQId)</span>
+                                            </div>
+                                            <div class="rfq-doc-type">Format RFQ</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="rfq-table-cell rfq-cell-status">
+                            <div class="rfq-status-display">
+                                @Html.DisplayFor(modelItem => item.WorkingStatus)
+                            </div>
+                        </td>
+                        <td class="rfq-table-cell">
+                            <div class="rfq-date-display">
+                                @Html.DisplayFor(modelItem => item.DateCreation)
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Fonctionnalité de recherche
+        const searchInput = document.getElementById('rfqSearchInput');
+        const rfqTable = document.getElementById('rfqDataTable');
+        const rows = rfqTable.querySelectorAll('.rfq-table-row:not(.rfq-table-head .rfq-table-row)');
+
+        searchInput.addEventListener('input', function () {
+            const searchText = this.value.toLowerCase();
+
+            rows.forEach(row => {
+                const idCell = row.querySelector('.rfq-doc-number');
+                if (idCell) {
+                    const idText = idCell.textContent.toLowerCase();
+                    row.style.display = idText.includes(searchText) ? '' : 'none';
+                }
+            });
+        });
+    });
+</script>
+<script>
+    function applyRfqStatusColors() {
+        document.querySelectorAll('.rfq-status-display').forEach(display => {
+            const status = display.textContent.trim();
+            display.style.color = ''; // Réinitialiser la couleur
+
+            if (status === "In Progress") {
+                display.style.color = '#f97316';
+            } else if (status === "Complete") {
+                display.style.color = '#22c55e';
+            } else if (status === "Not Started") {
+                display.style.color = '#ef4444';
+            }
+        });
+    }
+
+    // Appeler la fonction quand le contenu est chargé
+    document.addEventListener("DOMContentLoaded", applyRfqStatusColors);
+
+    // Si chargé dynamiquement
+    if (document.readyState === 'complete') {
+        applyRfqStatusColors();
+    }
+</script>

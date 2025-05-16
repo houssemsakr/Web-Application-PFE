@@ -1,0 +1,75 @@
+﻿@{
+    ViewData["Title"] = "Gestion_RFQ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Gestion-RFQ.css" />
+}
+
+<main role="main" class="pb-3" style=" margin-left: 132px;">
+    <div class="dashboard-content">
+        <div class="dashboard-grid" style="margin-right:11px;margin-top:-25px;">
+            <!-- Left Column - Documents -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <img src="~/images/Rapport.png" alt="folder" class="w-9 h-9 inline-block">
+                    <h2 class="card-title"> Rapport</h2>
+                </div>
+
+
+                <ul class="menu">
+                    <li>
+                        <a asp-area="" asp-controller="Rapport" asp-action="Rapport">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                            </svg>&nbsp;&nbsp;&nbsp;  Génération de rapport
+                        </a>
+                    </li>
+                  
+                   
+
+                </ul>
+            </div>
+
+            <!-- Right Column - Alerts -->
+            <div class="dashboard-card2" style="background-color:lightgray; height: 380px;">
+                <!-- Afficher le message de succès -->
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div id="successMessage" class="alert alert-success" role="alert">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+                <a asp-area="" asp-controller="Rapport" asp-action="Generer_un_rapport">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+                    </svg>
+                </a>
+                <span> Générer un rapport</span>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialisation de Feather Icons
+            if (feather) {
+                feather.replace();
+            }
+
+            // Initialisation de Lucide Icons
+            if (lucide) {
+                lucide.createIcons();
+            }
+        });
+    </script>
+  
+}
+
+

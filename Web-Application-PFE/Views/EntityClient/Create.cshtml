@@ -1,0 +1,87 @@
+﻿@model Web_Application_PFE.ViewModels.EntityClientViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Gestion-RFQ.css" />
+}
+
+<main role="main" class="pb-3">
+    <div class="dashboard-content" style="height:100px">
+        <div class="dashboard-grid" style="margin-right:4px;margin-top:-26px;">
+            <!-- Left Column - Documents -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <img src="~/images/images.png" alt="folder" class="w-9 h-9 inline-block">
+                    <h2 class="card-title"> Gestion RFQ</h2>
+                </div>
+
+
+                <ul class="menu">
+                    <li>
+                        <a asp-area="" asp-controller="AddRFQ" asp-action="Gestion_RFQ">
+                            <i data-feather="file-text" class="w-4 h-4 mr-2"></i>Créer nouvelle RFQ
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="" asp-controller="AddRFQ" asp-action="Index">
+
+                            <i class="bi bi-eye fs-5"></i>&nbsp;Consulter RFQ
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+
+            <!-- Right Column - Alerts -->
+            <div class="dashboard-card2">
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Champ Sales -->
+            <div class="form-group">
+                <label asp-for="Sales" class="control-label"></label>
+                <input asp-for="Sales" class="form-control" />
+                <span asp-validation-for="Sales" class="text-danger"></span>
+            </div>
+
+            <!-- Champ Customer -->
+            <div class="form-group">
+                <label asp-for="Customer" class="control-label"></label>
+                <input asp-for="Customer" class="form-control" />
+                <span asp-validation-for="Customer" class="text-danger"></span>
+            </div>
+
+            <!-- Champ EmailClient -->
+            <div class="form-group">
+                <label asp-for="EmailClient" class="control-label"></label>
+                <input asp-for="EmailClient" class="form-control" />
+                <span asp-validation-for="EmailClient" class="text-danger"></span>
+            </div>
+
+            <!-- Bouton de soumission -->
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

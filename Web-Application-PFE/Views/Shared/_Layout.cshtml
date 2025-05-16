@@ -1,0 +1,655 @@
+﻿@inject Web_Application_PFE.Services.Interfaces.IDashboardService DashboardService
+@using Microsoft.AspNetCore.Identity
+@using Web_Application_PFE.Models
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+   
+
+    @{
+    ViewData["Title"] = "_Layout";
+
+    // Initialiser avec des valeurs par défaut
+    var nom = "Utilisateur inconnu";
+    var prenom = "Non défini";
+    var photoPath = "/images/person.jpg";
+    var role = "Aucun rôle";
+    var isAdmin = false;
+    var isValidateur = false;
+
+    // Récupérer l'utilisateur seulement si connecté
+    if (SignInManager.IsSignedIn(User))
+    {
+        var user = await UserManager.GetUserAsync(User);
+        if (user != null)
+        {
+            nom = user.Nom ?? nom;
+            prenom = user.Prenom ?? prenom;
+            photoPath = string.IsNullOrEmpty(user.imagePath) ? 
+                photoPath : 
+                user.imagePath.StartsWith("/") ? user.imagePath : $"/images/{user.imagePath}";
+
+            var roles = await UserManager.GetRolesAsync(user);
+            role = roles.FirstOrDefault() ?? role;
+            isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
+            isValidateur = await UserManager.IsInRoleAsync(user, "Validateur");
+        }
+    }
+}
+@{
+    var dashboardStats = DashboardService.GetDashboardStats();
+}
+  @*   // Récupérer l'utilisateur connecté
+    var user = await UserManager.GetUserAsync(User);
+    var nom = user?.Nom ?? "Utilisateur inconnu";
+    var prenom = user?.Prenom ?? "Non défini";
+    var photoPath = string.IsNullOrEmpty(user?.imagePath) ?
+     "/images/person.jpg" :
+     user.imagePath.StartsWith("/") ? user.imagePath : $"/images/{user.imagePath}";
+
+    // Récupérer le rôle de l'utilisateur
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();
+    var role = roles.FirstOrDefault() ?? "Aucun rôle";
+
+    // Vérifier si l'utilisateur a le rôle Validateur
+    var isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
+    var isValidateur = await UserManager.IsInRoleAsync(user, "Validateur");
+ *@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@ViewData["Title"] - Web_Application_PFE</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+ 
+    <script src="https://kit.fontawesome.com/425d776c56.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="~/css/Style.css">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link href="sb-admin-2.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+   
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/lucide-icons/dist/umd/lucide.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide-icons"></script>
+
+    <link rel="stylesheet" href="vue4.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+   
+
+    @RenderSection("Styles", required: false)
+</head>
+
+<body>
+    <div class="min-h-screen bg-gray-100 flex flex-col">
+
+        <!-- Main Navigation -->
+        <nav class="bg-blue-500 text-white py-1 px-4 w-full">
+            <!-- Première ligne de la navbar -->
+            <div class="flex justify-between items-center w-full">
+                <div class="flex items-center gap-9">
+                    <button class="ghost-btn text-white">
+                        <span class="sr-only">Menu</span> &#8801;
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <img src="/images/logo_transparent.png" alt="Logo" class="w-9 h-5">
+                    <h1 class="text-base" style="margin-top:4px; margin-left:15px">RFQ - PLATEFORME</h1>
+                </div>
+
+                <div class="flex items-center gap-3" style="margin-right:-30px">
+                    <!-- Boutons à gauche de la photo -->
+                    <div class="flex items-center gap-2">
+                        <div class="relative">
+                            <button class="ghost-btn text-white p-1 border-2 border-white rounded-full" style="border-color: white !important;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell">
+                                    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                                    <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <!-- Icône de mail -->
+                        <button class="ghost-btn text-white p-1 border-2 border-white rounded-full" style="border-color: white !important;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail">
+                                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                            </svg>
+                        </button>
+                        <!-- Icône d'alerte -->
+                        <button class="ghost-btn text-white p-1 border-2 border-white rounded-full" style="border-color: white !important;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle">
+                                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                                <path d="M12 9v4"></path>
+                                <path d="M12 17h.01"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+
+
+                    <!-- Photo au centre -->
+                    <div class="relative">
+                        <div style="margin-right:-14px;" id="profile-menu" class="cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="white" class="bi bi-person-fill" viewBox="0 0 16 16">
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                            </svg>
+                        </div>
+                        <div id="dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden">
+                            <form class="w-full" asp-area="Identity" asp-page="/Account/Manage/ChangePassword" method="post">
+                                <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Paramètre
+                                </button>
+                            </form>
+                            <form class="w-full" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                                <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Texte à droite de la photo -->
+
+
+
+                    <div class="text-right">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <div class="text-right">
+                                <span class="block  text-white" style="font-weight:100;font-size:9px;margin-right:80px">@role</span>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-xs font-bold text-white" style="font-weight:548;font-size:13px">@nom</span>
+                                    <span class="text-xs font-bold text-white" style="font-weight:547;font-size:13px">@prenom</span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                        }
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Deuxième ligne de la navbar -->
+            <div class="flex justify-between  items-center  mt-2" style="margin-left:73px">
+                <!-- Élément 1 à gauche -->
+                <div class="flex items-center gap-2 ml-40">
+                    <button class="ghost-btn text-white py-1 px-1 flex items-center gap-1" data-title="Accueil" onclick="updateTitle(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="#000000" aria-hidden="true" height="21" width="28">
+                            <path d="M7.6466666666666665 2.5606666666666666a0.5 0.5 0 0 1 0.7066666666666667 0l5.793333333333333 5.793333333333333a0.5 0.5 0 1 0 0.7066666666666667 -0.7073333333333333l-5.792666666666666 -5.793333333333333a1.5 1.5 0 0 0 -2.1213333333333333 0l-5.793333333333333 5.793333333333333a0.5 0.5 0 1 0 0.7073333333333333 0.7066666666666667l5.793333333333333 -5.792666666666666Z"></path>
+                            <path d="m8 3.6213333333333333 5.439333333333334 5.439333333333334c0.019999999999999997 0.019999999999999997 0.039999999999999994 0.03866666666666667 0.06066666666666666 0.057333333333333326v4.132c0 0.69 -0.5599999999999999 1.25 -1.25 1.25H10a0.5 0.5 0 0 1 -0.5 -0.5v-3a0.5 0.5 0 0 0 -0.5 -0.5h-2a0.5 0.5 0 0 0 -0.5 0.5V14a0.5 0.5 0 0 1 -0.5 0.5H3.75a1.25 1.25 0 0 1 -1.25 -1.25v-4.132a1.5266666666666666 1.5266666666666666 0 0 0 0.06066666666666666 -0.057333333333333326L8 3.6213333333333333Z"></path>
+                        </svg>
+
+                        <a href="@Url.Action("Index", "Home")" style="text-decoration: none; color: inherit;">
+                            <span style="font-weight:400;font-size:12px">Accueil</span>
+                        </a>
+                    </button>
+
+                    <i data-feather="chevron-right" class="w-9 h-9 text-wihte-500"></i>
+                    <span style="font-weight:600;font-size:12px" id="page-title">x</span>
+                </div>
+
+
+                <div id="route-data"
+                     data-controller="@ViewContext.RouteData.Values["Controller"]"
+                     data-action="@ViewContext.RouteData.Values["Action"]"
+                     data-area="@ViewContext.RouteData.Values["Area"]">
+                </div>
+
+                <!-- Élément 2 à droite -->
+                <div class="flex items-center gap-2 ml-auto">
+                    <button class="period-button active">AUJ</button>
+                    <button class="period-button">7 jrs</button>
+                    <button class="period-button">15 jrs</button>
+                    <button class="period-button">30 jrs</button>
+                    <button class="period-button">90 jrs</button>
+                </div>
+            </div>
+            <!-- Troisième ligne de la navbar -->
+            <!-- Status Cards -->
+            <div class="stats-container mt-3" style="margin-left:243px;">
+                <div class="flex items-center gap-4">
+                    <div class="stat-card bg-transparent p-4 rounded-lg shadow-md relative">
+                        <div class="absolute top-0 left-4 flex flex-col items-center gap-2 text-white-600">
+                            <div class="text-4xl">⚠️</div>
+                            <div class="text-base font-bold"> Alertes</div>
+                        </div>
+                        <div class="absolute bottom-0 right-4 text-3xl font-bold text-white-600">@dashboardStats?.PendingCount</div>
+                    </div>
+
+                    <div class="stat-card bg-transparent p-4 rounded-lg shadow-md relative">
+                        <div class="absolute bottom-0 left-4 flex flex-col items-center gap-2 text-white-600">
+                            <div class="text-4xl">🏅</div>
+                            <div class="text-base font-bold">Réalisation</div>
+                        </div>
+                        <div class="absolute bottom-0 right-4 text-3xl font-bold text-white-600">@dashboardStats?.WinCount</div>
+                    </div>
+                    <div class="stat-card bg-transparent p-4 rounded-lg shadow-md relative">
+                        <div class="absolute bottom-0 left-4 flex flex-col items-center gap-2 text-white-600">
+                            <div class="text-4xl">📋</div>
+                            <div class="text-base font-bold"> Tableau de bord</div>
+                        </div>
+                        <div class="absolute bottom-0 right-4 text-3xl font-bold text-white-600">+ @dashboardStats?.Sum</div>
+                    </div>
+
+                    <button class="add-button">
+                        <i data-feather="plus" class="w-9 h-9 text-blue-500"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-2 mt-[-100px]">
+            <main role="main" class="pb-3">
+                @RenderBody()
+
+            </main>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="profile">
+                <div class="avatar">
+                    <img src="@photoPath" alt="Photo de profil" />
+                </div>
+                <div class="flex items-center gap-1">
+                    <span class="text-base  text-black">@nom</span>
+                    <span class="text-base  text-black">@prenom</span>
+                </div>
+
+
+                <br />
+                <div class="icon-container flex justify-center items-center gap-2">
+                    <div class="flex space-x-2">
+                        <!-- Grid Icon -->
+                        <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-green-50 p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="8" y1="3" x2="8" y2="21"></line>
+                                <line x1="16" y1="3" x2="16" y2="21"></line>
+                                <line x1="3" y1="9" x2="21" y2="9"></line>
+                                <line x1="3" y1="15" x2="21" y2="15"></line>
+                            </svg>
+                        </div>
+
+                        <!-- Mail Icon -->
+                        <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-blue-50 p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                            </svg>
+                        </div>
+
+                        <!-- Alert Icon -->
+                    
+                        <!-- Bouton de notification -->
+                        <div class="relative" style="top:-4px">
+                            <button id="notification-btn" class="ghost-btn text-white p-1 border-2 border-white rounded-full" style="border-color: white !important;">
+                                <!-- Bloc mis à jour avec mêmes styles que l'autre SVG container -->
+                                <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-red-50 p-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                         fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                         class="lucide lucide-bell">
+                                        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                                        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+                                    </svg>
+                                    <!-- Badge pour les notifications non lues -->
+                                    <span id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center hidden">0</span>
+                                </div>
+                            </button>
+
+                            <!-- Dropdown des notifications -->
+                            <div id="notification-dropdown" class="absolute mt-2 bg-white rounded-md shadow-lg z-50 hidden" style="left: 0; width: 230px;">
+                                <div class="p-3 border-b">
+                                    <h3 class="font-semibold text-gray-800">Notifications</h3>
+                                </div>
+                                <div id="notification-list" class="max-h-96 overflow-y-auto">
+                                    <div class="p-4 text-center text-gray-500">
+                                        Chargement des notifications...
+                                    </div>
+                                </div>
+                              
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <p class="overline"></p>
+            </div>
+
+            <ul class="menu">
+                <hr>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Audit" asp-action="Journal"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Audit" && ViewContext.RouteData.Values["Action"]?.ToString() == "Journal" ? "active" : "")">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-activity" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M6 2a.5.5 0 0 1 .47.33L10 12.036l1.53-4.208A.5.5 0 0 1 12 7.5h3.5a.5.5 0 0 1 0 1h-3.15l-1.88 5.17a.5.5 0 0 1-.94 0L6 3.964 4.47 8.171A.5.5 0 0 1 4 8.5H.5a.5.5 0 0 1 0-1h3.15l1.88-5.17A.5.5 0 0 1 6 2" />
+                            </svg>
+                            &nbsp;&nbsp;Journal d'activité
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole("Validateur") || User.IsInRole("Ingénieur RFQ") || User.IsInRole("Lecteur"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Home" asp-action="Index"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="#000000" aria-hidden="true" height="24" width="28">
+                                <path d="M7.6466666666666665 2.5606666666666666a0.5 0.5 0 0 1 0.7066666666666667 0l5.793333333333333 5.793333333333333a0.5 0.5 0 1 0 0.7066666666666667 -0.7073333333333333l-5.792666666666666 -5.793333333333333a1.5 1.5 0 0 0 -2.1213333333333333 0l-5.793333333333333 5.793333333333333a0.5 0.5 0 1 0 0.7073333333333333 0.7066666666666667l5.793333333333333 -5.792666666666666Z"></path>
+                                <path d="m8 3.6213333333333333 5.439333333333334 5.439333333333334c0.019999999999999997 0.019999999999999997 0.039999999999999994 0.03866666666666667 0.06066666666666666 0.057333333333333326v4.132c0 0.69 -0.5599999999999999 1.25 -1.25 1.25H10a0.5 0.5 0 0 1 -0.5 -0.5v-3a0.5 0.5 0 0 0 -0.5 -0.5h-2a0.5 0.5 0 0 0 -0.5 0.5V14a0.5 0.5 0 0 1 -0.5 0.5H3.75a1.25 1.25 0 0 1 -1.25 -1.25v-4.132a1.5266666666666666 1.5266666666666666 0 0 0 0.06066666666666666 -0.057333333333333326L8 3.6213333333333333Z"></path>
+                            </svg> &nbsp;&nbsp;Tableau de bord
+                        </a>
+                    </li>
+                  
+                    <li>
+                        <a asp-area="" asp-controller="RFQ" asp-action="Rfq"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "RFQ" && ViewContext.RouteData.Values["Action"]?.ToString() == "Rfq" ? "active" : "")">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-folder2" viewBox="0 0 16 16">
+                                <path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h2.764c.958 0 1.76.56 2.311 1.184C7.985 3.648 8.48 4 9 4h4.5A1.5 1.5 0 0 1 15 5.5v7a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5zM2.5 3a.5.5 0 0 0-.5.5V6h12v-.5a.5.5 0 0 0-.5-.5H9c-.964 0-1.71-.629-2.174-1.154C6.374 3.334 5.82 3 5.264 3zM14 7H2v5.5a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5z" />
+                            </svg> &nbsp;&nbsp;RFQ
+                        </a>
+                    </li>
+                }
+
+                @if (User.IsInRole("Validateur") || User.IsInRole("Lecteur"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Statistiques" asp-action="Statistiques"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Statistiques" && ViewContext.RouteData.Values["Action"]?.ToString() == "Statistiques" ? "active" : "")">
+                            <svg id="Graph-Chart--Streamline-Atlas" xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 -0.5 16 16" height="17" width="17"><desc>Graph Chart Streamline Icon: https://streamlinehq.com</desc><defs></defs><path d="M1.53125 9.2875h2.3874999999999997v4.7749999999999995H1.53125Z" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path><path d="M11.08125 5.7125h2.3874999999999997V14.0625h-2.3874999999999997Z" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path><path d="M6.30625 0.9375h2.3874999999999997v13.125h-2.3874999999999997Z" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path><path d="m0.34375 14.0625 14.3125 0" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path></svg>&nbsp;&nbsp; Statistiques
+                        </a>
+                    </li>
+                }
+                <hr class="profile-line">
+                @if (User.IsInRole("Validateur") || User.IsInRole("Ingénieur RFQ") || User.IsInRole("Lecteur"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="AddRFQ" asp-action="Gestion_RFQ"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "AddRFQ" && ViewContext.RouteData.Values["Action"]?.ToString() == "Gestion_RFQ" ? "active" : "")">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <rect width="14" height="14" x="1" y="1" fill="none" stroke="currentColor" stroke-width="1" />
+                                <text x="50%" y="50%" font-family="Arial" font-size="6" text-anchor="middle" dominant-baseline="middle" fill="currentColor">RFQ</text>
+                            </svg> &nbsp;&nbsp; Gestion RFQ
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="" asp-controller="Suivi_RFQ" asp-action="SuiviRFQ"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Suivi_RFQ" && ViewContext.RouteData.Values["Action"]?.ToString() == "SuiviRFQ" ? "active" : "")">
+                            <svg id="Vision--Streamline-Atlas" xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 -0.5 16 16" height="16" width="16"><desc>Vision Streamline Icon: https://streamlinehq.com</desc><defs></defs><path d="m0.625 4.375 0 -3.75 3.75 0" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path><path d="m10.625 0.625 3.75 0 0 3.75" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path><path d="m0.625 10.625 0 3.75 3.75 0" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path><path d="m10.625 14.375 3.75 0 0 -3.75" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path><path d="M13.75 7.5a7.2124999999999995 7.2124999999999995 0 0 1 -12.5 0 7.2124999999999995 7.2124999999999995 0 0 1 12.5 0Z" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path><path d="M13.75 7.5a7.2124999999999995 7.2124999999999995 0 0 1 -12.5 0 7.2124999999999995 7.2124999999999995 0 0 1 12.5 0Z" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path><path d="M5.625 7.5a1.875 1.875 0 1 0 3.75 0 1.875 1.875 0 1 0 -3.75 0" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path></svg>&nbsp;&nbsp;&nbsp; Suivi RFQ
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="" asp-controller="Versions" asp-action="Ajouter_une_version"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Versions" && ViewContext.RouteData.Values["Action"]?.ToString() == "Ajouter_une_version" ? "active" : "")">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 -0.5 16 16" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" id="Book-Open-Text--Streamline-Lucide" height="19" width="19"><desc>Book Open Text Streamline Icon: https://streamlinehq.com</desc><path d="M1.25 1.875h3.75a2.5 2.5 0 0 1 2.5 2.5v8.75a1.875 1.875 0 0 0 -1.875 -1.875H1.25z" stroke-width="1"></path><path d="M13.75 1.875h-3.75a2.5 2.5 0 0 0 -2.5 2.5v8.75a1.875 1.875 0 0 1 1.875 -1.875h4.375z" stroke-width="1"></path><path d="M3.75 5h1.25" stroke-width="1"></path><path d="M3.75 7.5h1.25" stroke-width="1"></path><path d="M10 5h1.25" stroke-width="1"></path><path d="M10 7.5h1.25" stroke-width="1"></path></svg>&nbsp; &nbsp; Versions
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Users" asp-action="Index"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Users" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+                                <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+                            </svg>&nbsp;&nbsp;Gestion des utilisateurs
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Versions" asp-action="Affiche_Versions"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Versions" && ViewContext.RouteData.Values["Action"]?.ToString() == "Affiche_Versions" ? "active" : "")">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-layers" viewBox="0 0 16 16">
+                                <path d="M8.235 1.559a.5.5 0 0 0-.47 0l-7.5 4a.5.5 0 0 0 0 .882L3.188 8 .264 9.559a.5.5 0 0 0 0 .882l7.5 4a.5.5 0 0 0 .47 0l7.5-4a.5.5 0 0 0 0-.882L12.813 8l2.922-1.559a.5.5 0 0 0 0-.882zm3.515 7.008L14.438 10 8 13.433 1.562 10 4.25 8.567l3.515 1.874a.5.5 0 0 0 .47 0zM8 9.433 1.562 6 8 2.567 14.438 6z" />
+                            </svg>&nbsp;&nbsp;Gestion des Versions
+                        </a>
+                    </li>
+                }
+
+                @if (User.IsInRole("Validateur") || User.IsInRole("Lecteur"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Rapport" asp-action="Rapport"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Rapport" && ViewContext.RouteData.Values["Action"]?.ToString() == "Rapport" ? "active" : "")">
+                            <i data-feather="file-text" class="w-5 h-5 mr-2"></i>&nbsp; Rapport
+                        </a>
+                    </li>
+                }
+            
+           
+              
+            </ul>
+          
+        </aside>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap en second -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Ajouter les nouveaux scripts JavaScript -->
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="~/js/site.js" defer></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        // Gestion du menu profil
+         document.getElementById('profile-menu').addEventListener('click', function() {
+             document.getElementById('dropdown-menu').classList.toggle('hidden');
+         });
+    </script>
+    <script>
+        // Solution basée sur Razor qui fonctionne toujours
+        (function() {
+        @{
+            var controller = ViewContext.RouteData.Values["Controller"]?.ToString();
+            var action = ViewContext.RouteData.Values["Action"]?.ToString();
+            var title = "Tableau de bord";
+
+            if (controller == "Home" && action == "Index")
+                title = "Tableau de bord";
+            else if (controller == "AddRFQ" && action == "Create")
+                title = "Créer nouvelle RFQ";
+            else if (controller == "AddRFQ" && action == "Gestion_RFQ")
+                title = "Gestion RFQ";
+            // Ajouter d'autres cas au besoin
+        }
+
+            const titleElement = document.getElementById('page-title');
+            if (titleElement) {
+                titleElement.textContent = '@title';
+            }
+        })();
+    </script>
+    <script>
+        // Gestion du menu profil
+        document.getElementById('profile-menu').addEventListener('click', function(e) {
+            e.stopPropagation(); // Empêche la propagation pour ne pas déclencher le document.click immédiatement
+            document.getElementById('dropdown-menu').classList.toggle('hidden');
+        });
+
+        // Fermer le menu quand on clique ailleurs
+        document.addEventListener('click', function(e) {
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            const profileMenu = document.getElementById('profile-menu');
+
+            if (!profileMenu.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.add('hidden');
+            }
+        });
+                document.getElementById('profile-menu').onclick = function(e) {
+            e.stopPropagation();
+            document.getElementById('dropdown-menu').classList.toggle('hidden');
+        };
+
+        document.onclick = function() {
+            document.getElementById('dropdown-menu').classList.add('hidden');
+        };
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const notificationBtn = document.getElementById('notification-btn');
+            const notificationDropdown = document.getElementById('notification-dropdown');
+            const notificationList = document.getElementById('notification-list');
+            const notificationBadge = document.getElementById('notification-badge');
+
+            // Charger les notifications au clic
+            notificationBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                loadNotifications();
+                notificationDropdown.classList.toggle('hidden');
+            });
+
+            // Fermer le dropdown quand on clique ailleurs
+            document.addEventListener('click', function() {
+                notificationDropdown.classList.add('hidden');
+            });
+
+            // Empêcher la fermeture quand on clique dans le dropdown
+            notificationDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+
+            // Fonction pour charger les notifications
+            function loadNotifications() {
+                fetch('/AddRFQ/GetNotifications')
+                    .then(response => response.json())
+                    .then(data => {
+                        updateNotificationList(data);
+                        updateNotificationBadge(data);
+                    })
+                    .catch(error => {
+                        console.error('Error loading notifications:', error);
+                        notificationList.innerHTML = `
+                            <div class="p-4 text-center text-red-500">
+                                Erreur lors du chargement des notifications
+                            </div>
+                        `;
+                    });
+            }
+
+            // Mettre à jour la liste des notifications
+                   // Mettre à jour la liste des notifications
+        function updateNotificationList(notifications) {
+            if (notifications.length === 0) {
+                notificationList.innerHTML = `
+                    <div class="p-4 text-center text-gray-500">
+                        Aucune notification disponible
+                    </div>
+                `;
+                return;
+            }
+
+            notificationList.innerHTML = notifications.map(notification => {
+                let message = '';
+
+                if (notification.status === "En attente de Validation") {
+                    message = `
+                        <span class="font-semibold text-blue-600">${notification.userRole}</span>
+                        <span class="font-semibold">${notification.userName}</span> a créé une nouvelle RFQ
+                        <span class="font-bold text-indigo-700">N°${notification.rfqnumber}</span>
+                    `;
+                } else if (notification.status === "Validée") {
+                    message = `
+                        <span class="font-semibold text-green-600">Validateur</span>
+                        <span class="font-semibold">${notification.userName}</span> a validé la RFQ
+                        <span class="font-bold text-indigo-700">N°${notification.rfqnumber}</span>
+                    `;
+                } else if (notification.status === "Non Validée") {
+                    message = `
+                        <span class="font-semibold text-red-600">Validateur</span>
+                        <span class="font-semibold">${notification.userName}</span> a rejeté la RFQ
+                        <span class="font-bold text-indigo-700">N°${notification.rfqnumber}</span>
+                    `;
+                }
+
+                return `
+                    <div class="p-3 border-b hover:bg-gray-50 cursor-pointer ${notification.isRead ? '' : 'bg-blue-50'}"
+                         onclick="markAsRead(${notification.id}, this)">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-gray-800">
+                                    ${message}
+                                </p>
+                            </div>
+                            <br />
+                            <span class="text-xs text-gray-400">${formatDate(notification.creationDate)}</span>
+                        </div>
+                        ${notification.comment ? `<p class="text-xs mt-1 text-gray-600">Commentaire: ${notification.comment}</p>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+            // Mettre à jour le badge de notification
+            function updateNotificationBadge(notifications) {
+                const unreadCount = notifications.filter(n => !n.isRead).length;
+                if (unreadCount > 0) {
+                    notificationBadge.textContent = unreadCount;
+                    notificationBadge.classList.remove('hidden');
+                } else {
+                    notificationBadge.classList.add('hidden');
+                }
+            }
+
+            // Formater la date
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' ' +
+                       date.toLocaleDateString([], { day: '2-digit', month: '2-digit' });
+            }
+
+            // Marquer une notification comme lue
+            window.markAsRead = function(id, element) {
+                fetch('/AddRFQ/MarkNotificationAsRead?id=' + id, {
+                    method: 'POST'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        element.classList.remove('bg-blue-50');
+                        // Mettre à jour le compteur
+                        const currentCount = parseInt(notificationBadge.textContent);
+                        if (currentCount > 1) {
+                            notificationBadge.textContent = currentCount - 1;
+                        } else {
+                            notificationBadge.classList.add('hidden');
+                        }
+                    }
+                })
+                .catch(error => console.error('Error marking as read:', error));
+            };
+
+            // Charger les notifications au chargement de la page
+            loadNotifications();
+
+            // Actualiser les notifications toutes les 30 secondes
+            setInterval(loadNotifications, 30000);
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+</html>

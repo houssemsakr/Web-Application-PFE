@@ -1,0 +1,154 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.IO;
+using OfficeOpenXml;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+
+namespace Web_Application_PFE.Controllers
+{
+    public class RapportController : Controller
+    {
+        public IActionResult Rapport()
+        {
+            return View();
+        }
+
+        public IActionResult Generer_un_rapport()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Generer_un_rapport(string periode, string client, string performance,
+            string secteur, string statutRFQ, string graphique)
+        {
+            // Stocker les données dans TempData pour les réutiliser
+            TempData["Periode"] = periode;
+            TempData["Client"] = client;
+            TempData["Performance"] = performance;
+            TempData["Secteur"] = secteur;
+            TempData["StatutRFQ"] = statutRFQ;
+            TempData["Graphique"] = graphique;
+
+            return RedirectToAction("Telecharger_Rapport");
+        }
+
+        public IActionResult Telecharger_Rapport()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Telecharger_Rapport(string format)
+        {
+            // Récupérer les données depuis TempData
+            var periode = TempData["Periode"]?.ToString();
+            var client = TempData["Client"]?.ToString();
+            var performance = TempData["Performance"]?.ToString();
+            var secteur = TempData["Secteur"]?.ToString();
+            var statutRFQ = TempData["StatutRFQ"]?.ToString();
+            var graphique = TempData["Graphique"]?.ToString();
+
+            // Simuler des données pour l'exemple
+            var data = new List<dynamic>
+            {
+                new { Période = periode, Client = client, Performance = performance,
+                      Secteur = secteur, StatutRFQ = statutRFQ, Graphique = graphique }
+            };
+
+            if (format == "excel")
+            {
+                return GenerateExcel(data);
+            }
+            else if (format == "pdf")
+            {
+                return GeneratePdf(data);
+            }
+
+            return RedirectToAction("Telecharger_Rapport");
+        }
+
+        private IActionResult GenerateExcel(IEnumerable<dynamic> data)
+        {
+            var stream = new MemoryStream();
+
+            using (var package = new ExcelPackage(stream))
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Rapport");
+
+                // Entêtes
+                worksheet.Cells[1, 1].Value = "Période";
+                worksheet.Cells[1, 2].Value = "Client";
+                worksheet.Cells[1, 3].Value = "Performance";
+                worksheet.Cells[1, 4].Value = "Secteur";
+                worksheet.Cells[1, 5].Value = "Statut RFQ";
+                worksheet.Cells[1, 6].Value = "Graphique";
+
+                // Données
+                int row = 2;
+                foreach (var item in data)
+                {
+                    worksheet.Cells[row, 1].Value = item.Période;
+                    worksheet.Cells[row, 2].Value = item.Client;
+                    worksheet.Cells[row, 3].Value = item.Performance;
+                    worksheet.Cells[row, 4].Value = item.Secteur;
+                    worksheet.Cells[row, 5].Value = item.StatutRFQ;
+                    worksheet.Cells[row, 6].Value = item.Graphique;
+                    row++;
+                }
+
+                package.Save();
+            }
+
+            stream.Position = 0;
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Rapport.xlsx");
+        }
+
+        private IActionResult GeneratePdf(IEnumerable<dynamic> data)
+        {
+            var stream = new MemoryStream();
+
+            var document = new Document();
+            var writer = PdfWriter.GetInstance(document, stream);
+
+            document.Open();
+
+            // Titre
+            var title = new Paragraph("Rapport",
+                new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
+            title.Alignment = Element.ALIGN_CENTER;
+            document.Add(title);
+
+            document.Add(new Paragraph(" "));
+
+            // Tableau des données
+            var table = new PdfPTable(6);
+            table.WidthPercentage = 100;
+
+            // Entêtes
+            table.AddCell(new Phrase("Période", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+            table.AddCell(new Phrase("Client", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+            table.AddCell(new Phrase("Performance", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+            table.AddCell(new Phrase("Secteur", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+            table.AddCell(new Phrase("Statut RFQ", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+            table.AddCell(new Phrase("Graphique", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+
+            // Données
+            foreach (var item in data)
+            {
+                table.AddCell(item.Période);
+                table.AddCell(item.Client);
+                table.AddCell(item.Performance);
+                table.AddCell(item.Secteur);
+                table.AddCell(item.StatutRFQ);
+                table.AddCell(item.Graphique);
+            }
+
+            document.Add(table);
+            document.Close();
+
+            return File(stream.ToArray(), "application/pdf", "Rapport.pdf");
+        }
+    }
+}

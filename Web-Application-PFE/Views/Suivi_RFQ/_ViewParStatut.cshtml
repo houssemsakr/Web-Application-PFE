@@ -1,0 +1,274 @@
+﻿@model IEnumerable<Web_Application_PFE.ViewModels.AddRFQViewModel>
+
+<div class="dashboard-card2">
+    <div>
+        <div class="search-bar" style="width: 100%;height: 30px">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Rechercher" aria-label="Rechercher">
+        </div>
+        <br />
+        <div>
+            <div>
+                <div class="document-title">
+                    <div class="title-wrapper">
+                        <span style="color: black;">Documents</span>
+                        <div class="blue-line"></div>
+                    </div>
+                    <div class="container">
+                        <div class="status-indicator status-invalid" data-workingstatus="Not Started">
+                            <!-- Changé ici -->
+                            <h6>Not Started</h6>
+                        </div>
+                        <div class="status-indicator status-pending" data-workingstatus="In Progress">
+                            <!-- Changé ici -->
+                            <h6>In Progress</h6>
+                        </div>
+                        <div class="status-indicator status-valid" data-workingstatus="Complete">
+                            <!-- Changé ici -->
+                            <h6>Complete</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table" id="rfqTable">
+                <thead>
+                    <tr>
+                        <th scope="col" style="width:40%; font-weight: normal;">
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                &nbsp;&nbsp;<i class="bi bi-file-earmark fs-4"></i>&nbsp;&nbsp;
+                                <span style="color: black; font-weight: normal;">Nom</span>
+                            </div>
+                        </th>
+                        <th scope="col" style="width:40%; font-weight: normal;" class="text-center">
+                            <span style="color: black; font-weight: normal; margin-right:60px;">Statut</span>
+                        </th>
+                        <th scope="col" style="width:40%; font-weight: normal;">
+                            <span style="color: black; font-weight: normal;">Date de création</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tr class="document-statut">
+                    <td class="statut-cell">
+                        <div class="document-statut" style="background-color:white">
+                            <div class="container3">
+                                <div class="status total-status">
+                                    <h5>Totale</h5>
+                                </div>
+                                <div class="status count-status">
+                                    <h5>Nombre</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr> 
+
+                <tbody>
+                    @foreach (var rfq in Model)
+                    {
+                        <tr class="rfq-row" data-workingstatus="@rfq.WorkingStatus">
+                            <td>
+                                <div class="document-card" style="animation-delay: 0ms;">
+                                    <div class="document-card-header">
+                                        <div class="document-header-content">
+                                            <div class="document-icon-wrapper">
+                                                <div>
+                                                    <img src="/images/RFQ.png" alt="Logo" class="w-8 h-11">
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div>
+                                                    <span class="document-number" style="color: black; font-weight: normal; font-size: 12px;">
+                                                        RFQ N°00 @rfq.RFQId
+                                                    </span>
+                                                </div>
+                                                <div class="document-description">Format RFQ</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="document-card-content"></div>
+                                </div>
+                            </td>
+                            <td class="left-text">
+                              @*   <div class="document-card left-text" style="animation-delay: 0ms;">
+                                    <div class="document-card-header left-text status-display">
+                                        @rfq.WorkingStatus
+                                    </div>
+
+                                </div> *@
+
+
+
+                                
+                                    
+
+                                <div class="document-title-section">
+                                    <div class="document-content-wrapper"> 
+                                                <div class="action-buttons-wrapper">
+
+
+                                    <button class=" btn-action" onclick="location.href='@Url.Action("Edit", new { id = rfq.Id })'">
+
+                                                <i class="bi bi-pencil-square"></i>
+
+                                               
+                                            </button>
+
+                                            <button class="btn-action" onclick="loadDetails('@Url.Action("Details", "Suivi_RFQ", new { id = rfq.Id })')">
+                                                <i class="bi bi-eye"></i>
+                                               
+                                            </button>
+
+                                    <button class="btn-action" onclick="pinRFQ(@rfq.RFQId)">
+                                                <i class="bi bi-pin-angle-fill"></i>
+                                               
+                                            </button>
+                                                </div>
+                                             </div> 
+                                       </div> 
+                                        
+                              
+                              
+                            </td>
+                            <td>
+                                <div class="document-card" style="animation-delay: 0ms;">
+                                    <div class="document-card-header">
+                                        @rfq.DateCreation.ToShortDateString()
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Le contenu HTML reste le même, seul le script change -->
+<script>
+    function initViewParStatut() {
+        console.log("Initialisation de ViewParStatut");
+
+        const searchInput = document.getElementById('searchInput');
+        const rfqTable = document.getElementById('rfqTable');
+        const statutRow = document.querySelector('tr.document-statut');
+        const statusIndicators = document.querySelectorAll('.status-indicator');
+        const totalStatus = document.querySelector('.total-status h5');
+        const numberStatus = document.querySelector('.count-status h5');
+
+        if (statutRow) statutRow.style.display = 'none';
+
+        // Afficher les comptes initiaux
+        updateStatusCounts();
+
+        function updateStatusCounts() {
+            const counts = {
+                "Not Started": 0,
+                "In Progress": 0,
+                "Complete": 0
+            };
+
+            document.querySelectorAll('.rfq-row').forEach(row => {
+                const status = row.getAttribute('data-workingstatus');
+                if (counts.hasOwnProperty(status)) {
+                    counts[status]++;
+                }
+            });
+
+            // Mettre à jour les indicateurs avec les comptes
+            statusIndicators.forEach(indicator => {
+                const status = indicator.getAttribute('data-workingstatus');
+                const count = counts[status];
+                indicator.querySelector('h6').textContent = `${status} (${count})`;
+            });
+        }
+
+        function applyStatusColors() {
+            document.querySelectorAll('.status-display').forEach(display => {
+                const status = display.textContent.trim();
+                display.className = 'document-card-header left-text status-display';
+
+                if (status === "Complete") {
+                    display.classList.add('status-valid');
+                } else if (status === "Not Started") {
+                    display.classList.add('status-invalid');
+                } else if (status === "In Progress") {
+                    display.classList.add('status-pending');
+                }
+            });
+        }
+
+        function handleSearch() {
+            const searchText = searchInput.value.toLowerCase();
+            const rows = rfqTable.querySelectorAll('.rfq-row');
+
+            rows.forEach(row => {
+                const idCell = row.querySelector('.document-number');
+                if (idCell) {
+                    const idText = idCell.textContent.toLowerCase();
+                    row.style.display = idText.includes(searchText) ? '' : 'none';
+                }
+            });
+
+            updateStatusCounts();
+        }
+
+        function filterByStatus(status) {
+            const rows = rfqTable.querySelectorAll('.rfq-row');
+            let count = 0;
+
+            rows.forEach(row => {
+                if (row.getAttribute('data-workingstatus') === status) {
+                    row.style.display = '';
+                    count++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            if (numberStatus) numberStatus.textContent = count;
+            if (statutRow) statutRow.style.display = '';
+        }
+
+        // Réinitialiser les événements
+        statusIndicators.forEach(indicator => {
+            indicator.replaceWith(indicator.cloneNode(true));
+        });
+
+        document.querySelectorAll('.status-indicator').forEach(indicator => {
+            indicator.addEventListener('click', function() {
+                const status = this.getAttribute('data-workingstatus'); // Changé de data-status à data-workingstatus
+                const color = window.getComputedStyle(this).color;
+
+                statusIndicators.forEach(ind => {
+                    ind.style.display = ind === indicator ? 'block' : 'none';
+                });
+
+                if (totalStatus) {
+                    totalStatus.style.border = `2px solid ${color}`;
+                    totalStatus.style.color = color;
+                    totalStatus.textContent = status; // Affiche le statut sélectionné
+                }
+                if (numberStatus) {
+                    numberStatus.style.border = `2px solid ${color}`;
+                    numberStatus.style.color = color;
+                }
+
+                filterByStatus(status);
+            });
+        });
+
+        if (searchInput) {
+            searchInput.addEventListener('input', handleSearch);
+        }
+
+        applyStatusColors();
+    }
+
+    // Si la vue est chargée directement (pas via AJAX)
+    if (document.readyState === 'complete') {
+        initViewParStatut();
+    } else {
+        document.addEventListener('DOMContentLoaded', initViewParStatut);
+    }
+</script>

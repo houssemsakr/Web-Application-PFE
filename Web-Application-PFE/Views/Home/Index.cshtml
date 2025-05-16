@@ -1,0 +1,116 @@
+﻿@model Web_Application_PFE.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+}
+<main role="main" class="pb-3" style="margin-top: 0;margin-bottom: 10px">
+    <div class="dashboard-content" style="height:100px;margin-top: 0;">
+        <div class="dashboard-grid" style="margin-right: 0;">
+
+            <!-- Left Column - Documents -->
+            <div class="dashboard-card1">
+                <div class="card-header">
+                    <img src="~/images/images.png" alt="folder" class="w-9 h-9 inline-block">
+                    <h2 class="card-title">RFQ</h2>
+                </div>
+                <div class="search-bar">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" placeholder="Rechercher" aria-label="Rechercher">
+                </div>
+
+                <div class="tab-container">
+                    <div class="tabs">
+                        <button class="tab-button active" data-tab="recent" style="font-size:13px">Récent</button>
+                        <button class="tab-button" data-tab="pinned" style="font-size:13px">Épinglé</button>
+                        <button class="tab-button" data-tab="shared" style="font-size:13px"> Partagés avec moi</button>
+                        <div class="tab-indicator"></div>
+                    </div>
+                </div>
+                <div class="tab-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 900px; font-weight: normal;">
+                                <span style="display: flex; align-items: center; gap: 1px;font-size:12px">
+                                    <i data-feather="file" class="w-5 h-5 text-black-500"></i> Nom
+                                </span>
+                            </th>
+
+                            <th scope="col" style="width: 500px; font-weight: normal;font-size:12px">Date de modification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                           
+                        </tr>
+                        <tr>
+                            
+                        </tr>
+                    </tbody>
+                </table>
+
+                </div>
+            </div>
+            <!-- Right Column - Alerts -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <i class="fa-solid fa-triangle-exclamation text-blue-500" style="font-size: 40px;"></i>
+                    <h2 class="card-title">Alertes</h2>
+                </div>
+                <br />
+                <div class="alerts-grid">
+                    <div class="alert-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" fill="currentColor" class="bi bi-pin-angle-fill" viewBox="0 0 16 16">
+                            <path d="M9.828.722a.5.5 0 0 1 .354.146l4.95 4.95a.5.5 0 0 1 0 .707c-.48.48-1.072.588-1.503.588-.177 0-.335-.018-.46-.039l-3.134 3.134a6 6 0 0 1 .16 1.013c.046.702-.032 1.687-.72 2.375a.5.5 0 0 1-.707 0l-2.829-2.828-3.182 3.182c-.195.195-1.219.902-1.414.707s.512-1.22.707-1.414l3.182-3.182-2.828-2.829a.5.5 0 0 1 0-.707c.688-.688 1.673-.767 2.375-.72a6 6 0 0 1 1.013.16l3.134-3.133a3 3 0 0 1-.04-.461c0-.43.108-1.022.589-1.503a.5.5 0 0 1 .353-.146" />
+                        </svg>
+                        <div class="alert-value">@Model.PinnedCount</div>
+                        <div class="alert-label">Epinglé</div>
+                    </div>
+
+                    <div class="alert-card">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" fill="currentColor" class="bi bi-trophy-fill" viewBox="0 0 16 16">
+                            <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935" />
+                        </svg>
+                        <div class="alert-value">@Model.WinCount</div>
+                        <div class="alert-label">Gagner</div>
+                    </div>
+
+                    <div class="alert-card">
+                        <i class="fa-solid fa-check alert-icon"></i>
+                        <div class="alert-value">@Model.ValidatedCount</div>
+                        <div class="alert-label">Validées</div>
+                    </div>
+
+                    <div class="alert-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="#FFFFFF" aria-hidden="true" id="X-Circle--Streamline-Heroicons" height="75" width="75"><desc>X Circle Streamline Icon: https://streamlinehq.com</desc><path fill-rule="evenodd" d="M8 1.5c-3.59 0 -6.5 2.91 -6.5 6.5s2.91 6.5 6.5 6.5 6.5 -2.91 6.5 -6.5S11.59 1.5 8 1.5Zm-1.1466666666666665 4.6466666666666665a0.5 0.5 0 1 0 -0.7066666666666667 0.7066666666666667L7.293333333333333 8l-1.1466666666666665 1.1466666666666665a0.5 0.5 0 1 0 0.7066666666666667 0.7066666666666667L8 8.706666666666667l1.1466666666666665 1.1466666666666665a0.5 0.5 0 1 0 0.7066666666666667 -0.7066666666666667L8.706666666666667 8l1.1466666666666665 -1.1466666666666665a0.5 0.5 0 1 0 -0.7066666666666667 -0.7066666666666667L8 7.293333333333333l-1.1466666666666665 -1.1466666666666665Z" clip-rule="evenodd" stroke-width="0.6667"></path></svg>
+                        <div class="alert-value">@Model.RejectedCount</div>
+                        <div class="alert-label">Rejetées</div>
+                    </div>
+
+                    <div class="alert-card">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="#FFFFFF" width="75px" height="75px"><path d="M 16 4 C 9.382813 4 4 9.382813 4 16 C 4 22.617188 9.382813 28 16 28 C 22.617188 28 28 22.617188 28 16 C 28 9.382813 22.617188 4 16 4 Z M 14.96875 6.0625 C 14.980469 6.0625 14.988281 6.0625 15 6.0625 C 15.035156 6.585938 15.46875 7 16 7 C 16.53125 7 16.964844 6.585938 17 6.0625 C 21.738281 6.527344 25.472656 10.261719 25.9375 15 C 25.414063 15.035156 25 15.46875 25 16 C 25 16.53125 25.414063 16.964844 25.9375 17 C 25.472656 21.738281 21.738281 25.472656 17 25.9375 C 16.964844 25.414063 16.53125 25 16 25 C 15.46875 25 15.035156 25.414063 15 25.9375 C 10.261719 25.472656 6.527344 21.738281 6.0625 17 C 6.585938 16.964844 7 16.53125 7 16 C 7 15.46875 6.585938 15.035156 6.0625 15 C 6.527344 10.269531 10.246094 6.539063 14.96875 6.0625 Z M 15 9 L 15 16.40625 L 15.28125 16.71875 L 19.28125 20.71875 L 20.71875 19.28125 L 17 15.5625 L 17 9 Z" /></svg>
+                        <div class="alert-value">@Model.PendingCount</div>
+                        <div class="alert-label">En attente</div>
+                    </div>
+
+                    <div class="alert-card">
+                        <i class="fa-solid fa-floppy-disk alert-icon"></i>
+                        <div class="alert-value">@Model.DraftsCount</div>
+                        <div class="alert-label">Brouillons</div>
+                    </div>
+                </div>
+
+                <div class="more-link">
+                    <a href="#" class="blue-link">Plus <div class="refresh-icon">↻</div></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    feather.replace(); // Pour que Feather Icons fonctionne
+</script>

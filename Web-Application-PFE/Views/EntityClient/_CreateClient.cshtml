@@ -1,0 +1,29 @@
+﻿@model Web_Application_PFE.Models.EntityClient
+
+<div class="card">
+    <div class="card-header">
+        <h3>Créer un nouveau client</h3>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create">
+            <div class="form-group">
+                <label asp-for="Sales" class="control-label"></label>
+                <input asp-for="Sales" class="form-control" />
+                <span asp-validation-for="Sales" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Customer" class="control-label"></label>
+                <input asp-for="Customer" class="form-control" />
+                <span asp-validation-for="Customer" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmailClient" class="control-label"></label>
+                <input asp-for="EmailClient" class="form-control" />
+                <span asp-validation-for="EmailClient" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Créer" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

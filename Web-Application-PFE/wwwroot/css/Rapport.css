@@ -1,0 +1,360 @@
+﻿
+.pb-3 {
+    width: 92%;
+    margin-left: 105px;
+    margin-top: 2px;
+}
+/* Dashboard Content */
+.dashboard-content {
+    flex: 1;
+    padding: 1rem;
+    margin-top: 10px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.dashboard-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+}
+
+.dashboard-card2 {
+    display: flex;
+    flex-direction: column; /* Empile l'icône et le texte */
+    align-items: center; /* Centre horizontalement */
+    justify-content: center;
+    Centre verticalement height: 150%; /* Ajuste la hauteur selon tes besoins */
+    width: 97%; /* Largeur de la carte */
+    background-color: #f0f0f0; /* Fond gris clair */
+    border-radius: 10px; /* Coins arrondis */
+    cursor: pointer; /* Change le curseur pour indiquer un clic */
+}
+
+    .dashboard-card2 svg {
+        width: 100px; /* Taille de l'icône */
+        height: 100px;
+        fill: blue; /* Couleur de l'icône */
+    }
+
+    .dashboard-card2 span {
+        margin-top: 10px; /* Espace entre l'icône et le texte */
+        font-size: 14px;
+        font-weight: bold; /* Texte en gras */
+        color: blue; /* Couleur du texte */
+    }
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.text-blue-500 {
+    color: #2563eb;
+}
+
+.card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #2563eb;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #3b82f6; /* Couleur de fond bleu */
+    border-radius: 4px;
+    padding: 0.75rem; /* Ajustez la hauteur ici */
+    width: 100%;
+    height: 10%;
+}
+
+    .search-bar input {
+        border: none;
+        outline: none;
+        /*flex: 1;*/ /* Prend tout l'espace disponible */
+        padding: 0.5rem; /* Ajustez ce padding pour changer la hauteur de l'input */
+        font-size: 1rem;
+        background-color: #3b82f6; /* Couleur de fond bleu */
+        color: white; /* Couleur du texte en blanc */
+        height: 10%; /* Assurez-vous que l'input prend toute la hauteur de la barre */
+        width: 100%;
+    }
+
+    .search-bar i {
+        color: white; /* Couleur de l'icône en blanc */
+        margin-right: 0.5rem; /* Espacement entre l'icône et le texte */
+        font-size: 1.2rem; /* Ajustez la taille de l'icône si nécessaire */
+        transform: rotate(90deg); /* Pivote l'icône de 90 degrés */
+    }
+
+.tabs {
+    position: relative;
+    display: flex;
+    gap: 10px;
+    /* Supprime la bordure pour éviter une double ligne */
+    border-bottom: none;
+    padding-bottom: 5px;
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    position: relative;
+    outline: none;
+}
+
+    .tab-button.active {
+        color: #3b82f6; /* Couleur du texte pour l'onglet actif */
+        font-weight: bold;
+    }
+
+.tab-indicator {
+    position: absolute;
+    bottom: 0; /* Position correcte */
+    left: 0;
+    height: 3px;
+    width: 0;
+    background-color: #3b82f6; /* Bleu */
+    transition: all 0.3s ease-in-out;
+}
+
+/* Vérifie que l'indicateur est bien limité à la zone des boutons */
+.tab-container {
+    position: relative;
+    overflow: hidden;
+}
+
+
+
+/* Document List */
+.document-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.document-name-header {
+    width: 50%;
+}
+
+.document-date-header {
+    width: 50%;
+    text-align: right;
+}
+
+.document-item {
+    padding: 0.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.document-info {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.document-type {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+    .document-type.excel {
+        background-color: #16a34a;
+    }
+
+    .document-type.pdf {
+        background-color: #dc2626;
+    }
+
+.document-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.document-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.document-format {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.document-time {
+    width: 50%;
+    text-align: right;
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.empty-tab {
+    text-align: center;
+    color: #6b7280;
+    padding: 1rem 0;
+}
+
+.more-link {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+.blue-link {
+    color: #2563eb;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.refresh-icon {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    border: 1px solid #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+/* Alerts Grid */
+.alerts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.alert-card {
+    width: 200px;
+    height: 150px;
+    background-color: #2563eb;
+    color: white;
+    padding: 10px;
+    border-radius: 0.375rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.alert-icon {
+    font-size: 4rem;
+    margin-bottom: 0.5rem;
+}
+
+.alert-value {
+    position: absolute;
+    top: 5px; /* Ajuste la distance du haut */
+    right: 10px; /* Ajuste la distance de la droite */
+    font-size: 18px; /* Taille du texte */
+    font-weight: bold; /* Met en gras si nécessaire */
+    color: white; /* Couleur du texte */
+}
+
+
+.alert-label {
+    font-size: 0.975rem;
+    font-weight: bold;
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .status-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .alerts-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+
+.blue-line {
+    height: 4px;
+    width: 75px;
+    background-color: blue;
+    margin-top: 4px;
+}
+
+.document-table-header {
+    display: flex;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rfq-border);
+    color: #4B5563;
+    font-size: 14px;
+}
+
+.document-name-header {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.blue-line2 {
+    height: 3px;
+    width: 100%;
+    background-color: blue;
+    margin-top: 2px;
+}
+
+.epingle {
+    font-weight: bold;
+    color: black;
+}
