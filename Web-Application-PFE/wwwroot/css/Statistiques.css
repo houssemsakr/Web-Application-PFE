@@ -1,0 +1,232 @@
+﻿
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+main {
+    padding-bottom: 0 !important;
+}
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    overflow-x: hidden; /* Empêcher le débordement horizontal */
+}
+
+/* Dashboard Content */
+.dashboard-content {
+    flex: 1;
+    padding: 1rem;
+    margin-top: -15px;
+    max-width: 100%; /* Limiter la largeur maximale */
+    overflow: hidden; /* Empêcher le débordement */
+}
+.pb-3 {
+    width: 92%;
+    margin-left: 105px;
+    margin-top: 2px;
+   
+}
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 40% 30% 30%; /* Définir les largeurs des zones */
+    gap: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem; 
+}
+
+/* Dashboard Card */
+.dashboard-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    width: 100%;
+    height: 410px; /* Ajustez la hauteur selon vos besoins */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Empêcher le débordement */
+}
+
+/* Canvas Styles */
+canvas {
+    max-width: 100%;
+    height: auto !important;
+    width: 100% !important;
+}
+
+/* Card Header */
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Card Title */
+.card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #2563eb;
+}
+
+/* Style pour les zones */
+.zone {
+    position: relative;
+}
+
+    /* Lignes verticales grises entre les zones */
+    .zone:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -0.5rem;
+        width: 1px;
+        height: 100%;
+        background-color: #d1d5db;
+    }
+
+.statut-rfq {
+    position: absolute;
+    bottom: 0.01rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #2563eb;
+    text-align: center;
+    width: 95%;
+}
+.flex-container {
+    display: flex; /* Aligner les éléments sur la même ligne */
+    align-items: center; /* Centrer verticalement les éléments */
+    gap: 0.5rem; /* Espacement entre les éléments */
+}
+/* Styles spécifiques pour les zones 2 et 3 */
+.zone-bottom .card-header {
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    text-align: center;
+    height: 90%;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .zone:not(:last-child)::after {
+        display: none;
+    }
+}
+
+/* Légende */
+.chart-legend {
+    display: none; /* Masquer la légende */
+}
+
+.chart-container {
+    position: relative;
+    height: 370px;
+    width: 400px;
+    margin: 0 auto;
+}
+
+
+/* Demi-cercles intégrés */
+.half-circle {
+    width: 80px;
+    height: 40px; /* La moitié de la hauteur */
+    border-radius: 40px 40px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0 auto;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+}
+
+.status-label {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin-top: 5px;
+    text-transform: uppercase;
+}
+
+/* Ajustement du graphique */
+.bar-chart-container {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+/* Cercles pour les pourcentages */
+.percentage-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0 auto 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Labels Win/Loss */
+.status-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    text-transform: uppercase;
+}
+
+/* Graphique sans axes */
+.bar-chart-container {
+    width: 100%;
+    height: 150px;
+    margin-top: 10px;
+}
+.bar-chart-container {
+    position: relative;
+    width: 100%;
+    height: 200px; /* Ajustez selon vos besoins */
+    margin: 10px 0;
+}
+
+.chart-label {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    color: #666;
+}
+
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.legend-color {
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+    display: inline-block;
+}

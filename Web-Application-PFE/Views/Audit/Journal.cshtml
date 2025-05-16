@@ -1,0 +1,106 @@
+﻿@model IEnumerable<AuditLog>
+@{
+    ViewData["Title"] = "Journal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/Gestion-RFQ.css" />
+}
+
+<style>
+    /* Vos styles existants */
+    .badge {
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .bg-primary {
+        background-color: #0d6efd;
+    }
+
+    .bg-warning {
+        background-color: #ffc107;
+        color: #000;
+    }
+
+    .bg-danger {
+        background-color: #dc3545;
+    }
+
+    .bg-success {
+        background-color: #198754;
+    }
+</style>
+<main role="main" >
+<div class="container-fluid"style="margin-right:-31px;width:91%;height:100px">
+
+<div class="container-fluid">
+    <div class="table-wrapper">
+                <table class="table table-striped" style="margin-right:-31px;height:10px">
+            <thead>
+                <tr>
+                    <th>Date/Heure</th>
+                    <th>Utilisateur</th>
+                    <th>Type d'Action</th>
+                    <th>Détails</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var log in Model)
+                {
+                    <tr>
+                        <td>@(log.Timestamp?.ToString("g") ?? "N/A")</td>
+                        <td>@log.User?.UserName</td>
+                        <td>
+                            @if (log.Action == "Authentification")
+                            {
+                                <span class="badge bg-primary">Authentification</span>
+                            }
+                            else if (log.EntityId == "/Identity/Account/Logout")
+                            {
+                                <span class="badge bg-warning">Déconnexion</span>
+                            }
+                            else if (log.EntityId == "/Versions/DeleteVersion")
+                            {
+                                <span class="badge bg-danger">Suppression Version</span>
+                            }
+                            else if (log.EntityId == "/")
+                            {
+                                <span class="badge bg-success">Accueil</span>
+                            }
+                        </td>
+                        <td>
+                            @if (log.Action == "Authentification")
+                            {
+                                @:Tentative de connexion
+                            }
+                            else
+                            {
+                                @log.EntityId
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Pagination -->
+<div class="pagination-container">
+    <div class="pagination">
+        @if (ViewBag.TotalItems > ViewBag.PageSize)
+        {
+            @for (int i = 1; i <= Math.Ceiling((double)ViewBag.TotalItems / ViewBag.PageSize); i++)
+            {
+                <a href="@Url.Action("Journal", new { page = i, pageSize = ViewBag.PageSize })"
+                   class="@(i == ViewBag.CurrentPage ? "active" : "")">@i</a>
+            }
+        }
+    </div>
+</div>
+
+    </div>
+</main>

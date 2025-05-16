@@ -1,0 +1,169 @@
+﻿@{
+    ViewData["Title"] = "Telecharger_Rapport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Telecharger_Rapport.css" />
+    <style>
+        .checkbox-container {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #007AFF;
+            border-radius: 4px;
+            display: inline-block;
+            margin-right: 8px;
+            cursor: pointer;
+            vertical-align: middle;
+        }
+
+            .checkbox-container.checked {
+                background-color: #007AFF;
+                position: relative;
+            }
+
+                .checkbox-container.checked::after {
+                    content: "";
+                    color: white;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+
+        .checkbox-label {
+            vertical-align: middle;
+        }
+
+        .format-option {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .download-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .format-options {
+            margin-right: 20px;
+        }
+
+        .download-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right:22px
+        }
+
+        .download-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width:121px;
+            height:35px
+          
+        }
+
+            .download-button:hover {
+                background-color: #005bb5;
+            }
+    </style>
+}
+
+<main role="main" class="pb-3" style="margin-top: 0;margin-bottom: 10px">
+    <div class="dashboard-content" style="height:100px;margin-right:-60px;margin-left:40px">
+        <div class="dashboard-grid" style="margin-left:-49px;margin-top:-26px;">
+
+           
+            <!-- Right Column - Alerts -->
+            <div class="dashboard-card2">
+                <!-- Afficher le message de succès -->
+                <div class="class1">
+                    <div class="content">
+                        <h2>Votre rapport est prêt à être téléchargé. Veuillez choisir la forme du rapport pour le télécharger.</h2>
+                        <form asp-action="Telecharger_Rapport" method="post" id="downloadForm">
+                            <div class="download-container">
+                                <div class="format-options">
+                                    <div class="format-option">
+                                        <label class="custom-checkbox" style:"margin-left:190px">
+                                            <input type="radio" name="format" value="pdf" style="display: none;">
+                                            <div class="checkbox-container" id="pdf-checkbox"></div>
+                                            <span class="checkbox-label">PDF</span>
+                                        </label>
+                                    </div>
+                                    <div class="format-option">
+                                        <label class="custom-checkbox">
+                                            <input type="radio" name="format" value="excel" style="display: none;">
+                                            <div class="checkbox-container" id="excel-checkbox"></div>
+                                            <span class="checkbox-label">Excel</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="download-group">
+                                    <i class="bi bi-download" style="font-size: 2.2rem; font-weight: bold;"></i>
+                                    <button type="submit" class="download-button">Télécharger</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="card2-class2">
+                    <a asp-area="" asp-controller="Rapport" asp-action="Generer_un_rapport">
+                        <i class="bi bi-plus-circle-fill" style="font-size: 2.2rem; font-weight: bold;"> </i>
+                    </a>
+                    <span> Générer un rapport</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+           
+            // Gestion des cases à cocher
+            const pdfCheckbox = document.getElementById('pdf-checkbox');
+            const excelCheckbox = document.getElementById('excel-checkbox');
+            const pdfRadio = document.querySelector('input[value="pdf"]');
+            const excelRadio = document.querySelector('input[value="excel"]');
+            const downloadForm = document.getElementById('downloadForm');
+
+            pdfCheckbox.addEventListener('click', function() {
+                pdfCheckbox.classList.add('checked');
+                excelCheckbox.classList.remove('checked');
+                pdfRadio.checked = true;
+                excelRadio.checked = false;
+            });
+
+            excelCheckbox.addEventListener('click', function() {
+                excelCheckbox.classList.add('checked');
+                pdfCheckbox.classList.remove('checked');
+                excelRadio.checked = true;
+                pdfRadio.checked = false;
+            });
+
+            // Validation du formulaire
+            downloadForm.addEventListener('submit', function(e) {
+                if (!pdfRadio.checked && !excelRadio.checked) {
+                    e.preventDefault();
+                    alert('Veuillez sélectionner un format (PDF ou Excel)');
+                }
+            });
+
+            // Sélection automatique du premier format
+            pdfCheckbox.click();
+        });
+    </script>
+}

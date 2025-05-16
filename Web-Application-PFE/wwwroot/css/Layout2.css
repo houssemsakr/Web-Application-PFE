@@ -1,0 +1,622 @@
+﻿/* Base styles */
+:root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 213 94% 40%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #d1d2d6;
+    color: #333;
+    font-size: 14px;
+}
+
+.bg-gray-100 {
+    background-color: #e4edef;
+}
+a.active {
+    color: blue;
+}
+
+a.active svg {
+    color: blue;            
+    stroke: blue;           
+    fill: blue;
+}
+
+
+
+/* Style de base du lien */
+.nav-link-custom {
+    text-decoration: none;
+    color: inherit; /* Hérite la couleur du parent */
+    display: block;
+    padding: 10px;
+    transition: none; /* Désactive les transitions */
+}
+
+    /* Style au survol - la couleur ne change pas */
+    .nav-link-custom:hover {
+        color: inherit !important; /* Maintient la même couleur */
+        background-color: blue; /* Option: léger effet de survol */
+    }
+
+
+/* Ghost Button Styles */
+.ghost-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.375rem;
+    padding: 0.25rem;
+    background: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+    .ghost-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+/* Sidebar Styles */
+.sidebar {
+    width: 100px;
+    height: 72vh;
+    background: white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px 5px;
+    position: fixed;
+    left: 0;
+    top: 15px;
+    z-index: 10;
+    margin-top: 35px;
+    border-top-right-radius: 19px;
+    border-bottom-right-radius: 19px;
+    border-top-left-radius: 19px;
+    border-bottom-left-radius: 19px;
+}
+
+.profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 7px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #eee;
+    overflow: hidden;
+    margin-bottom: 8px;
+    border: 1px solid #ddd;
+}
+
+.stats-container {
+    margin-left: 180px; /* Pousse la section vers la droite */
+    margin-right: 0px;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile h3 {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 4px;
+    margin-top: 5px;
+}
+
+.profile-btn {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+    .profile-btn:hover {
+        background: #f0f0f0;
+    }
+
+.menu {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+}
+
+    .menu li {
+        margin-bottom: 2px;
+    }
+
+    .menu a {
+        display: flex;
+        align-items: center;
+        padding: 8px 10px;
+        color: #333;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: all 0.2s;
+        font-size: 0.8rem;
+    }
+
+        .menu a:hover {
+            background: #f0f0f0;
+        }
+
+        .menu a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+/* Top bar */
+header.bg-blue-800 {
+    padding: 0.25rem 1rem;
+}
+
+/* Main Navigation */
+nav.bg-blue-500 {
+    padding: 0.1rem 1rem;
+}
+
+nav .container {
+    max-width: 1200px;
+}
+
+/* Logo and title */
+nav h1.text-base {
+    font-size: 0.8rem;
+}
+
+nav img.w-6 {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* User info */
+nav .text-xs {
+    font-size: 0.6rem;
+}
+
+nav .text-sm {
+    font-size: 0.7rem;
+}
+
+nav .w-8.h-8 {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+nav [data-feather] {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Period Button Styles */
+.period-button {
+    width: 40px; /* Largeur du bouton */
+    height: 24px; /* Hauteur du bouton */
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 0.6rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+    .period-button:hover {
+        background: #1d4ed8;
+    }
+
+    .period-button.active {
+        background: #000;
+    }
+
+/* Breadcrumb */
+.bg-blue-500.text-white.px-4.py-1 {
+    padding-top: 0.15rem;
+    padding-bottom: 0.15rem;
+}
+
+    .bg-blue-500.text-white.px-4.py-1 .text-sm {
+        font-size: 0.7rem;
+    }
+
+    .bg-blue-500.text-white.px-4.py-1 [data-feather] {
+        width: 0.8rem;
+        height: 0.8rem;
+    }
+
+/* Status Cards Styles */
+.bg-blue-500.text-white.p-2 {
+    padding: 0.5rem;
+    padding-bottom: 3rem;
+}
+
+.stat-card {
+    background: #2D7FE0; /* Bleu ciel plus doux */
+    border-radius: 6px;
+    padding: 0.5rem;
+    width: 200px; /* Ajuste la largeur ici */
+    height: 70px; /* Ajuste la hauteur ici */
+}
+
+    .stat-card .text-2xl {
+        font-size: 1rem;
+    }
+
+    .stat-card .text-base {
+        font-size: 0.75rem;
+    }
+
+    .stat-card .text-3xl {
+        font-size: 1.25rem;
+    }
+
+/* Add Button Styles */
+.add-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    top: 30%; /* Centrer verticalement */
+    right: 80; /* Aligné à droite */
+    transform: translateY(-20%); /* Centré précisément */
+}
+
+    /* Pour hover sur le bouton */
+    .add-button:hover {
+        transform: scale(1.05) translateY(-50%);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .add-button [data-feather] {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+/* Main Content */
+.flex-1.p-4.mt-\[-50px\] {
+    margin-top: -40px;
+    padding: 0.75rem;
+    width:0px
+}
+
+/* Card Headers */
+.bg-white.rounded-md h2.text-lg {
+    font-size: 0.9rem;
+}
+
+.bg-white.rounded-md [data-feather] {
+    width: 0.9rem;
+    height: 0.9rem;
+}
+
+.bg-white.rounded-md {
+    padding: 0.5rem;
+}
+
+/* Search Bar Styles */
+.search-bar {
+    background: #2563eb;
+    border-radius: 4px;
+    padding: 4px 6px;
+    display: flex;
+    align-items: center;
+    color: white;
+    font-size: 0.7rem;
+    margin-bottom: 0.5rem;
+}
+
+    .search-bar [data-feather] {
+        width: 0.8rem;
+        height: 0.8rem;
+    }
+
+/* Table Header Styles */
+.table-header {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 6px;
+    margin-bottom: 4px;
+    font-size: 0.7rem;
+    color: #4b5563;
+}
+
+/* Tab Styles */
+.tabs-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 8px;
+}
+
+.container {
+    padding-left: 0.0001rem 0.03rem;
+}
+
+.tab-trigger {
+    background: none;
+    border: none;
+    padding: 6px;
+    cursor: pointer;
+    font-size: 0.7rem;
+    color: #4b5563;
+    position: relative;
+}
+
+    .tab-trigger.active {
+        font-weight: 600;
+        color: #2563eb;
+    }
+
+        .tab-trigger.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #2563eb;
+        }
+
+.tab-content {
+    display: none;
+}
+
+    .tab-content.active {
+        display: block;
+    }
+
+/* Alert Card Styles */
+.alert-card {
+    background: #2563eb;
+    border-radius: 4px;
+    padding: 6px 4px;
+    text-align: center;
+    color: white;
+}
+
+    .alert-card [data-feather] {
+        width: 0.9rem;
+        height: 0.9rem;
+        margin: 0 auto 4px;
+    }
+
+    .alert-card .text-xl {
+        font-size: 0.9rem;
+        font-weight: bold;
+        margin-bottom: 2px;
+    }
+
+    .alert-card .text-xs {
+        font-size: 0.6rem;
+    }
+
+/* More Button Styles */
+.more-button {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    background: none;
+    border: none;
+    color: #2563eb;
+    font-size: 0.7rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+
+.refresh-icon {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+}
+
+/* Document Format Styles */
+.format-excel {
+    width: 18px;
+    height: 18px;
+    background-color: #217346;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    border-radius: 3px;
+}
+
+.format-pdf {
+    width: 18px;
+    height: 18px;
+    background-color: #F40F02;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    border-radius: 3px;
+}
+
+/* Media Queries */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 160px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+
+    .container {
+        width: 100%;
+        margin-left: 0;
+        gap: 0.5rem;
+    }
+}
+
+/* Main Content */
+.flex-1 {
+    margin-left: 80px; /* Ajustez cette valeur selon vos besoins */
+    width: calc(94% - 10px); /* Ajustez cette valeur en conséquence */
+    margin-right: 40px;
+    margin-top: -28px;
+   
+}
+#dropdown-menu {
+    z-index: 1000;
+}
+
+
+
+.icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem; /* Espacement entre les icônes */
+}
+
+.icon-box {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    transition: background-color 0.2s, color 0.2s; /* Transition pour la couleur et le fond */
+}
+
+    /* Taille des icônes */
+    .icon-box i {
+        font-size: 1.125rem; /* Taille de l'icône */
+    }
+
+    /* Couleurs spécifiques pour chaque icône */
+    .icon-box.green {
+        background-color: #e8f5e9; /* Vert clair */
+        color: #2e7d32; /* Vert foncé */
+    }
+
+    .icon-box.blue {
+        background-color: #e3f2fd; /* Bleu clair */
+        color: #1976d2; /* Bleu foncé */
+    }
+
+    .icon-box.red {
+        background-color: #ffebee; /* Rouge clair */
+        color: #d32f2f; /* Rouge foncé */
+    }
+
+    /* Effet de survol */
+    .icon-box:hover {
+        background-color: inherit; /* Conserve la couleur de fond au survol */
+        color: inherit; /* Conserve la couleur du texte au survol */
+    }
+
+   
+    .icon-box:active, .icon-box:focus {
+        transform: none !important; 
+        background-color: inherit !important; 
+        outline: none !important; 
+        box-shadow: none !important; 
+    }
+
+    
+    .icon-box:active {
+        transform: none; 
+        background-color: inherit; /* Garder la couleur du fond d'origine */
+        box-shadow: none; /* Supprime l'ombre */
+    }
+
+    .icon-box:focus {
+        outline: none; /* Supprime l'outline sur le focus */
+        box-shadow: none; /* Supprime l'ombre */
+    }
+
+/* pour ligne*/
+.box {
+    width: 50px;
+    height: 50px;
+    background: blue;
+    position: absolute;
+}
+
+.box1 {
+    top: 50px;
+    left: 50px;
+}
+
+.box2 {
+    top: 200px;
+    left: 250px;
+}
+
+.svg-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.profile-line {
+    border: none; /* Enlever toute bordure par défaut */
+    border-top: 2px solid #000; /* Ligne grise */
+    margin: 1px 0; /* Espacement autour de la ligne */
+}

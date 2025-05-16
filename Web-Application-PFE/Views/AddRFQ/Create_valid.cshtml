@@ -1,0 +1,434 @@
+﻿@model Web_Application_PFE.ViewModels.AddRFQViewModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+
+}
+@{
+    ViewData["Title"] = "Create_valid";
+    Layout = "~/Views/Shared/_Layout-2.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/AjoutRFQ.css" />
+}
+
+<form asp-action="Create_valid" method="post" class="custom-form px-4 py-8">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="CreatorId" value="@user?.Id" />
+    <input type="hidden" asp-for="CreatorFullName" value="@($"{user?.Prenom} {user?.Nom}")" />
+    <!-- Div parente pour regrouper les sections Client et RFQ -->
+    <div class="form-sections-container">
+        <!-- Section Client -->
+        <div class="form-section  mb-8 p-6 bg-white border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md" style="top:-25px">
+                Client
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                <div class="space-y-2">
+                    <label asp-for="Customer" class="block text-sm font-medium text-gray-700">Customer </label>
+                    <select asp-for="Customer" id="Customer"
+                            class="border-gray-300"
+                            style="width: 58%; max-width: 250px; height: 47%;background-color:lightgray"
+                            required
+                            data-val="true"
+                            data-val-required="Le champ Customer est obligatoire">
+                        <option value="">Select a customer...</option>
+                        @if (ViewBag.Customers != null)
+                        {
+                            foreach (var customer in ViewBag.Customers)
+                            {
+                                <option value="@customer">@customer</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="Customer" class="text-danger"></span>
+                </div>
+
+
+                <div class="space-y-2">
+                    <label asp-for="Sales" class="block text-sm font-medium text-gray-700">Sales</label>
+                    <input asp-for="Sales" id="Sales" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
+                    <span asp-validation-for="Sales" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="ClientId" class="block text-sm font-medium text-gray-700"> CQ #</label>
+                    <input asp-for="ClientId" id="ClientId" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
+                    <span asp-validation-for="ClientId" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="RFQId" class="block text-sm font-medium text-gray-700">N° RFQ</label>
+                    <div class="flex flex-col">
+                        <input asp-for="RFQId" id="RFQIdInput" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray"
+                               onblur="checkRFQId(this.value)" required />
+                        <span asp-validation-for="RFQId" class="text-danger mt-1"></span>
+                        <div id="rfqIdError" class="text-danger mt-1" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Section RFQ -->
+        <div class="form-section mb-8 p-6 bg-white border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                RFQ
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                <div class="space-y-2">
+                    <label asp-for="QuoteName" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="QuoteName" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
+                    <span asp-validation-for="QuoteName" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="MarketSegment" class="block text-sm font-medium text-gray-700"></label>
+                    <select asp-for="MarketSegment" class="border-gray-300" style="width: 50%; max-width: 250px; height: 47%;">
+                        <option value="">Choisir…</option>
+                        <option value="automotive">Automotive</option>
+                        <option value="industrial">Industrial</option>
+                        <option value="consumer">Consumer</option>
+                        <option value="medical">Medical</option>
+                    </select>
+                    <span asp-validation-for="MarketSegment" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="NumberOfRefToBeQuoted" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="NumberOfRefToBeQuoted" type="number" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;" />
+                    <span asp-validation-for="NumberOfRefToBeQuoted" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="SOPDate" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="SOPDate" type="date" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
+                    <span asp-validation-for="SOPDate" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="MaxVolume" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="MaxVolume" type="number" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;" />
+                    <span asp-validation-for="MaxVolume" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="EstimatedVolume" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="EstimatedVolume" type="number" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;" />
+                    <span asp-validation-for="EstimatedVolume" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="KOdate" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="KOdate" type="date" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
+                    <span asp-validation-for="KOdate" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="CustomerDatadate" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="CustomerDatadate" type="date" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
+                    <span asp-validation-for="CustomerDatadate" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="CustomerDueDate" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="CustomerDueDate" type="date" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
+                    <span asp-validation-for="CustomerDueDate" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Div parente pour regrouper les sections Matériels, Teste et VA -->
+    <div class="form-sections-container">
+        <!-- Section Matériels -->
+        <div class="form-section mb-8 p-6 bg-white border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                Matériels
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+             
+                <div class="space-y-2">
+                    <label asp-for="MaterialLeader" class="block text-sm font-medium text-gray-700"></label>
+                    <select asp-for="MaterialLeader" class="border-gray-300" style="width: 50%; max-width: 250px; height: 47%;background-color:lightgray">
+                        <option value="">Choisir…</option>
+                        <option value="Nobody">Nobody</option>
+                        <option value="B. David">B. David</option>
+                        <option value="T.Malek">T.Malek</option>
+                        <option value="B. Emna">B. Emna</option>
+                    </select>
+                    <span asp-validation-for="MaterialLeader" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="MaterialDueDate" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="MaterialDueDate" type="date" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
+                    <span asp-validation-for="MaterialDueDate" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="MaterialRelease" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="MaterialRelease" type="date" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
+                    <span asp-validation-for="MaterialRelease" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Teste -->
+        <div class="form-section mb-8 p-6 bg-white border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                Teste
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                <div class="space-y-2">
+                    <label asp-for="TestLeader" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="TestLeader" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
+                    <span asp-validation-for="TestLeader" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="TestDueDate" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="TestDueDate" type="date" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
+                    <span asp-validation-for="TestDueDate" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="TestRelease" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="TestRelease" type="date" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
+                    <span asp-validation-for="TestRelease" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section VA -->
+        <div class="form-section mb-8 p-6 bg-white border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                VA
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                <div class="space-y-2">
+                    <label asp-for="VALeader" class="block text-sm font-medium text-gray-700"></label>
+                    <select asp-for="VALeader" class="border-gray-300" style="width: 50%; max-width: 250px; height: 49%;background-color:lightgray">
+                        <option value="">Choisir…</option>
+                        <option value="Nobody">Nobody</option>
+                        <option value="R. Chaima">R. Chaima</option>
+                        <option value="A.Abdelkrim">A.Abdelkrim</option>
+                        <option value="K. Yassine">K. Yassine</option>
+                    </select>
+                    <span asp-validation-for="VALeader" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="LabourDueDate" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="LabourDueDate" type="date" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
+                    <span asp-validation-for="LabourDueDate" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="LabourRelease" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="LabourRelease" type="date" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
+                    <span asp-validation-for="LabourRelease" class="text-danger"></span>
+                </div>
+            
+                <div class="space-y-2">
+                    <label asp-for="WorkingStatus" class="block text-sm font-medium text-gray-700"></label>
+                    <select asp-for="WorkingStatus" class="border-gray-300" style="width: 50%; max-width: 250px; height: 52%;background-color:lightgray">
+                        <option value="">Choisir…</option>
+                        <option value="Complete">Complete</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Not Started">Not Started</option>
+                    </select>
+                    <span asp-validation-for="WorkingStatus" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="ApprovalDate" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="ApprovalDate" type="date" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
+                    <span asp-validation-for="ApprovalDate" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-sections-container">
+        <div class="form-section mb-8 p-6 bg-white border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                Matériels
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                <div class="space-y-2">
+                    <label asp-for="Feasibilityassessment" class="block text-sm font-medium text-gray-700"></label>
+                    <select asp-for="Feasibilityassessment" class="border-gray-300" style="width: 50%; max-width: 250px; height: 52%;background-color:lightgray">
+                        <option value="">Choisir…</option>
+                        <option value="Not Done">Not Done</option>
+                        <option value="Done">Done</option>
+                        <option value="In Progress">In Progress</option>
+                    </select>
+                    <span asp-validation-for="Feasibilityassessment" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="DFM" class="block text-sm font-medium text-gray-700"></label>
+                    <select asp-for="DFM" class="border-gray-300" style="width: 50%; max-width: 250px; height: 47%;background-color:lightgray">
+                        <option value="">Choisir…</option>
+                        <option value="Not Done">Not Done</option>
+                        <option value="Done">Done</option>
+                        <option value="In Progress">In Progress</option>
+                    </select>
+                    <span asp-validation-for="DFM" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="DFT" class="block text-sm font-medium text-gray-700"></label>
+                    <select asp-for="DFT" class="border-gray-300" style="width: 50%; max-width: 250px; height: 47%;background-color:lightgray">
+                        <option value="">Choisir…</option>
+                        <option value="Not Done">Not Done</option>
+                        <option value="Done">Done</option>
+                        <option value="In Progress">In Progress</option>
+                    </select>
+                    <span asp-validation-for="DFT" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="MaxRevenue" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="MaxRevenue" type="number" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;" />
+                    <span asp-validation-for="MaxRevenue" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="EstimatedRevenue" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="EstimatedRevenue" type="number" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
+                    <span asp-validation-for="EstimatedRevenue" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label asp-for="NRE" class="block text-sm font-medium text-gray-700"></label>
+                    <input asp-for="NRE" type="number" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
+                    <span asp-validation-for="NRE" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+  
+
+    <!-- Boutons d'action -->
+    <div class="flex justify-between items-center w-full mt-6">
+        <div class="flex space-x-6 justify-end">
+            <button type="button" class="action-btn2 bg-red text-white hover:bg-navy-light" onclick="window.location.href='@Url.Action("Gestion_RFQ", "AddRFQ")'">
+                <i class="bi bi-arrow-left-short fs-3"></i>
+                <span style="margin: 0 auto;">Retour</span>
+            </button>
+            <button type="submit" formaction="@Url.Action("EnregistrerBrouillon", "Brouillon")" class="action-btn bg-orange text-white hover:bg-orange-light">
+                <i class="fas fa-save"></i>
+                <span style="margin: 0 auto;">Enregistrer Brouillon</span>
+            </button>
+
+            <button type="submit" class="action-btn2 bg-navy text-white hover:bg-navy-light">
+                <i class="fas fa-check"></i>
+                <span style="margin: 0 auto;">Valider</span>
+            </button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialisation de Feather Icons
+            if (feather) {
+                feather.replace();
+            }
+
+            // Initialisation de Lucide Icons
+            if (lucide) {
+                lucide.createIcons();
+            }
+
+            // Gestion de la soumission du formulaire
+            const form = document.querySelector("form");
+            form.addEventListener("submit", function(e) {
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+        
+   
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialisation de Feather Icons
+            if (feather) {
+                feather.replace();
+            }
+
+            // Initialisation de Lucide Icons
+            if (lucide) {
+                lucide.createIcons();
+            }
+        });
+   
+   
+  
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialisation des icônes...
+        });
+
+        function checkRFQId(rfqId) {
+            if (!rfqId) return;
+
+            fetch(`/AddRFQ/CheckRFQIdExists?rfqId=${rfqId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const errorDiv = document.getElementById('rfqIdError');
+                    if (data.exists) {
+                        errorDiv.textContent = "Il y a un autre RFQ possède le même numéro. Changer un autre numéro ou bien créer une version pour ce numéro.";
+                        errorDiv.style.display = 'block';
+                        document.getElementById('RFQIdInput').classList.add('input-validation-error');
+                    } else {
+                        errorDiv.style.display = 'none';
+                        document.getElementById('RFQIdInput').classList.remove('input-validation-error');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        document.getElementById('Sales').addEventListener('change', function () {
+            var sales = this.value;
+            if (sales) {
+                fetch(`/AddRFQ/GetClientInfoBySales?sales=${encodeURIComponent(Customer)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        document.getElementById('sales').value = data.customer || '';
+                        document.getElementById('ClientId').value = data.clientId || '';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Optionnel: Afficher un message à l'utilisateur
+                    });
+            } else {
+                document.getElementById('sales').value = '';
+                document.getElementById('ClientId').value = '';
+            }
+        });
+
+          
+        document.getElementById('Customer').addEventListener('change', function() {
+            var customer = this.value;
+            if (customer) {
+                fetch(`/AddRFQ/GetClientInfoByCustomer?customer=${encodeURIComponent(customer)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        document.getElementById('Sales').value = data.sales || '';
+                        document.getElementById('ClientId').value = data.clientId || '';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Optionnel: Afficher un message à l'utilisateur
+                    });
+            } else {
+                document.getElementById('Sales').value = '';
+                document.getElementById('ClientId').value = '';
+            }
+        });
+   
+    
+    </script>
+}
+
+  

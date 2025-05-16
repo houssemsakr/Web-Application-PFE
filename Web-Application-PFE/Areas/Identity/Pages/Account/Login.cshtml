@@ -1,0 +1,92 @@
+﻿@page
+@model LoginModel
+
+@{
+    Layout = "~/Views/Home/_LayoutLogin.cshtml";
+    ViewData["Title"] = "Login";
+}
+<style>
+    .auth-buttons {
+        display: flex;
+        margin-bottom: 20px;
+        gap: 10px;
+    }
+
+    .auth-btn {
+        flex: 1;
+        padding: 10px;
+        background-color: #f0f0f0;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+        .auth-btn.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+</style>
+
+
+<div class="login-container">
+    <div class="login-form-wrapper">
+        <form id="account" method="post" class="login-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+            <div class="input-group">
+                <div class="input-icon">
+                    <i class="fas fa-user icon-inside"></i>
+                </div>
+                <input asp-for="Input.Email" type="text" class="form-input" placeholder="Username" required />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+             
+            </div>
+
+            <div class="input-group">
+                <div class="input-icon">
+                    <i class="fas fa-lock icon-inside"></i>
+                </div>
+                <input asp-for="Input.Password" type="password" class="form-input" placeholder="Password" required />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-options">
+                <div class="checkbox">
+                    <label asp-for="Input.RememberMe">
+                        <input asp-for="Input.RememberMe" />
+                        @Html.DisplayNameFor(m => m.Input.RememberMe)
+                    </label>
+                </div>
+                <a asp-area="Identity" asp-page="/Account/ForgotPassword" class="forget-link">Forgot password?</a>
+            </div>
+            <button type="submit" name="Input.AuthType" value="LDAP" class="login-button @(Model.Input?.AuthType == "LDAP" ? "active" : "")">Login</button>
+           @*  <button type="submit" class="login-button">Login</button> *@
+        </form>
+    </div>
+</div>
+
+<div class="logos-container">
+    <div class="logo steelflash-logo" style="">
+        <div class="steelflash-container">
+            <div class="steelflash-text">
+                <img src="~/images/LOGO_white_only.png" alt="Asteelflash" style="width:65px;height:40px" />
+                <span style="color:white;font-size:6px">Realizing IDEAS Together</span>
+            </div>
+        </div>
+    </div>
+    &nbsp;&nbsp;
+    <div class="logo usi-logo">
+        <img src="~/images/logo_transparent.png" alt="Asteelflash" style="width:65px;height:40px" />
+    </div>
+    &nbsp;&nbsp;
+    <div class="logo steelflash-logo" style="">
+        <div class="steelflash-container">
+            <div class="steelflash-text">
+                <div> <span style="color:white">A&nbsp;S&nbsp;T&nbsp;E&nbsp;E&nbsp;L</span>  <span class="steelflash-name" style="font-size:15px">F&nbsp;L&nbsp;A&nbsp;S&nbsp;H</span></div>
+                <div> <span class="steelflash-tagline" style="color:white">Y&nbsp;O&nbsp;U&nbsp;R&nbsp;</span> <span class="steelflash-name" style="font-size:12px">E&nbsp;M&nbsp;S&nbsp;</span> <span class="steelflash-tagline" style="color:white"> P&nbsp;A&nbsp;R&nbsp;T&nbsp;N&nbsp;E&nbsp;R</span> </div>
+            </div>
+        </div>
+    </div>
+</div>

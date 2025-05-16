@@ -1,0 +1,171 @@
+﻿@{
+    ViewData["Title"] = "Rfq";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/RFQ.css" />
+}
+
+
+<main role="main" class="pb-3" style="margin-top: 0;margin-bottom: 10px">
+    <div class="dashboard-content" style="height:100px;margin-right:-60px;margin-left:40px">
+        <div class="dashboard-grid" style="margin-right:-9px;margin-top:-26px;"> 
+            <!-- Left Column - Documents (fixed) -->
+            <div class="dashboard-card left-column-fixed" style="height:210px">
+                <div class="card-header">
+                    <img src="~/images/images.png" alt="folder" class="w-9 h-9 inline-block">
+                    <h2 class="card-title">RFQ</h2>
+                </div>
+                <ul class="menu">
+                    <li>
+                        <a href="#" class="active menu-item" data-action="Rfq">
+                            <i class="bi bi-stopwatch" style="font-size: 1.2rem; font-weight: bold;"></i>&nbsp;&nbsp;  &nbsp;&nbsp; Récent
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="menu-item" data-action="Epingles">
+                            <i data-feather="git-branch" class="w-98 h-6 text-wihte-500"></i>&nbsp;Épinglé
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="menu-item" data-action="Partagés">
+                            <i class="fas fa-share" style="font-size: 1.2rem; font-weight: bold;"></i>
+
+                            &nbsp;   &nbsp; Partagés avec moi
+                        </a>
+                    </li>
+                    <li>
+                        @if (!User.IsInRole("Lecteur"))
+                        {
+                            <a href="#" class="menu-item" data-action="Brouillons">
+                                <i class="fa-solid fa-floppy-disk alert-icon" style="font-size: 1.2rem; font-weight: bold;"></i> &nbsp;
+                                &nbsp;Brouillons
+                            </a>
+                        }
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Right Column - Alerts (dynamic content) -->
+            <div class="dashboard-card" id="dynamic-content" style="height:394px;width:693px;margin-left:7px">
+                @await Html.PartialAsync("_RfqContent")
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialisation des icônes
+            if (feather) {
+                feather.replace();
+            }
+            if (lucide) {
+                lucide.createIcons();
+            }
+
+            // Gestion du clic sur les éléments du menu
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    // Supprimer la classe active de tous les éléments
+                    document.querySelectorAll('.menu-item').forEach(el => {
+                        el.classList.remove('active');
+                    });
+
+                    // Ajouter la classe active à l'élément cliqué
+                    this.classList.add('active');
+
+                    // Récupérer l'action à effectuer
+                    const action = this.getAttribute('data-action');
+
+                    // Charger le contenu dynamique
+                    loadContent(action);
+                });
+            });
+
+            function loadContent(action) {
+                fetch(`/RFQ/Get${action}Content`)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('dynamic-content').innerHTML = html;
+                        // Réinitialiser les icônes après le chargement du contenu
+                        if (feather) {
+                            feather.replace();
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        });
+                function loadEditView(url) {
+            console.log("Loading edit view:", url);
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network error');
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('dynamicContent').innerHTML = html;
+                    if (feather) feather.replace();
+                    if (lucide) lucide.createIcons();
+                    $.validator.unobtrusive.parse(document.getElementById('dynamicContent'));
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('dynamicContent').innerHTML = `
+                        <div class="error">
+                            Erreur de chargement: ${error.message}
+                        </div>`;
+                });
+        }
+             // Fonction pour charger le contenu dynamique
+        function loadContent(action) {
+            fetch(`/RFQ/Get${action}Content`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('dynamic-content').innerHTML = html;
+                    if (feather) feather.replace();
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+              function loadDetailsView(url) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network error');
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('dynamic-content').innerHTML = html;
+                    if (feather) feather.replace();
+                    if (lucide) lucide.createIcons();
+                    $.validator.unobtrusive.parse(document.getElementById('dynamic-content'));
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('dynamic-content').innerHTML = `
+                        <div class="error">
+                            Erreur de chargement: ${error.message}
+                        </div>`;
+                });
+        }
+                       function detachEpingle(id) {
+            if (confirm("Êtes-vous sûr de vouloir détacher cette épingle ?")) {
+                fetch('/RFQ/DetachEpingle?id=' + id, {
+                    method: 'POST'
+                })
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('dynamic-content').innerHTML = html;
+                })
+                .catch(error => console.error('Erreur:', error));
+            }
+        }
+
+
+    </script>
+}

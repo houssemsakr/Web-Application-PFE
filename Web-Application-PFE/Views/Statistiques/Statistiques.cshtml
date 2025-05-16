@@ -1,0 +1,294 @@
+﻿@{
+    ViewData["Title"] = "Statistiques";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Statistiques.css" />
+}
+
+            <main role="main" class="pb-3" style="margin-top: 13.1px; height:10px">
+    <div class="dashboard-content" style="height:398px">
+        <div class="dashboard-grid" style="margin-right:-9px;margin-top:-26px;">
+            <!-- Zone 1 -->
+            <div class="dashboard-card zone">
+                <div class="card-header">
+                    <div>
+                        <div class="flex-container">
+                            <img src="~/images/statistiques.png" alt="folder" class="w-9 h-9 inline-block">
+                            <h2 class="card-title">Statistiques</h2>
+                        </div>
+                        <div class="chart-container" style="position: relative; height: 375px; width: 345px;margin-top:-30px;margin-right:-74px;">
+                            <canvas id="polarAreaChart"></canvas>
+                        </div>
+                    </div>
+                    <h2 class="statut-rfq">Statut RFQ</h2>
+                </div>
+            </div>
+
+            <!-- Zone 2 -->
+            <!-- Zone 2 -->
+            <div class="dashboard-card zone zone-bottom">
+                <div class="card-header">
+                  
+                    <div style="margin-top: 20px;">
+                        <!-- Graphique Barres (sans axes) -->
+                        <div style="width: 100%; height: 150px;">
+                            <canvas id="winLossBarChart"></canvas>
+                        </div>
+
+                        <!-- Conteneur des indicateurs -->
+                        <div style="display: flex; justify-content: center; gap: 40px; margin-top: 20px;">
+                            <!-- Indicateur Win -->
+                            <div style="text-align: center;">
+                                <div class="percentage-circle" style="background-color: #4CAF50;">
+                                    <span id="winPercentage">0%</span>
+                                </div>
+                                <div style="color:#4CAF50;font-weight:500">Win</div>
+                            </div>
+
+                            <!-- Indicateur Loss -->
+                            <div style="text-align: center;">
+                                <div class="percentage-circle" style="background-color: #F44336;">
+                                    <span id="lossPercentage">0%</span>
+                                </div>
+                                <div style="color:#F44336;font-weight:500">Loss</div>
+                            </div>
+                        </div>
+                    </div>
+                    <h2 class="statut-rfq">Projet</h2>
+                </div>
+            </div>
+
+            <!-- Zone 3 -->
+            <div class="dashboard-card zone zone-bottom">
+                <div class="card-header">
+                    <h2 class="statut-rfq">Temps</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/npm.chart.js"></script>
+    <script src="~/js/npm.chartjs-plugin-datalabels.js"></script>
+    <script src="~/js/jquery-3.6.0.min.js"></script>
+
+
+
+    <script>
+                  document.addEventListener("DOMContentLoaded", function () {
+            // Initialisation de Feather Icons
+            if (feather) {
+                feather.replace();
+            }
+
+            // Initialisation de Lucide Icons
+            if (lucide) {
+                lucide.createIcons();
+            }
+
+            // Récupérer les données des statuts des RFQ
+            var statutsPourcentages = @Html.Raw(Json.Serialize(ViewBag.StatutsPourcentages));
+
+            // Filtrer les données pour exclure les valeurs nulles
+            statutsPourcentages = statutsPourcentages.filter(function(s) {
+                return s.pourcentage > 0; // Exclure les pourcentages nuls
+            });
+
+            // Préparer les données pour Chart.js
+            var labels = statutsPourcentages.map(function(s) {
+                // Renommer les labels
+                if (s.statut === "Not Started") {
+                    return "Not Started";
+                } else if (s.statut === "In Progress") {
+                    return "In Progress";
+                } else if (s.statut === "Complete") {
+                    return "Complete";
+                } else {
+                    return s.statut; // Conserver les autres labels tels quels
+                }
+            });
+
+            var data = statutsPourcentages.map(function(s) {
+                return s.pourcentage;
+            });
+
+            // Définir les couleurs en fonction des statuts
+            var colors = labels.map(function(label) {
+                if (label === "Not Started") { // Utiliser le nouveau label
+                    return "#F44336"; // Rouge
+                } else if (label === "In Progress") { // Utiliser le nouveau label
+                    return "#FFC107"; // Orange
+                } else if (label === "Complete") { // Utiliser le nouveau label
+                    return "#4CAF50"; // Vert
+                } else {
+                    return "#9E9E9E"; // Couleur par défaut (gris)
+                }
+            });
+
+            // Créer le graphique en camembert
+            var ctx = document.getElementById('polarAreaChart').getContext('2d');
+            var polarAreaChart = new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors, // Utiliser les couleurs définies
+                        borderColor: 'transparent', // Supprimer les bordures noires
+                        borderWidth: 0 // Pas de bordure
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // Désactiver le maintien de l'aspect ratio
+                    plugins: {
+                        datalabels: {
+                            color: '#000', // Couleur du texte
+                            font: {
+                                size: 14, // Taille de la police
+                                weight: '300' // Épaisseur de la police
+                            },
+                            formatter: function(value, context) {
+                                // Masquer les étiquettes pour les valeurs nulles
+                                if (value === 0) {
+                                    return ''; // Retourne une chaîne vide pour masquer l'étiquette
+                                }
+                                return value.toFixed(2) + '%';
+                            },
+                            anchor: 'center', // Position de l'étiquette
+                            align: 'center', // Alignement du texte
+                            offset: 0 // Décalage par rapport à la position
+                        },
+                        legend: {
+                            display: false // Masquer la légende
+                        }
+                    },
+                    scales: {
+                        r: {
+                            // Désactiver les graduations et les lignes de la grille
+                            grid: {
+                                display: false, // Masquer les lignes de la grille
+                            },
+                            ticks: {
+                                display: false, // Masquer les étiquettes des graduations
+                            },
+                            pointLabels: {
+                                display: true, // Afficher les titres en face des courbes
+                                centerPointLabels: true,
+                                font: {
+                                    size: 14,
+                                    weight: '300' // Épaisseur de la police
+                                },
+                                color: function(context) {
+                                    // Appliquer des couleurs en fonction du label
+                                    var label = context.label;
+                                    if (label === "Complete") { // Utiliser le nouveau label
+                                        return "#4CAF50"; // Vert
+                                    } else if (label === "In Progress") { // Utiliser le nouveau label
+                                        return "#FFC107"; // Orange
+                                    } else if (label === "Not Started") { // Utiliser le nouveau label
+                                        return "#F44336"; // Rouge
+                                    } else {
+                                        return "#000"; // Couleur par défaut (noir)
+                                    }
+                                },
+                                callback: function(value, index) {
+                                    // Masquer les labels pour les valeurs nulles
+                                    if (data[index] === 0) {
+                                        return ''; // Retourne une chaîne vide pour masquer le label
+                                    }
+                                    return value; // Afficher le label normalement
+                                }
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                var label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += context.raw.toFixed(2) + '%';
+                                return label;
+                            }
+                        }
+                    }
+                },
+                plugins: [ChartDataLabels] // Activer le plugin
+            });
+
+            // Supprimer manuellement les éléments de légende s'ils existent
+            document.querySelectorAll('.chart-legend').forEach(function(legend) {
+                legend.remove();
+            });
+        });
+    </script>
+    <script>
+
+               // Données pour les graphiques Win/Loss
+        var winLossData = @Html.Raw(Json.Serialize(ViewBag.WinLossPourcentages));
+
+        // Trouver les valeurs Win et Loss
+        var winValue = winLossData.find(x => x.statutRFQ === "Win")?.pourcentage || 0;
+        var lossValue = winLossData.find(x => x.statutRFQ === "Loss")?.pourcentage || 0;
+
+        // Créer le bar chart
+               // Création du graphique à barres (sans axes)
+        var ctx = document.getElementById('winLossBarChart').getContext('2d');
+        var winLossBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [''],
+                datasets: [
+                    {
+                        label: 'Win',
+                        data: [winValue],
+                        backgroundColor: '#4CAF50',
+                        borderColor: '#4CAF50',
+                        borderWidth: 1,
+                        barPercentage: 0.4
+                    },
+                    {
+                        label: 'Loss',
+                        data: [lossValue],
+                        backgroundColor: '#F44336',
+                        borderColor: '#F44336',
+                        borderWidth: 1,
+                        barPercentage: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        display: false
+                    },
+                    y: {
+                        display: false,
+                        beginAtZero: true,
+                        max: 100
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                }
+            }
+        });
+
+        // Mise à jour des cercles de pourcentage
+        document.getElementById('winPercentage').textContent = winValue.toFixed(0) + '%';
+        document.getElementById('lossPercentage').textContent = lossValue.toFixed(0) + '%';
+    </script>
+}

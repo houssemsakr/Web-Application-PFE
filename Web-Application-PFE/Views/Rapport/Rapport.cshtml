@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Gestion_RFQ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Gestion-RFQ.css" />
+}
+
+<main role="main" class="pb-3" style=" margin-left: 132px;">
+    <div class="dashboard-content">
+        <div class="dashboard-grid" style="margin-right:11px;margin-top:-25px;">
+            <!-- Left Column - Documents -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <img src="~/images/Rapport.png" alt="folder" class="w-9 h-9 inline-block">
+                    <h2 class="card-title"> Rapport</h2>
+                </div>
+
+
+                <ul class="menu">
+                    <li>
+                        <a asp-area="" asp-controller="Rapport" asp-action="Rapport">
+                            <i class="bi bi-pencil-square"> </i>&nbsp;&nbsp;&nbsp;  Génération de rapport
+                        </a>
+                    </li>
+                  
+                   
+
+                </ul>
+            </div>
+
+            <!-- Right Column - Alerts -->
+            <div class="dashboard-card2" style="background-color:lightgray; height: 380px;">
+                <!-- Afficher le message de succès -->
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div id="successMessage" class="alert alert-success" role="alert">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+                <a asp-area="" asp-controller="Rapport" asp-action="Generer_un_rapport">
+                    <i class="bi bi-plus-circle-fill" style="font-size: 6.2rem; font-weight: bold;"> </i>
+                </a>
+                <span> Générer un rapport</span>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+  
+}
+
+

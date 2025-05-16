@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Web_Application_PFE.ViewModels.AddRFQViewModel>
+@{
+    Layout = null;
+}
+
+<div class="dashboard-card2">
+    <div>
+        <span style="color: dimgray;font-weight:200; font-size:16px;">Sélectionner la RFQ</span>
+
+        <div class="search-bar" style="width: 100%; height: 30px">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="searchInputConsulter" placeholder="Rechercher par ID" aria-label="Rechercher">
+        </div>
+        <br />
+
+        <div>
+            <div>
+                <div class="document-title">
+                    <div class="title-wrapper">
+                        <span style="color: black;">Documents</span>
+                        <div class="blue-line"></div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table" id="rfqTable">
+                <thead>
+                    <tr>
+                        <th scope="col" style="width: 50%; font-weight: normal;">
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                &nbsp;&nbsp;<i class="bi bi-file-earmark fs-4"></i>&nbsp;&nbsp;
+                                <span style="color: black; font-weight: normal;">Nom</span>
+                            </div>
+                        </th>
+                        <th scope="col" style="width: 20%; font-weight: normal;" class="text-center">
+                            <span style="color: black; font-weight: normal; margin-right: 60px;">Statut</span>
+                        </th>
+                        <th scope="col" style="width: 40%; font-weight: normal;">
+                            <span style="color: black; font-weight: normal;">Date de création</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="3">Veuillez entrer un ID de RFQ.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Déplacer le formulaire hors de la div rfqDetailsConsulter -->
+            @if (!User.IsInRole("Lecteur"))
+{
+            <form asp-action="Ajouter_versions" method="get" id="addVersionForm" style="display: none; margin-top: -16px;margin-top:9px">
+                <input type="hidden" name="rfqId" id="rfqIdConsulter" />
+                <button type="submit" class="add-version">
+                    <div class="add-button-icon">
+                            <i class="bi bi-plus-circle-fill" style="font-size: 1.5rem"></i>
+                    </div>
+                    <span class="add-button-text" style="color:white; margin-top: -3px;font-size:15px">Ajouter une autre version</span>
+                </button>
+            </form>
+            }
+        </div>
+    </div>
+</div>

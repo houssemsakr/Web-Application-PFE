@@ -1,0 +1,87 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/View_Par_Statut.csss" />
+}
+<main role="main" class="pb-3">
+
+    <div class="container" style="margin-left:63px">
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="row">
+                <!-- Colonne de gauche (4 champs) -->
+                <div class="col-md-4">
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Nom" class="form-control" autocomplete="Nom" aria-required="true" placeholder="Nom" />
+                        <label asp-for="Input.Nom">Nom</label>
+                        <span asp-validation-for="Input.Nom" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Prenom" class="form-control" autocomplete="Prenom" aria-required="true" placeholder="Prenom" />
+                        <label asp-for="Input.Prenom">Prénom</label>
+                        <span asp-validation-for="Input.Prenom" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3" >
+                       @*  <label asp-for="Input.Role" class="form-label">Rôle</label> *@
+                        <select asp-for="Input.Role" class="form-select" aria-required="true" style="height:60px">
+                            <option value="">Sélectionnez un rôle</option>
+                            <option value="Admin">Administrateur</option>
+                            <option value="Ingénieur RFQ">Ingénieur RFQ</option>
+                            <option value="Validateur">Validateur</option>
+                            <option value="Lecteur">Lecteur</option>
+                        </select>
+                        <span asp-validation-for="Input.Role" class="text-danger"></span>
+                    </div>
+                </div>
+             
+
+                <!-- Colonne de droite (3 champs) -->
+                <div class="col-md-4">
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <label asp-for="Input.Email">Email</label>
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3" style="width:310px">
+					<div class="form-floating mb-3">
+						<input type="file" asp-for="Input.ProfileImage" class="form-control"
+							   accept=".jpg,.jpeg,.png" onchange="loadFile(event)" />
+						<span asp-validation-for="Input.ProfileImage" class="text-danger"></span>
+						<img id="myImg" height="200" style="margin-top:10px; display:none;" />
+					</div>
+
+                </div>
+               
+                   
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button id="registerSubmit" type="submit" class="w-40 btn btn-lg btn-primary">Register</button>
+            </div>
+        </form>
+    </div>
+
+
+</main>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        var loadFile = function(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var myImg = document.getElementById('myImg');
+                myImg.src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+}
