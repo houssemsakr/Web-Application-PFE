@@ -184,16 +184,18 @@ select {
     }
 
 .bg-navy {
+    background-color: #1e3a8a;
     background-color: limegreen;
 }
 
     .bg-navy:hover {
+        background-color: #1e40af;
         background-color: limegreen;
     }
 
 .bg-red {
     background-color: red;
-}
+    }
 
     .bg-red:hover {
         background-color: red;

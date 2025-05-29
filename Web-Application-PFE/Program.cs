@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Web_Application_PFE.ConfigurationMapping;
 using Web_Application_PFE.Data;
 using Web_Application_PFE.Models;
 using QuestPDF.Infrastructure;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,18 +17,23 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Options;
 using Web_Application_PFE.Services.Interfaces;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+using Web_Application_PFE.Localization;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 //QuestPDF.Settings.License = LicenseType.Community;
 
+builder.Services.AddLocalizationServices();
 
 // Ajout des services de localisation
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.IgnoreNullValues = true;
       options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 
         options.JsonSerializerOptions.WriteIndented = true;
@@ -41,8 +49,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString)
            .EnableSensitiveDataLogging()
            .EnableDetailedErrors());
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddScoped<JwtService>();
+
+//builder.Services.AddSingleton<IEmailService, EmailService>(provider =>
+//    new EmailService(
+//        smtpServer: "smtp.gmail.com",
+//        smtpPort: 587,
+//        fromEmail: "houssemsakhraoui@gmail.com",
+//        password: "lyvr cdtm eqts hblp"
+//    ));
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuditService, AuditService>();
 // Ajouter cette ligne dans les services
@@ -53,6 +71,11 @@ builder.Services.AddDefaultIdentity<User>(options =>
     options.User.RequireUniqueEmail = true;
 
     // Configuration des mots de passe
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 8;
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;
     options.Password.RequireNonAlphanumeric = false;
@@ -74,6 +97,7 @@ builder.Services.Configure<FormOptions>(options =>
     options.MultipartBodyLengthLimit = 10 * 1024 * 1024; // 10MB max
 });
 
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddSession();
 builder.Services.AddMvc(options =>
@@ -110,14 +134,24 @@ builder.Services.AddAuthentication()
         };
     });
 
+var app = builder.Build();
+
+// Middleware de logging pour le debug
+app.Use(async (context, next) =>
 builder.Services.ConfigureApplicationCookie(options =>
 {
+    var cultureFeature = context.Features.Get<IRequestCultureFeature>();
+    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
     options.Cookie.HttpOnly = true;
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     options.Cookie.SameSite = SameSiteMode.Strict;
 });
 
+    logger.LogInformation("Culture actuelle: {Culture}", cultureFeature?.RequestCulture?.Culture.Name);
+    logger.LogInformation("UI Culture actuelle: {UICulture}", cultureFeature?.RequestCulture?.UICulture.Name);
 
+    await next();
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -142,6 +176,7 @@ else
 }
 QuestPDF.Settings.License = LicenseType.Community; // Version gratuite
 
+app.AddLocalizationMiddleware();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -193,6 +228,26 @@ app.Use(async (context, next) =>
     }
     await next();
 });
+//app.Use(async (context, next) =>
+//{
+//    var cultureCookie = context.Request.Cookies[CookieRequestCultureProvider.DefaultCookieName];
+//    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+
+//    logger.LogInformation("Cookie de culture reçu: {Cookie}", cultureCookie);
+
+//    await next();
+//});
+//////app.Use(async (context, next) =>
+//////{
+//////    var cultureFeature = context.Features.Get<IRequestCultureFeature>();
+//////    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+
+//////    logger.LogInformation("Current culture: {Culture}", cultureFeature?.RequestCulture?.Culture.Name);
+//////    logger.LogInformation("Current UI culture: {UICulture}", cultureFeature?.RequestCulture?.UICulture.Name);
+//////    logger.LogInformation("Culture cookie: {Cookie}", context.Request.Cookies[CookieRequestCultureProvider.DefaultCookieName]);
+
+//////    await next();
+//////});
 // Redirection automatique vers la page de connexion si l'utilisateur n'est pas authentifi?
 app.Use(async (context, next) =>
 {

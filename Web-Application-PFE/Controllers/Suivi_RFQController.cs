@@ -5,6 +5,7 @@ using Web_Application_PFE.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Identity;
 using Web_Application_PFE.Models;
 using Web_Application_PFE.Services.Interfaces;
@@ -18,6 +19,7 @@ namespace Web_Application_PFE.Controllers
         private readonly ILogger<Suivi_RFQController> _logger;
         private readonly UserManager<User> _userManager;
 
+        public Suivi_RFQController(ApplicationDbContext context)
         public Suivi_RFQController(ApplicationDbContext context, IEmailService emailService, ILogger<Suivi_RFQController> logger, UserManager<User> userManager)
         {
             _context = context;
@@ -180,6 +182,32 @@ namespace Web_Application_PFE.Controllers
 
             return Json(viewModel);
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         public async Task<IActionResult> Details(int? id)
         {
@@ -395,6 +423,7 @@ namespace Web_Application_PFE.Controllers
             {
                 _context.Update(addRFQ);
                 await _context.SaveChangesAsync();
+                return RedirectToAction("Gestion_RFQ", "AddRFQ");
                 return RedirectToAction("SuiviRFQ");
             }
             catch (DbUpdateConcurrencyException)
@@ -415,7 +444,51 @@ namespace Web_Application_PFE.Controllers
             return _context.AddRFQs.Any(e => e.Id == id);
         }
 
-      
+        public async Task<IActionResult> _Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var addRFQ = await _context.AddRFQs.FirstOrDefaultAsync(m => m.Id == id);
+            if (addRFQ == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new AddRFQViewModel
+            {
+                Id = addRFQ.Id,
+                DateCreation = addRFQ.DateCreation,
+                Sales = addRFQ.Sales,
+                Customer = addRFQ.Customer,
+                QuoteName = addRFQ.QuoteName,
+                MarketSegment = addRFQ.MarketSegment,
+                NumberOfRefToBeQuoted = addRFQ.NumberOfRefToBeQuoted,
+                MaxVolume = addRFQ.MaxVolume,
+                EstimatedVolume = addRFQ.EstimatedVolume,
+                SOPDate = addRFQ.SOPDate,
+                KOdate = addRFQ.KOdate,
+                CustomerDatadate = addRFQ.CustomerDatadate,
+                MaterialLeader = addRFQ.MaterialLeader,
+                MaterialDueDate = addRFQ.MaterialDueDate,
+                MaterialRelease = addRFQ.MaterialRelease,
+                TestLeader = addRFQ.TestLeader,
+                TestDueDate = addRFQ.TestDueDate,
+                TestRelease = addRFQ.TestRelease,
+                VALeader = addRFQ.VALeader,
+                LabourDueDate = addRFQ.LabourDueDate,
+                LabourRelease = addRFQ.LabourRelease,
+                CustomerDueDate = addRFQ.CustomerDueDate,
+                WorkingStatus = addRFQ.WorkingStatus,
+                ApprovalDate = addRFQ.ApprovalDate,
+                ClientId = addRFQ.ClientId,
+                RFQId = addRFQ.RFQId
+            };
+
+            return PartialView("_Details", viewModel);
+        }
         [HttpGet]
         public async Task<IActionResult> GetClientInfoByCustomer(string customer)
         {

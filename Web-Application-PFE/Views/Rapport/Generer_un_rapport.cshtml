@@ -16,6 +16,7 @@
                 <div style="margin-right:114px;">
                     <div class="space-y-2">
                         <label for="FeedbackDate" class="block text-sm font-medium text-gray-700"> Période</label>
+                        <label style="background-color:lightgrey; border: 2px solid black; font-size: 15px;" id="calendarLabel">Calendrier</label>
                         <label style="background-color:lightskyblue; border: 2px solid black; font-size: 15px;" id="calendarLabel">Calendrier</label>
                         <input type="hidden" id="periode" name="periode" required />
 
@@ -53,6 +54,7 @@
                         <div class="rfq-status-select" style="margin-bottom:34px;">
                             <label for="Client" class="block text-sm font-medium text-gray-700"> Client</label>
                             <select id="client" name="client" required
+                                    style="width: 60%; max-width: 200px; height: 45%;background-color:lightgrey; border: 2px solid black; font-size: 15px;"
                                     style="width: 60%; max-width: 200px; height: 45%;background-color:lightskyblue; border: 2px solid black; font-size: 15px;"
                                     class="border-black">
                                 <option value="">Choisir...</option>
@@ -66,6 +68,7 @@
                     <div class="rfq-date">
                         <label for="Performance" class="block text-sm font-medium text-gray-700"> Performance</label>
                         <select id="performance" name="performance" required
+                                style="width: 60%; max-width: 200px; height: 45%;background-color:lightgrey; border: 2px solid black; font-size: 15px;"
                                 style="width: 60%; max-width: 200px; height: 45%;background-color:lightskyblue; border: 2px solid black; font-size: 15px;"
                                 class="border-black">
                             <option value="">Choisir...</option>
@@ -82,6 +85,7 @@
                         <div class="rfq-status-select" style="margin-bottom:34px;">
                             <label for="Secteur" class="block text-sm font-medium text-gray-700"> Secteur</label>
                             <select id="secteur" name="secteur" required
+                                    style="width: 60%; max-width: 200px; height: 45%;background-color:lightgrey; border: 2px solid black; font-size: 15px;"
                                     style="width: 60%; max-width: 200px; height: 45%;background-color:lightskyblue; border: 2px solid black; font-size: 15px;"
                                     class="border-black">
                                 <option value="">Choisir...</option>
@@ -96,6 +100,7 @@
                     <div class="rfq-date">
                         <label for="StatutRFQ" class="block text-sm font-medium text-gray-700"> Statut RFQ</label>
                         <select id="statutRFQ" name="statutRFQ" required
+                                style="width: 60%; max-width: 200px; height: 45%;background-color:lightgrey; border: 2px solid black; font-size: 15px;"
                                 style="width: 60%; max-width: 200px; height: 45%;background-color:lightskyblue; border: 2px solid black; font-size: 15px;"
                                 class="border-black">
                             <option value="">Choisir...</option>
@@ -110,6 +115,7 @@
                         <div class="rfq-status-select" style="margin-bottom:34px;">
                             <label for="Graphique" class="block text-sm font-medium text-gray-700"> Graphique</label>
                             <select id="graphique" name="graphique" required
+                                    style="width: 60%; max-width: 200px; height: 45%;background-color:lightgrey; border: 2px solid black; font-size: 15px;"
                                     style="width: 60%; max-width: 200px; height: 45%;background-color:lightskyblue; border: 2px solid black; font-size: 15px;"
                                     class="border-black">
                                 <option value="">Choisir...</option>
@@ -136,7 +142,16 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-          
+            // Initialisation de Feather Icons
+            if (feather) {
+                feather.replace();
+            }
+
+            // Initialisation de Lucide Icons
+            if (lucide) {
+                lucide.createIcons();
+            }
+
             // Références aux éléments du DOM
             const calendarTitle = document.getElementById('calendar-title');
             const calendarDates = document.getElementById('calendar-dates');

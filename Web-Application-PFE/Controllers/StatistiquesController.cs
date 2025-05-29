@@ -17,9 +17,11 @@ namespace Web_Application_PFE.Controllers
         {
             // Récupérer les statuts des RFQ
             var rfqStatuts = _context.AddRFQs
+                .GroupBy(r => r.Statut)
                 .GroupBy(r => r.WorkingStatus)
                 .Select(g => new
                 {
+                    Statut = g.Key,
                     WorkingStatus = g.Key,
                     Count = g.Count()
                 })
@@ -29,12 +31,14 @@ namespace Web_Application_PFE.Controllers
             var total = rfqStatuts.Sum(s => s.Count);
             var statutsPourcentages = rfqStatuts.Select(s => new
             {
+                Statut = s.Statut,
                 Statut = s.WorkingStatus,
                 Pourcentage = total > 0 ? (s.Count * 100.0 / total) : 0
             }).ToList();
 
             // Récupérer les StatutRFQ (Win/Loss) uniquement pour les RFQ validées
             var rfqWinLoss = _context.AddRFQs
+                .Where(r => r.Statut == "Validée" && (r.StatutRFQ == "Win" || r.StatutRFQ == "Loss"))
                 .Where(r => r.WorkingStatus == "Complete" && (r.StatutRFQ == "Win" || r.StatutRFQ == "Loss"))
                 .GroupBy(r => r.StatutRFQ)
                 .Select(g => new

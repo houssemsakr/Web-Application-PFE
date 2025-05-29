@@ -110,6 +110,11 @@
                     <input asp-for="CustomerDatadate" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;" />
                     <span asp-validation-for="CustomerDatadate" class="text-danger"></span>
                 </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Customer Due Date</label>
+                    <input asp-for="CustomerDueDate" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;" />
+                    <span asp-validation-for="CustomerDueDate" class="text-danger"></span>
+                </div>
               
             </div>
         </div>
@@ -321,12 +326,16 @@
     <!-- Boutons d'action -->
     <div class="flex justify-between items-center w-full mt-6">
         <div class="flex space-x-6 justify-end">
+            <button type="button" class="action-btn bg-orange text-white hover:bg-orange-light">
+                <i class="fas fa-save"></i>
+                <span style="margin: 0 auto;">Enregistrer Brouillon</span>
             <button type="button" class="action-btn2 bg-red text-white hover:bg-navy-light"
                     onclick="window.location.href='@Url.Action("Ajouter_une_version", "Versions", new { rfqId = Model.RFQId })'">
                 <i class="bi bi-arrow-left-short fs-3"></i>
                 <span style="margin: 0 auto;">Retour</span>
             </button>
 
+            <button type="submit" class="action-btn2 bg-navy text-white hover:bg-navy-light">
             <button type="submit" class="action-btn2 bg-green text-white hover:bg-navy-light">
                 <i class="fas fa-check"></i>
                 <span style="margin: 0 auto;">Valider</span>

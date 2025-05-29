@@ -6,6 +6,7 @@ using Web_Application_PFE.ViewModels;
 using System.Linq;
 using System.Threading.Tasks;
 using Web_Application_PFE.Services.Interfaces;
+using Org.BouncyCastle.Ocsp;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
@@ -18,6 +19,7 @@ namespace Web_Application_PFE.Controllers
         private readonly UserManager<User> _userManager;
         private readonly ILogger<VersionsController> _logger;
 
+        public VersionsController(ApplicationDbContext context, IEmailService emailService)
         public VersionsController(ApplicationDbContext context, IEmailService emailService, UserManager<User> userManager, ILogger<VersionsController> logger)
         {
             _context = context;
@@ -50,6 +52,7 @@ namespace Web_Application_PFE.Controllers
                     DateCreation = v.DateCreation,
                     Statut = v.Statut,
                     WorkingStatus = v.WorkingStatus,
+                    // autres propriétés nécessaires
                     Code = v.Code,
                     Sales = v.Sales,
                     ClientId = v.ClientId,
@@ -88,6 +91,7 @@ namespace Web_Application_PFE.Controllers
             return View(versions);
         }
         [HttpGet]
+        public async Task<IActionResult> AfficheDetails(int id)
         public async Task<IActionResult> AfficheDetails(int id, int? version)
         {
             var versionEntity = await _context.VersionEntities
@@ -167,7 +171,7 @@ namespace Web_Application_PFE.Controllers
                 EstimatedRevenue = versionEntity.EstimatedRevenue,
                 NRE = versionEntity.NRE
             };
-           
+
             return View("Affiche_Details", viewModel);
         }
         // GET: /Versions/Consulter_les_versions
@@ -421,6 +425,10 @@ namespace Web_Application_PFE.Controllers
         }
         // GET: /Versions/Ajouter_versions/5
 
+        private bool VersionExists(int id)
+        {
+            return _context.VersionEntities.Any(e => e.Id == id);
+        }
         //private bool VersionExists(int id)
         //{
         //    return _context.VersionEntities.Any(e => e.Id == id);
@@ -689,6 +697,33 @@ namespace Web_Application_PFE.Controllers
             }
         }
 
+
+
+
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Validateur")]
+        public async Task<IActionResult> RejectRFQ(int id, VersionViewModel VersionViewModel)
+        {
+            var VersionEntity = await _context.VersionEntities.FindAsync(id);
+            if (VersionEntity == null)
+            {
+                return NotFound();
+            }
+
+            VersionEntity.Statut = "Non Validée";
+            VersionEntity.FeedbackDate = DateTime.Now;
+            // Mettre à jour les autres champs si nécessaire
+
+            _context.Update(VersionEntity);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = $"La version N°{VersionEntity.Id} a été rejetée.";
+            return RedirectToAction("Ajouter_une_version", "Versions");
+        }
         [HttpGet]
         public async Task<IActionResult> GetClientInfo(int clientId)
         {
@@ -699,6 +734,81 @@ namespace Web_Application_PFE.Controllers
             }
 
             return Json(new { sales = client.Sales, customer = client.Customer });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Validateur")]
+        public async Task<IActionResult> ApproveRFQ(int id, VersionViewModel VersionViewModel)
+        {
+            var VersionEntity = await _context.VersionEntities.FindAsync(id);
+            if (VersionEntity == null)
+            {
+                return NotFound();
+            }
+
+            // Mettre à jour tous les champs du modèle
+            VersionEntity.DateCreation = VersionViewModel.DateCreation;
+            VersionEntity.Sales = VersionViewModel.Sales;
+            VersionEntity.Customer = VersionViewModel.Customer;
+            VersionEntity.QuoteName = VersionViewModel.QuoteName;
+            VersionEntity.MarketSegment = VersionViewModel.MarketSegment;
+            VersionEntity.NumberOfRefToBeQuoted = VersionViewModel.NumberOfRefToBeQuoted;
+            VersionEntity.MaxVolume = VersionViewModel.MaxVolume;
+            VersionEntity.EstimatedVolume = VersionViewModel.EstimatedVolume;
+            VersionEntity.SOPDate = VersionViewModel.SOPDate;
+            VersionEntity.KOdate = VersionViewModel.KOdate;
+            VersionEntity.CustomerDatadate = VersionViewModel.CustomerDatadate;
+            VersionEntity.MaterialLeader = VersionViewModel.MaterialLeader;
+            VersionEntity.MaterialDueDate = VersionViewModel.MaterialDueDate;
+            VersionEntity.MaterialRelease = VersionViewModel.MaterialRelease;
+            VersionEntity.TestLeader = VersionViewModel.TestLeader;
+            VersionEntity.TestDueDate = VersionViewModel.TestDueDate;
+            VersionEntity.TestRelease = VersionViewModel.TestRelease;
+            VersionEntity.VALeader = VersionViewModel.VALeader;
+            VersionEntity.LabourDueDate = VersionViewModel.LabourDueDate;
+            VersionEntity.LabourRelease = VersionViewModel.LabourRelease;
+            VersionEntity.CustomerDueDate = VersionViewModel.CustomerDueDate;
+            VersionEntity.WorkingStatus = VersionViewModel.WorkingStatus;
+            VersionEntity.ApprovalDate = VersionViewModel.ApprovalDate;
+            VersionEntity.ClientId = VersionViewModel.ClientId;
+            VersionEntity.StatutRFQ = VersionViewModel.StatutRFQ;
+            VersionEntity.TimeRFQ = VersionViewModel.TimeRFQ;
+
+            // Champs spécifiques au validateur
+            VersionEntity.Feasibilityassessment = VersionViewModel.Feasibilityassessment;
+            VersionEntity.DFM = VersionViewModel.DFM;
+            VersionEntity.DFT = VersionViewModel.DFT;
+            VersionEntity.MaxRevenue = VersionViewModel.MaxRevenue;
+            VersionEntity.EstimatedRevenue = VersionViewModel.EstimatedRevenue;
+            VersionEntity.NRE = VersionViewModel.NRE;
+            VersionEntity.Statut = "Validée";
+            VersionEntity.FeedbackDate = DateTime.Now;
+            VersionEntity.Comments = VersionViewModel.Comments;
+
+            try
+            {
+                _context.Update(VersionEntity);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"La version N°{VersionEntity.RFQId} a été validée avec succès.";
+                return RedirectToAction("Ajouter_une_version", "Versions");
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!VersionEntityExists(VersionEntity.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+        private bool VersionEntityExists(int id)
+        {
+            return _context.VersionEntities.Any(e => e.Id == id);
         }
 
     }

@@ -6,6 +6,9 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/Statistiques.css" />
 }
+@* <main role="main" class="pb-3" style="margin-top: 0;margin-bottom: 10px">
+    <div class="dashboard-content" style="height:100px;margin-right:-60px;margin-left:40px">
+        <div class="dashboard-grid" style="margin-right:-9px;margin-top:-26px;"> *@
 
             <main role="main" class="pb-3" style="margin-top: 13.1px; height:10px">
     <div class="dashboard-content" style="height:398px">
@@ -72,6 +75,9 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/js/npm.chart.js"></script>
     <script src="~/js/npm.chartjs-plugin-datalabels.js"></script>
     <script src="~/js/jquery-3.6.0.min.js"></script>
@@ -101,6 +107,12 @@
             // Préparer les données pour Chart.js
             var labels = statutsPourcentages.map(function(s) {
                 // Renommer les labels
+                if (s.statut === "Non Validée") {
+                    return "Rejetées";
+                } else if (s.statut === "En attente de Validation") {
+                    return "En cours";
+                } else if (s.statut === "Validée") {
+                    return "Validées";
                 if (s.statut === "Not Started") {
                     return "Not Started";
                 } else if (s.statut === "In Progress") {
@@ -118,10 +130,13 @@
 
             // Définir les couleurs en fonction des statuts
             var colors = labels.map(function(label) {
+                if (label === "Rejetées") { // Utiliser le nouveau label
                 if (label === "Not Started") { // Utiliser le nouveau label
                     return "#F44336"; // Rouge
+                } else if (label === "En cours") { // Utiliser le nouveau label
                 } else if (label === "In Progress") { // Utiliser le nouveau label
                     return "#FFC107"; // Orange
+                } else if (label === "Validées") { // Utiliser le nouveau label
                 } else if (label === "Complete") { // Utiliser le nouveau label
                     return "#4CAF50"; // Vert
                 } else {
@@ -186,10 +201,13 @@
                                 color: function(context) {
                                     // Appliquer des couleurs en fonction du label
                                     var label = context.label;
+                                    if (label === "Validées") { // Utiliser le nouveau label
                                     if (label === "Complete") { // Utiliser le nouveau label
                                         return "#4CAF50"; // Vert
+                                    } else if (label === "En cours") { // Utiliser le nouveau label
                                     } else if (label === "In Progress") { // Utiliser le nouveau label
                                         return "#FFC107"; // Orange
+                                    } else if (label === "Rejetées") { // Utiliser le nouveau label
                                     } else if (label === "Not Started") { // Utiliser le nouveau label
                                         return "#F44336"; // Rouge
                                     } else {

@@ -24,6 +24,7 @@ public class AddRFQController : Controller
     private readonly ApplicationDbContext _context;
     private readonly IEmailService _emailService;
     private readonly ILogger<AddRFQController> _logger;
+    public AddRFQController(ApplicationDbContext context, IEmailService emailService, ILogger<AddRFQController> logger)
     private readonly UserManager<User> _userManager;
     public AddRFQController(ApplicationDbContext context, IEmailService emailService, ILogger<AddRFQController> logger, UserManager<User> userManager)
     {
@@ -133,7 +134,8 @@ public class AddRFQController : Controller
 
     }
 
-    
+    // GET: AddRFQ/Create
+
 
     // GET: AddRFQ/Create
     public IActionResult Create()
@@ -347,6 +349,8 @@ public class AddRFQController : Controller
         }
     }
 
+
+    // GET: AddRFQ/Edit/5
     // GET: AddRFQ/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
@@ -415,6 +419,12 @@ public class AddRFQController : Controller
 
         return View(viewModel);
     }
+
+
+
+
+
+
 
     // POST: AddRFQ/Edit/5
 
@@ -610,7 +620,17 @@ public class AddRFQController : Controller
     {
         return _context.AddRFQs.Any(e => e.Id == id);
     }
+    [HttpGet]
+    public async Task<IActionResult> GetClientInfo(int clientId)
+    {
+        var client = await _context.EntityClients.FindAsync(clientId);
+        if (client == null)
+        {
+            return NotFound();
+        }
 
+        return Json(new { sales = client.Sales, customer = client.Customer });
+    }
     // GET: AddRFQ/Create_valid
     public IActionResult Create_valid()
     {
@@ -744,6 +764,7 @@ public class AddRFQController : Controller
             _context.Notifications.Add(notification);
             await _context.SaveChangesAsync();
             // Ajouter un message de succès dans TempData
+            TempData["SuccessMessage"] = $"La RFQ N°{addRFQ.Id} a été créée avec succès. Une notification a été envoyée au validateur pour l'informer.";
             TempData["SuccessMessage"] = $"La RFQ N°{addRFQ.RFQId} a été créée avec succès. Une notification a été envoyée au validateur pour l'informer.";
 
             return RedirectToAction("Gestion_RFQ", "AddRFQ");
@@ -792,7 +813,129 @@ public class AddRFQController : Controller
 
         return PartialView("_PartialView2", viewModels);
     }
-   
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Validateur")]
+    public async Task<IActionResult> RejectRFQ(int id, AddRFQViewModel addRFQViewModel)
+    {
+        var addRFQ = await _context.AddRFQs.FindAsync(id);
+        if (addRFQ == null)
+        {
+            return NotFound();
+        }
+
+        addRFQ.Statut = "Non Validée";
+        addRFQ.FeedbackDate = DateTime.Now;
+        // Mettre à jour les autres champs si nécessaire
+
+        _context.Update(addRFQ);
+        await _context.SaveChangesAsync();
+        // Créer la notification pour le rejet
+        var notification = new Notification
+        {
+            UserName = await GetUserFullNameAsync(),
+            UserRole = "Validateur",
+            CreationDate = DateTime.Now,
+            RFQId = addRFQ.Id,
+            CustomRFQNumber = addRFQ.RFQId,
+            Comment = addRFQViewModel.Comments,
+            Status = "Non Validée",
+            RFQ = addRFQ
+        };
+
+        _context.Notifications.Add(notification);
+        await _context.SaveChangesAsync();
+        TempData["SuccessMessage"] = $"La RFQ N°{addRFQ.Id} a été rejetée.";
+        return RedirectToAction("Gestion_RFQ", "AddRFQ");
+    }
+
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Validateur")]
+    public async Task<IActionResult> ApproveRFQ(int id, AddRFQViewModel addRFQViewModel)
+    {
+        var addRFQ = await _context.AddRFQs.FindAsync(id);
+        if (addRFQ == null)
+        {
+            return NotFound();
+        }
+
+        // Mettre à jour tous les champs du modèle
+        addRFQ.DateCreation = addRFQViewModel.DateCreation;
+        addRFQ.Sales = addRFQViewModel.Sales;
+        addRFQ.Customer = addRFQViewModel.Customer;
+        addRFQ.QuoteName = addRFQViewModel.QuoteName;
+        addRFQ.MarketSegment = addRFQViewModel.MarketSegment;
+        addRFQ.NumberOfRefToBeQuoted = addRFQViewModel.NumberOfRefToBeQuoted;
+        addRFQ.MaxVolume = addRFQViewModel.MaxVolume;
+        addRFQ.EstimatedVolume = addRFQViewModel.EstimatedVolume;
+        addRFQ.SOPDate = addRFQViewModel.SOPDate;
+        addRFQ.KOdate = addRFQViewModel.KOdate;
+        addRFQ.CustomerDatadate = addRFQViewModel.CustomerDatadate;
+        addRFQ.MaterialLeader = addRFQViewModel.MaterialLeader;
+        addRFQ.MaterialDueDate = addRFQViewModel.MaterialDueDate;
+        addRFQ.MaterialRelease = addRFQViewModel.MaterialRelease;
+        addRFQ.TestLeader = addRFQViewModel.TestLeader;
+        addRFQ.TestDueDate = addRFQViewModel.TestDueDate;
+        addRFQ.TestRelease = addRFQViewModel.TestRelease;
+        addRFQ.VALeader = addRFQViewModel.VALeader;
+        addRFQ.LabourDueDate = addRFQViewModel.LabourDueDate;
+        addRFQ.LabourRelease = addRFQViewModel.LabourRelease;
+        addRFQ.CustomerDueDate = addRFQViewModel.CustomerDueDate;
+        addRFQ.WorkingStatus = addRFQViewModel.WorkingStatus;
+        addRFQ.ApprovalDate = addRFQViewModel.ApprovalDate;
+        addRFQ.ClientId = addRFQViewModel.ClientId;
+        addRFQ.StatutRFQ = addRFQViewModel.StatutRFQ;
+        addRFQ.TimeRFQ = addRFQViewModel.TimeRFQ;
+
+        // Champs spécifiques au validateur
+        addRFQ.Feasibilityassessment = addRFQViewModel.Feasibilityassessment;
+        addRFQ.DFM = addRFQViewModel.DFM;
+        addRFQ.DFT = addRFQViewModel.DFT;
+        addRFQ.MaxRevenue = addRFQViewModel.MaxRevenue;
+        addRFQ.EstimatedRevenue = addRFQViewModel.EstimatedRevenue;
+        addRFQ.NRE = addRFQViewModel.NRE;
+        addRFQ.Statut = "Validée";
+        addRFQ.FeedbackDate = DateTime.Now;
+        addRFQ.Comments = addRFQViewModel.Comments;
+
+        try
+        {
+            _context.Update(addRFQ);
+            await _context.SaveChangesAsync();
+            // Créer la notification pour la validation
+            var notification = new Notification
+            {
+                UserName = await GetUserFullNameAsync(),
+                UserRole = "Validateur",
+                CreationDate = DateTime.Now,
+                RFQId = addRFQ.Id,
+                CustomRFQNumber = addRFQ.RFQId,
+                Comment = addRFQViewModel.Comments,
+                Status = "Validée",
+                RFQ = addRFQ
+            };
+
+            _context.Notifications.Add(notification);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = $"La RFQ N°{addRFQ.RFQId} a été validée avec succès.";
+            return RedirectToAction("Gestion_RFQ", "AddRFQ");
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!AddRFQExists(addRFQ.Id))
+            {
+                return NotFound();
+            }
+            else
+            {
+                throw;
+            }
+        }
+    }
+
 
     public async Task<IActionResult> _Details(int? id)
     {

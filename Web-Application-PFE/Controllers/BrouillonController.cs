@@ -23,8 +23,10 @@ namespace Web_Application_PFE.Controllers
         }
 
         [HttpPost]
+        public IActionResult EnregistrerBrouillon(AddRFQViewModel model)
         public async Task<IActionResult> EnregistrerBrouillon(AddRFQViewModel model)
         {
+            if (ModelState.IsValid)
             // Vérification obligatoire du champ Customer
             if (string.IsNullOrEmpty(model.Customer))
             {
@@ -52,6 +54,8 @@ namespace Web_Application_PFE.Controllers
                     DateCreation = DateTime.Now,
                     Customer = model.Customer,
                     Sales = model.Sales,
+                    ClientId = model.ClientId,
+                    RFQId = model.RFQId,
                     QuoteName = model.QuoteName,
                     MarketSegment = model.MarketSegment,
                     NumberOfRefToBeQuoted = model.NumberOfRefToBeQuoted,
@@ -74,6 +78,7 @@ namespace Web_Application_PFE.Controllers
                     ApprovalDate = model.ApprovalDate,
                     FeedbackDate = model.FeedbackDate,
                     Comments = model.Comments,
+                    Statut = model.Statut,
                     Statut = "Brouillon",
                     Feasibilityassessment = model.Feasibilityassessment,
                     DFM = model.DFM,
@@ -83,12 +88,14 @@ namespace Web_Application_PFE.Controllers
                     NRE = model.NRE,
                     StatutRFQ = model.StatutRFQ,
                     TimeRFQ = model.TimeRFQ,
+                    DateCreation = DateTime.Now
                     RFQId = model.RFQId,
                     ClientId = model.ClientId,
                    
                 };
 
                 _context.Brouillons.Add(brouillon);
+                _context.SaveChanges();
                 await _context.SaveChangesAsync();
 
                 TempData["SuccessMessage"] = "Le brouillon a été enregistré avec succès.";
@@ -110,8 +117,8 @@ namespace Web_Application_PFE.Controllers
                 }
 
                 ModelState.AddModelError("", "Une erreur est survenue lors de l'enregistrement du brouillon.");
-                return View("Create", model);
-            }
+            return View("Create", model);
         }
     }
+}
 }

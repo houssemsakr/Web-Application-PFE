@@ -11,6 +11,7 @@ namespace Web_Application_PFE.ViewModels
         public int RejectedCount { get; set; }
         public int PendingCount { get; set; }
         public int DraftsCount { get; set; }
+        // Dans DashboardViewModel.cs
         public int Sum => PinnedCount + WinCount + ValidatedCount + RejectedCount + PendingCount + DraftsCount;
     }
 }

@@ -9,232 +9,376 @@
     <link rel="stylesheet" href="~/css/Edit.css" />
 }
 
-<div class="custom-form px-4 py-8">  
+<div class="custom-form px-4 py-8">
 <!-- Div parente pour regrouper les sections Client et RFQ -->
-<div class="form-sections-container">
+    <div class="form-sections-container">
 
-    <!-- Section Client -->
-    <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
-        <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
-            Client
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
-            <div class="space-y-2">
+        <!-- Section Client -->
+        <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                Client
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">ID Client</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.ClientId
                 <label class="block text-sm font-medium text-gray-700">Sales</label>
                 <input asp-for="Sales" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
                 <span asp-validation-for="Sales" class="text-danger"></span>
-            </div>
-            <div class="space-y-2">
+                    </div>
+                </div>
+               
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Commercial</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.Sales
                 <label class="block text-sm font-medium text-gray-700">Customer</label>
                 <input asp-for="Customer" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
                 <span asp-validation-for="Customer" class="text-danger"></span>
-            </div>
-            <div class="space-y-2">
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Client</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.Customer
                 <label class="block text-sm font-medium text-gray-700">Client ID</label>
                 <input asp-for="ClientId" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
                 <span asp-validation-for="ClientId" class="text-danger"></span>
-            </div>
-            <div class="space-y-2">
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">RFQ ID</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        RFQ-@Model.RFQId
                 <label asp-for="RFQId" class="block text-sm font-medium text-gray-700">N° RFQ</label>
                 <div class="flex flex-col">
                     <input asp-for="RFQId" id="RFQIdInput" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" readonly />
                     <span asp-validation-for="RFQId" class="text-danger mt-1"></span>
                     <div id="rfqIdError" class="text-danger mt-1" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section RFQ -->
+        <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                RFQ
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Nom du Devis</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.QuoteName
+                <label class="block text-sm font-medium text-gray-700">Quote Name</label>
+                <input asp-for="QuoteName" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
+                <span asp-validation-for="QuoteName" class="text-danger"></span>
+                    </div>
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Market Segment</label>
+                <input asp-for="MarketSegment" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
+                <span asp-validation-for="MarketSegment" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Segment Marché</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.MarketSegment
+                <label class="block text-sm font-medium text-gray-700">Number of Ref to be quoted</label>
+                <input asp-for="NumberOfRefToBeQuoted" type="number" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
+                <span asp-validation-for="NumberOfRefToBeQuoted" class="text-danger"></span>
+                    </div>
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">SOP Date</label>
+                <input asp-for="SOPDate" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
+                <span asp-validation-for="SOPDate" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Références à coter</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.NumberOfRefToBeQuoted
+                <label class="block text-sm font-medium text-gray-700">Max Volume</label>
+                <input asp-for="MaxVolume" type="number" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
+                <span asp-validation-for="MaxVolume" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Date SOP</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @(Model.SOPDate.ToString("dd/MM/yyyy") ?? "N/A")
+                <label class="block text-sm font-medium text-gray-700">Estimated Volume</label>
+                <input asp-for="EstimatedVolume" type="number" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
+                <span asp-validation-for="EstimatedVolume" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Volume Max</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.MaxVolume
+                <label class="block text-sm font-medium text-gray-700">KO Date</label>
+                <input asp-for="KOdate" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
+                <span asp-validation-for="KOdate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Volume Estimé</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.EstimatedVolume
+                <label class="block text-sm font-medium text-gray-700">Customer Data Date</label>
+                <input asp-for="CustomerDatadate" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
+                <span asp-validation-for="CustomerDatadate" class="text-danger"></span>
+                    </div>
+           
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Section RFQ -->
-    <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
-        <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
-            RFQ
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
-            <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">Quote Name</label>
-                <input asp-for="QuoteName" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
-                <span asp-validation-for="QuoteName" class="text-danger"></span>
-            </div>
-            <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">Market Segment</label>
-                <input asp-for="MarketSegment" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
-                <span asp-validation-for="MarketSegment" class="text-danger"></span>
-            </div>
-            <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">Number of Ref to be quoted</label>
-                <input asp-for="NumberOfRefToBeQuoted" type="number" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
-                <span asp-validation-for="NumberOfRefToBeQuoted" class="text-danger"></span>
-            </div>
-            <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">SOP Date</label>
-                <input asp-for="SOPDate" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
-                <span asp-validation-for="SOPDate" class="text-danger"></span>
-            </div>
-            <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">Max Volume</label>
-                <input asp-for="MaxVolume" type="number" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
-                <span asp-validation-for="MaxVolume" class="text-danger"></span>
-            </div>
-            <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">Estimated Volume</label>
-                <input asp-for="EstimatedVolume" type="number" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
-                <span asp-validation-for="EstimatedVolume" class="text-danger"></span>
-            </div>
-            <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">KO Date</label>
-                <input asp-for="KOdate" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
-                <span asp-validation-for="KOdate" class="text-danger"></span>
-            </div>
-            <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">Customer Data Date</label>
-                <input asp-for="CustomerDatadate" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
-                <span asp-validation-for="CustomerDatadate" class="text-danger"></span>
-            </div>
-           
-        </div>
-    </div>
-
+    <!-- Sections Matériels, Teste et VA -->
+    <div class="form-sections-container">
+        <!-- Section Matériels -->
 
 <!-- Div parente pour regrouper les sections Matériels, Teste et VA -->
-    <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
-        <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
-            Matériels
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
-            <div class="space-y-2">
+        <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                Matériels
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Date KO</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @(Model.KOdate.ToString("dd/MM/yyyy") ?? "N/A")
                 <label class="block text-sm font-medium text-gray-700">Material Leader</label>
                 <input value="@(Model.MaterialLeader ?? "")" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
-            </div>
-            <div class="space-y-2">
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Date Données Client</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @(Model.CustomerDatadate.ToString("dd/MM/yyyy") ?? "N/A")
                 <label class="block text-sm font-medium text-gray-700">Material Due Date</label>
                 <input value="@(Model.MaterialDueDate.ToString("yyyy-MM-dd") ?? "")" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
-            </div>
-            <div class="space-y-2">
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Leader Matériels</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.MaterialLeader
                 <label class="block text-sm font-medium text-gray-700">Material Release</label>
                 <input value="@(Model.MaterialRelease.ToString("yyyy-MM-dd") ?? "")" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Date Due Matériels</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @(Model.MaterialDueDate.ToString("dd/MM/yyyy") ?? "N/A")
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Date Release Matériels</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @(Model.MaterialRelease.ToString("dd/MM/yyyy") ?? "N/A")
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Section Teste -->
-    <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
-        <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
-            Teste
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
-            <div class="space-y-2">
+        <!-- Section Teste -->
+        <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                Teste
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Leader Test</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.TestLeader
                 <label class="block text-sm font-medium text-gray-700">Test Leader</label>
                 <input asp-for="TestLeader" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
                 <span asp-validation-for="TestLeader" class="text-danger"></span>
-            </div>
-            <div class="space-y-2">
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Date Due Test</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @(Model.TestDueDate.ToString("dd/MM/yyyy") ?? "N/A")
                 <label class="block text-sm font-medium text-gray-700">Test Due Date</label>
                 <input asp-for="TestDueDate" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
                 <span asp-validation-for="TestDueDate" class="text-danger"></span>
-            </div>
-            <div class="space-y-2">
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Date Release Test</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @(Model.TestRelease.ToString("dd/MM/yyyy") ?? "N/A")
                 <label class="block text-sm font-medium text-gray-700">Test Release</label>
                 <input asp-for="TestRelease" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
                 <span asp-validation-for="TestRelease" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Section VA -->
+        <!-- Section VA -->
         <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
             <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
                 VA
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
                 <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Leader VA</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.VALeader
                     <label class="block text-sm font-medium text-gray-700">VA Leader</label>
                     <input value="@(Model.VALeader ?? "")" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                    </div>
                 </div>
                 <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Date Due Labour</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @(Model.LabourDueDate.ToString("dd/MM/yyyy") ?? "N/A")
+                    </div>
                     <label class="block text-sm font-medium text-gray-700">Labour Due Date</label>
                     <input value="@(Model.LabourDueDate.ToString("yyyy-MM-dd") ?? "")" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
                 </div>
                 <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Date Release Labour</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @(Model.LabourRelease.ToString("dd/MM/yyyy") ?? "N/A")
+                    </div>
                     <label class="block text-sm font-medium text-gray-700">Labour Release</label>
                     <input value="@(Model.LabourRelease.ToString("yyyy-MM-dd") ?? "")" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
                 </div>
                 <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Date Due Client</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @(Model.CustomerDueDate.ToString("dd/MM/yyyy") ?? "N/A")
+                    </div>
                     <label class="block text-sm font-medium text-gray-700">Customer Due Date</label>
                     <input value="@(Model.CustomerDueDate.ToString("yyyy-MM-dd") ?? "")" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
                 </div>
                 <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Statut Travail</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.WorkingStatus
+                    </div>
                     <label class="block text-sm font-medium text-gray-700">Working Status</label>
                     <input value="@(Model.WorkingStatus ?? "")" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
                 </div>
                 <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Date Approbation</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @(Model.ApprovalDate.ToString("dd/MM/yyyy") ?? "N/A")
+                    </div>
+                </div>
                     <label class="block text-sm font-medium text-gray-700">Approval Date</label>
                     <input value="@(Model.ApprovalDate.ToString("yyyy-MM-dd") ?? "")" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
-                </div>
-            </div>
-        </div>
-
-    <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
-        <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
-                Validation
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
-            <div class="space-y-2">
-                <label asp-for="Feasibilityassessment" class="block text-sm font-medium text-gray-700"></label>
-                <input asp-for="Feasibilityassessment" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" readonly />
-                <span asp-validation-for="Feasibilityassessment" class="text-danger"></span>
-            </div>
-            <div class="space-y-2">
-                <label asp-for="DFM" class="block text-sm font-medium text-gray-700"></label>
-                <input asp-for="DFM" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" readonly />
-                <span asp-validation-for="DFM" class="text-danger"></span>
-            </div>
-            <div class="space-y-2">
-                <label asp-for="DFT" class="block text-sm font-medium text-gray-700"></label>
-                <input asp-for="DFT" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" readonly />
-                <span asp-validation-for="DFT" class="text-danger"></span>
-            </div>
-            <div class="space-y-2">
-                <label asp-for="MaxRevenue" class="block text-sm font-medium text-gray-700"></label>
-                <input asp-for="MaxRevenue" type="number" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
-                <span asp-validation-for="MaxRevenue" class="text-danger"></span>
-            </div>
-            <div class="space-y-2">
-                <label asp-for="EstimatedRevenue" class="block text-sm font-medium text-gray-700"></label>
-                <input asp-for="EstimatedRevenue" type="number" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" readonly />
-                <span asp-validation-for="EstimatedRevenue" class="text-danger"></span>
-            </div>
-            <div class="space-y-2">
-                <label asp-for="NRE" class="block text-sm font-medium text-gray-700"></label>
-                <input asp-for="NRE" type="number" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" readonly />
-                <span asp-validation-for="NRE" class="text-danger"></span>
             </div>
         </div>
     </div>
-    <!-- Section Feedback -->
-    <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
-        <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
-                Feedback
+
+    <!-- Section Matériels (Feasibility, DFM, DFT) -->
+    <div class="form-sections-container">
+        <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                Matériels
+                Validation
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Évaluation Faisabilité</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.Feasibilityassessment
+                    </div>
+                <label asp-for="Feasibilityassessment" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="Feasibilityassessment" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" readonly />
+                <span asp-validation-for="Feasibilityassessment" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">DFM</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.DFM
+                    </div>
+                <label asp-for="DFM" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="DFM" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" readonly />
+                <span asp-validation-for="DFM" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">DFT</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.DFT
+                    </div>
+                <label asp-for="DFT" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="DFT" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" readonly />
+                <span asp-validation-for="DFT" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Revenue Max</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.MaxRevenue
+                    </div>
+                <label asp-for="MaxRevenue" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="MaxRevenue" type="number" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background:lightgray" readonly />
+                <span asp-validation-for="MaxRevenue" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Revenue Estimé</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.EstimatedRevenue
+                    </div>
+                <label asp-for="EstimatedRevenue" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="EstimatedRevenue" type="number" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" readonly />
+                <span asp-validation-for="EstimatedRevenue" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">NRE</label>
+                    <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                        @Model.NRE
+                    </div>
+                <label asp-for="NRE" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="NRE" type="number" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" readonly />
+                <span asp-validation-for="NRE" class="text-danger"></span>
+                </div>
+            </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-6">
-            <div style="margin-right:114px;margin-top:-19px">
-                <div class="rfq-meta">
-                    <div class="rfq-status-select" style="margin-bottom:34px;">
+        <!-- Section Feedback -->
+        <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                Feedback
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div style="margin-right:114px;margin-top:-19px">
+                    <div class="rfq-meta">
+                        <div class="rfq-status-select" style="margin-bottom:34px;">
+                            <label class="block text-sm font-medium text-gray-700">Statut</label>
+                            <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                                @Model.Statut
+                            </div>
                         <label for="Statut" class="block text-sm font-medium text-gray-700">Statut</label>
                         <input asp-for="Statut" style="width: 55%; max-width: 200px; height: 45%; border: 2px solid black; font-size: 15px;background:lightgray" class="border-black" readonly />
+                        </div>
+                    </div>
+
+                    <div class="rfq-date">
+                        <label class="block text-sm font-medium text-gray-700">Date Feedback</label>
+                        <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                            @(Model.FeedbackDate?.ToString("dd/MM/yyyy") ?? "N/A")
+                        </div>
+                    <label for="FeedbackDate" class="block text-sm font-medium text-gray-700"> Feedback Date</label>
+                    <input asp-for="FeedbackDate" type="date" style="width: 55%; max-width: 200px;height:45%;background:lightgray" class="border-black" readonly />
                     </div>
                 </div>
 
-                <div class="rfq-date">
-                    <label for="FeedbackDate" class="block text-sm font-medium text-gray-700"> Feedback Date</label>
-                    <input asp-for="FeedbackDate" type="date" style="width: 55%; max-width: 200px;height:45%;background:lightgray" class="border-black" readonly />
-                </div>
-            </div>
-
-            <div>
-                <div style="margin-right:170px;margin-left:-270px;margin-top:-30px;">
-                    <div class="space-y-2">
+                <div>
+                    <div style="margin-right:170px;margin-left:-270px;margin-top:-30px;">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">Commentaires</label>
+                            <div style="width: 130%; max-width: 950px; height: 120px; font-size: 20px; padding: 6px 12px; border: 1px solid black;">
+                                @Model.Comments
+                            </div>
+                        </div>
                         <label for="Comments" class="block text-sm font-medium text-gray-700" style="width: 110%;margin-left:52px;">Comments</label>
                         <textarea asp-for="Comments" style="width: 110%;margin-left:52px; max-width: 950px; height: 120px; font-size: 20px;background:lightgray" class="border-black" readonly></textarea>
                     </div>
@@ -242,34 +386,52 @@
             </div>
         </div>
     </div>
-        <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
-            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
-                Statut
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
-                <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">Statut RFQ</label>
-                    <input value="@(Model.StatutRFQ ?? "")" class="border-black" style="width: 60%; max-width: 200px; height: 45%;background-color: lightgray;" readonly />
+
+   
+        <!-- Section Statut -->
+        <div class="form-sections-container">
+            <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
+                <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                    Statut
                 </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                    <div class="rfq-meta">
+                        <div class="rfq-status-select" style="margin-bottom:34px;">
+                <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">Statut RFQ</label>
+                        <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                                @Model.StatutRFQ
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rfq-meta">
+                        <div class="rfq-status-select" style="margin-bottom:34px;">
+                            <label class="block text-sm font-medium text-gray-700">Temps RFQ</label>
+                        <div style="width: 55%; max-width: 200px; height: 45%; padding: 6px 12px; border: 1px solid black;">
+                                @Model.TimeRFQ
+                            </div>
+                        </div>
+                    <input value="@(Model.StatutRFQ ?? "")" class="border-black" style="width: 60%; max-width: 200px; height: 45%;background-color: lightgray;" readonly />
+                    </div>
                 <div class="space-y-2">
                     <label class="block text-sm font-medium text-gray-700">Time RFQ</label>
                     <input value="@(Model.TimeRFQ ?? "")" class="border-black" style="width: 60%; max-width: 200px; height: 45%;background-color: lightgray;" readonly />
                 </div>
             </div>
         </div>
-
+    
 	</div>
 
     <!-- Boutons d'action -->
     <div class="flex space-x-6 justify-end mt-6">
         @if (User.IsInRole("Admin"))
         {
-            <div class="flex space-x-6 justify-end">
-                <a href="@Url.Action("Affiche_Versions")" class="action-btn2 bg-red text-white hover:bg-navy-light">
-                    <i class="bi bi-arrow-left-short fs-3"></i>
-                    <span style="margin: 0 auto;">Retour</span>
-                </a>
-            </div>
+        <div class="flex space-x-6 justify-end">
+            <a href="@Url.Action("Affiche_Versions")" class="action-btn2 bg-red text-white hover:bg-navy-light">
+                <i class="bi bi-arrow-left-short fs-3"></i>
+                <span style="margin: 0 auto;">Retour</span>
+            </a>
+        </div>
         }
         else
         {

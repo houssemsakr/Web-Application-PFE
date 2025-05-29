@@ -327,3 +327,85 @@ body {
         font-size: 1.5rem;
     }
 }
+
+
+
+
+
+
+
+/* Logos section */
+/*.logos-container {
+    width: 100%;
+    padding-bottom: 48px;
+    display: flex;
+    justify-content: center;
+    gap: 64px;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo-text {
+    font-size: 0.75rem;
+    color: white;
+    margin-top: 4px;
+}*/
+
+/* SteelFlash logo specifics */
+/*.steelflash-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.steelflash-a {
+    color: #ff4444;
+    font-weight: bold;
+    font-size: 1.875rem;
+}
+
+.steelflash-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.steelflash-name {
+    color: white;
+    font-weight: bold;
+    font-size: 1.125rem;
+    letter-spacing: 0.1em;
+}
+
+.steelflash-tagline {
+    color: white;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+}*/
+
+/* Animations */
+/*@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}*/
+
+/* Responsive adjustments */
+/*@media (max-width: 640px) {
+    .login-title {
+        font-size: 2rem;
+    }
+
+    .logos-container {
+        gap: 32px;
+        flex-direction: column;
+    }
+}*/

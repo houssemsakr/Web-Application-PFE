@@ -61,6 +61,28 @@ main {
     font-weight: 600;
     color: #2563eb;
 }
+
+/*.menu {
+    list-style: none;
+    padding: 0;
+}
+
+    .menu li {
+        margin-bottom: 0.5rem;
+    }
+
+    .menu a {
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        align-items: center;
+    }
+
+    .menu svg {
+        margin-right: 0.5rem;
+    }*/
+
+/* Styles pour class1 */
 .class1 {
     background-color: lightgrey;
     height: 180px;
@@ -100,6 +122,16 @@ main {
         gap: 1rem;
     }
 }
+
+
+
+
+
+
+
+
+
+
 
 .content h2 {
     font-size: 14px;

@@ -11,6 +11,8 @@
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
 }
 
+
+
 <main role="main" class="pb-3" style="margin-top: 0px;margin-bottom:10px">
     <div class="dashboard-content" style="height:100px;margin-top: -15px;">
         <div class="dashboard-grid" style="margin-right: -9px;">
@@ -23,18 +25,21 @@
 
                 <ul class="menu">
                    
-                        <li>
-                            <a href="@Url.Action("Ajouter_une_version")" class="menu-link @(currentAction == "Ajouter_une_version" ? "active" : "")">
-                                Ajouter une version
-                            </a>
-                        </li>
+                    <li>
+                        <a href="@Url.Action("Ajouter_une_version")" class="menu-link @(currentAction == "Ajouter_une_version" ? "active" : "")">
+                            <!-- icône -->
+                            Ajouter une version
+                        </a>
+                    </li>
                     
                     <li>
                         <a href="@Url.Action("Consulter_les_versions")" class="menu-link @(currentAction == "Consulter_les_versions" ? "active" : "")">
+                            <!-- icône -->
                             Consulter les versions
                         </a>
                     </li>
                 </ul>
+
             </div>
 
             <!-- Partie dynamique -->
@@ -55,6 +60,75 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
+        // Fonction pour initialiser la recherche
+        function initializeSearch() {
+            const searchInput = document.getElementById('searchInputAjouter');
+            const errorDiv = document.getElementById('searchErrorAjouter');
+
+            // Masquer les éléments au démarrage
+            hideRFQInfo();
+            errorDiv.style.display = 'none';
+
+            // Vérifier si le champ est vide au chargement
+            if (!searchInput.value.trim()) {
+                resetSearch();
+            }
+        }
+
+        // Fonction pour réinitialiser la recherche
+        function resetSearch() {
+            hideRFQInfo();
+            document.getElementById('searchErrorAjouter').style.display = 'none';
+            document.getElementById('searchInputAjouter').value = '';
+        }
+
+        // Fonction pour cacher les infos RFQ
+        function hideRFQInfo() {
+            document.getElementById('rfqInfoContainer').style.display = 'none';
+            document.getElementById('rfqDetailsAjouter').style.display = 'none';
+        }
+
+        // Fonction pour afficher les infos RFQ
+        function showRFQInfo(data) {
+            document.getElementById('rfqInfoContainer').style.display = 'block';
+            updateRFQFields(data);
+        }
+
+        // Fonction pour mettre à jour les champs RFQ
+        function updateRFQFields(data) {
+            const rfqNumberDisplay = document.getElementById('rfqNumberDisplay');
+            const dateCreationDisplay = document.getElementById('dateCreationDisplay');
+            const statutElement = document.getElementById('statut-text');
+            const rfqIdInput = document.getElementById('rfqIdAjouter');
+
+            if (rfqNumberDisplay) rfqNumberDisplay.textContent = `RFQ N°0${data.rfqId}`;
+            if (dateCreationDisplay) dateCreationDisplay.textContent = new Date(data.dateCreation).toLocaleDateString();
+            if (statutElement) {
+                statutElement.textContent = data.workingStatus || 'Statut non disponible';
+                statutElement.style.color = getStatusColor(data.workingStatus);
+            }
+            if (rfqIdInput) rfqIdInput.value = data.rfqId;
+        }
+       
+    </script>
+    <script>
+          // Initialisation au chargement
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialiser les icônes
+            if (window.feather) feather.replace();
+            if (window.lucide) lucide.createIcons();
+
+            // Configurer la navigation AJAX
+            setupAjaxNavigation();
+
+            // Initialiser le contenu dynamique
+            initializeDynamicContent();
+
+            // Gestion du bouton retour
+            window.addEventListener('popstate', function() {
+                location.reload();
+            });
+        });
         // Fonction utilitaire pour limiter la fréquence d'exécution
         function debounce(func, wait) {
             let timeout;
@@ -85,7 +159,7 @@
         }
 
         // Fonction pour ajouter une ligne RFQ dans le tableau
-             function addRFQRow(tableBody, data, versionNumber) {
+            function addRFQRow(tableBody, data, versionNumber) {
             const row = document.createElement('tr');
             const isReader = @(User.IsInRole("Lecteur") ? "true" : "false");
 
@@ -100,6 +174,10 @@
                         <i class="bi bi-eye"></i>
                     </button>`;
 
+            // Désactiver le bouton d'édition pour la version 0 (RFQ originale)
+            const editButton = versionNumber === 0
+                ? '<button type="button" class="custom-button" disabled><i class="bi bi-pencil-square"></i></button>'
+                : `<button type="button" class="custom-button" onclick="editVersion(${data.id || data.rfqId}, ${versionNumber})"><i class="bi bi-pencil-square"></i></button>`;
                 if (!isReader) {
                     let editButton = `
                         <button type="button" class="custom-button"
@@ -139,6 +217,9 @@
                         </div>
                     </div>
                     <div class="custom-card" style="animation-delay: 0ms;">
+                        <div class="custom-actions">
+                            ${editButton}
+                            <!-- autres boutons -->
                         <div class="custom-actions" style="width: 30%;background:white">
                             <div class="document-title-section">
                                 <div class="document-content-wrapper">
@@ -149,23 +230,30 @@
                     </div>
                 </td>
                 <td>
-                    <div class="document-header-content" style="width: 130%; max-width: 450px; height: 120px; font-size: 20px;">
-                        <span class="status-badge ${getStatusClass(data.workingStatus)}" style="color: ${getStatusColor(data.workingStatus)};">
-                            ${data.workingStatus || 'N/A'}
-                        </span>
-                    </div>
+
+
+                         <div class="document-header-content" style="width: 130%; max-width: 450px; height: 120px; font-size: 20px;">
+                 <span class="status-badge ${getStatusClass(data.workingStatus)}" style="color: ${getStatusColor(data.workingStatus)};">
+                        ${data.workingStatus || 'N/A'}
+                    </span>
+                   
+                      </div>
+                  
                 </td>
                 <td>
-                    <div class="document-header-content" style="width: 130%; max-width: 450px; height: 120px; font-size: 20px;">
-                        ${new Date(data.dateCreation).toLocaleDateString()}
+                  <div class="document-header-content" style="width: 130%; max-width: 450px; height: 120px; font-size: 20px;">
+                   ${new Date(data.dateCreation).toLocaleDateString()}
                     </div>
                 </td>
             `;
             tableBody.appendChild(row);
         }
 
-        // Fonction pour cacher les infos RFQ
+        // Fonction pour récupérer les détails d'une RFQ
+               // Fonction pour cacher les infos RFQ
         function hideRFQInfo() {
+            document.getElementById('rfqInfoContainer').style.display = 'none';
+            document.getElementById('rfqDetailsAjouter').style.display = 'none';
             const rfqInfoContainer = document.getElementById('rfqInfoContainer');
             if (rfqInfoContainer) rfqInfoContainer.style.display = 'none';
 
@@ -175,11 +263,12 @@
 
         // Fonction pour afficher les infos RFQ
         function showRFQInfo(data) {
+            document.getElementById('rfqInfoContainer').style.display = 'block';
             const rfqInfoContainer = document.getElementById('rfqInfoContainer');
             if (rfqInfoContainer) {
                 rfqInfoContainer.style.display = 'block';
-                updateRFQFields(data);
-            }
+            updateRFQFields(data);
+        }
 
             const rfqDetailsAjouter = document.getElementById('rfqDetailsAjouter');
             if (rfqDetailsAjouter) rfqDetailsAjouter.style.display = 'block';
@@ -204,6 +293,7 @@
         // Fonction principale de recherche
         function fetchRFQDetails(rfqId) {
             const errorDiv = document.getElementById('errorMessage');
+            errorDiv.style.display = 'none';
             if (errorDiv) errorDiv.style.display = 'none';
 
             if (!rfqId || isNaN(rfqId)) {
@@ -224,19 +314,39 @@
             .then(data => {
                 if (!data) throw new Error('Données invalides');
                 showRFQInfo(data);
+                document.getElementById('rfqDetailsAjouter').style.display = 'block';
             })
             .catch(error => {
                 console.error('Erreur:', error);
                 hideRFQInfo();
                 if (errorDiv) {
-                    errorDiv.textContent = error.message;
-                    errorDiv.style.display = 'block';
+                errorDiv.textContent = error.message;
+                errorDiv.style.display = 'block';
                 }
             });
         }
 
-        // Fonction pour récupérer une RFQ avec ses versions
-        function fetchRFQWithVersions(rfqId) {
+        // Initialisation au chargement
+        document.addEventListener("DOMContentLoaded", function() {
+            // Masquer les éléments au démarrage
+            hideRFQInfo();
+
+            // Gestion de la saisie utilisateur
+            const searchInput = document.getElementById('searchInputAjouter');
+            if (searchInput) {
+                searchInput.addEventListener('input', debounce(function() {
+                    const rfqId = this.value.trim();
+                    if (rfqId) {
+                        fetchRFQDetails(rfqId);
+                    } else {
+                        hideRFQInfo();
+                    }
+                }, 300));
+            }
+        });
+
+               // Fonction pour récupérer une RFQ avec ses versions
+                    function fetchRFQWithVersions(rfqId) {
             localStorage.setItem('lastSearchedRFQ', rfqId);
             fetch(`/Versions/GetRFQById?id=${rfqId}`)
                 .then(response => {
@@ -266,6 +376,7 @@
         }
                         `;
                         tableBody.appendChild(errorRow);
+                        addVersionForm.style.display = 'none';
                         if (addVersionForm) addVersionForm.style.display = 'none';
                         return;
                     }
@@ -290,6 +401,8 @@
                         }
                     }
 
+                    // Afficher ou masquer le bouton en fonction des vérifications
+                    addVersionForm.style.display = canAddNewVersion ? 'block' : 'none';
                     // Afficher ou masquer le bouton en fonction des vérifications et du rôle
                     const isReader = @(User.IsInRole("Lecteur") ? "true" : "false");
                     if (addVersionForm) {
@@ -328,19 +441,29 @@
                     console.error('Error:', error);
                     const tableBody = document.querySelector('#rfqTable tbody');
                     if (tableBody) {
-                        tableBody.innerHTML = `
-                            <tr>
-                                <td colspan="3" class="alert alert-danger">
-                                    ${error.message}
-                                </td>
-                            </tr>
-                        `;
-                    }
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="3" class="alert alert-danger">
+                                ${error.message}
+                            </td>
+                        </tr>
+                    `;
+                    document.getElementById('addVersionForm').style.display = 'none';
+                });
+        }
+                // Au chargement de la page, vérifier s'il y a un RFQId stocké
+        document.addEventListener("DOMContentLoaded", function() {
+            const lastSearchedRFQ = localStorage.getItem('lastSearchedRFQ');
+            const searchInput = document.getElementById('searchInputConsulter');
+
+            if (lastSearchedRFQ) {
+                searchInput.value = lastSearchedRFQ;
+                fetchRFQWithVersions(lastSearchedRFQ);
                     const addVersionForm = document.getElementById('addVersionForm');
                     if (addVersionForm) {
                         addVersionForm.style.display = 'none';
-                    }
-                });
+            }
+        });
         }
 
         // Initialisation du contenu dynamique
@@ -349,6 +472,9 @@
             const isReader = @(User.IsInRole("Lecteur") ? "true" : "false");
 
             // Initialisation spécifique à "Ajouter une version"
+            if (document.getElementById('searchInputAjouter')) {
+                const searchInput = document.getElementById('searchInputAjouter');
+                searchInput.addEventListener('input', debounce(function() {
             const searchInputAjouter = document.getElementById('searchInputAjouter');
             if (searchInputAjouter && !isReader) {
                 searchInputAjouter.addEventListener('input', debounce(function() {
@@ -356,12 +482,18 @@
                     if (rfqId) {
                         fetchRFQDetails(rfqId);
                     } else {
+                        const details = document.getElementById('rfqDetailsAjouter');
+                        if (details) details.style.display = 'none';
                         hideRFQInfo();
                     }
                 }, 300));
             }
 
             // Initialisation spécifique à "Consulter les versions"
+            if (document.getElementById('searchInputConsulter')) {
+                const searchInput = document.getElementById('searchInputConsulter');
+
+                searchInput.addEventListener('input', debounce(function() {
             const searchInputConsulter = document.getElementById('searchInputConsulter');
             if (searchInputConsulter) {
                 searchInputConsulter.addEventListener('input', debounce(function() {
@@ -371,14 +503,17 @@
                     } else {
                         const tbody = document.querySelector('#rfqTable tbody');
                         if (tbody) tbody.innerHTML = '<tr><td colspan="3">Veuillez entrer un ID de RFQ.</td></tr>';
+                        const details = document.getElementById('rfqDetailsConsulter');
+                        if (details) details.style.display = 'none';
                     }
                 }, 300));
             }
         }
 
         // Configuration de la navigation AJAX
-        function setupAjaxNavigation() {
+              function setupAjaxNavigation() {
             document.querySelectorAll('.menu-link').forEach(link => {
+                link.addEventListener('click', function (e) {
                 link.addEventListener('click', function(e) {
                     // Empêcher les lecteurs d'accéder à "Ajouter une version"
                     const isReader = @(User.IsInRole("Lecteur") ? "true" : "false");
@@ -391,15 +526,16 @@
                     const url = this.getAttribute('href');
 
                     // Afficher un indicateur de chargement
+                    document.getElementById('dynamic-content').innerHTML = `
                     const dynamicContent = document.getElementById('dynamic-content');
                     if (dynamicContent) {
                         dynamicContent.innerHTML = `
-                            <div class="loading-spinner">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Chargement...</span>
-                                </div>
+                        <div class="loading-spinner">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Chargement...</span>
                             </div>
-                        `;
+                        </div>
+                    `;
                     }
 
                     fetch(url, {
@@ -416,47 +552,51 @@
                     .then(html => {
                         const container = document.getElementById('dynamic-content');
                         if (container) {
-                            container.innerHTML = html;
+                        container.innerHTML = html;
 
-                            // Mettre à jour l'URL
-                            history.pushState(null, '', url);
+                        // Mettre à jour l'URL
+                        history.pushState(null, '', url);
 
+                        // ✅ Appliquer la classe active après le chargement réussi
                             // Appliquer la classe active après le chargement réussi
-                            document.querySelectorAll('.menu-link').forEach(link => {
-                                link.classList.remove('active');
-                                if (link.getAttribute('href') === url) {
-                                    link.classList.add('active');
-                                }
-                            });
-
-                            // Réinitialiser les comportements dynamiques
-                            initializeDynamicContent();
-
-                            // Relancer la recherche si nécessaire
-                            const rfqInput = document.getElementById('searchInputConsulter');
-                            const lastRFQ = localStorage.getItem('lastSearchedRFQ');
-                            if (rfqInput && lastRFQ) {
-                                rfqInput.value = lastRFQ;
-                                fetchRFQWithVersions(lastRFQ);
+                        document.querySelectorAll('.menu-link').forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === url) {
+                                link.classList.add('active');
                             }
+                        });
+
+                        // Réinitialiser les comportements dynamiques
+                        initializeDynamicContent();
+
+                        // Relancer la recherche si nécessaire
+                        const rfqInput = document.getElementById('searchInputConsulter');
+                        const lastRFQ = localStorage.getItem('lastSearchedRFQ');
+                        if (rfqInput && lastRFQ) {
+                            rfqInput.value = lastRFQ;
+                            fetchRFQWithVersions(lastRFQ);
+                        }
                         }
                     })
                     .catch(error => {
                         console.error('Erreur :', error);
+                        document.getElementById('dynamic-content').innerHTML = `
                         const container = document.getElementById('dynamic-content');
                         if (container) {
                             container.innerHTML = `
-                                <div class="alert alert-danger">
-                                    Erreur lors du chargement. <a href="${url}" class="reload-link">Réessayer</a>
-                                </div>
-                            `;
+                            <div class="alert alert-danger">
+                                Erreur lors du chargement. <a href="${url}" class="reload-link">Réessayer</a>
+                            </div>
+                        `;
                         }
                     });
                 });
             });
         }
 
-        function editVersion(id, versionNumber) {
+
+
+              function editVersion(id, versionNumber) {
             // Stocker l'état avant la navigation
             localStorage.setItem('forceReload', 'true');
             window.location.href = `/Versions/View_Version?id=${id}&version=${versionNumber}`;
@@ -488,11 +628,14 @@
                 location.reload();
             });
 
-            // Dans initializeConsulterView()
-            if (localStorage.getItem('forceReload') === 'true') {
-                localStorage.removeItem('forceReload');
-                window.location.reload();
+        // Dans initializeConsulterView()
+        if (localStorage.getItem('forceReload') === 'true') {
+            localStorage.removeItem('forceReload');
+            window.location.reload();
+        }   // Fonction pour afficher les alertes
+
             }
         });
     </script>
+}))
 }

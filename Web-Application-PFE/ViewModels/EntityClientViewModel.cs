@@ -18,6 +18,7 @@ namespace Web_Application_PFE.ViewModels
         [Required]
         [StringLength(100)]
         public string? EmailClient { get; set; }
+        // Propriété de navigation vers RFQ
 
        
     }

@@ -50,9 +50,12 @@ main {
 }
 /* Colonne de gauche fixe */
 .dashboard-card:first-child {
+    height: 600px; /* Hauteur fixe en pixels */
+    overflow-y: auto; /* Permet le défilement si le contenu dépasse */
     height: 600px; 
     overflow-y: auto; 
     position: sticky;
+    top: 20px; /* Ajustez selon votre besoin */
     top: 20px; 
   
 }
@@ -97,16 +100,23 @@ main {
     .search-bar input {
         border: none;
         outline: none;
+        /*flex: 1;*/ /* Prend tout l'espace disponible */
+        padding: 0.5rem; /* Ajustez ce padding pour changer la hauteur de l'input */
 
         padding: 0.5rem; 
         font-size: 1rem;
         background-color: #3b82f6; /* Couleur de fond bleu */
         color: white; /* Couleur du texte en blanc */
+        height: 10%; /* Assurez-vous que l'input prend toute la hauteur de la barre */
         height: 10%; 
         width: 100%;
     }
 
     .search-bar i {
+        color: white; /* Couleur de l'icône en blanc */
+        margin-right: 0.5rem; /* Espacement entre l'icône et le texte */
+        font-size: 1.2rem; /* Ajustez la taille de l'icône si nécessaire */
+        transform: rotate(90deg); /* Pivote l'icône de 90 degrés */
         color: white; 
         margin-right: 0.5rem; 
         font-size: 1.2rem;
@@ -147,11 +157,14 @@ main {
     transition: all 0.3s ease-in-out;
 }
 
+/* Vérifie que l'indicateur est bien limité à la zone des boutons */
 
 .tab-container {
     position: relative;
     overflow: hidden;
 }
+
+
 
 /* Document List */
 .document-header {
@@ -371,6 +384,10 @@ main {
     color: black;
 }
 
+/* Coloegsdrrgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggnne de droite - S'adapte librement */
+/* General Styles */
+
+/* Styles communs aux deux pages */
 .dashboard-content {
     flex: 1;
     padding: 1rem;

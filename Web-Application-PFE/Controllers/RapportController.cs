@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using OfficeOpenXml;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -111,6 +113,8 @@ namespace Web_Application_PFE.Controllers
             QuestPDF.Settings.License = LicenseType.Community;
             var stream = new MemoryStream();
 
+            var document = new Document();
+            var writer = PdfWriter.GetInstance(document, stream);
             // Créer une classe concrète pour stocker les données
             var pdfItems = new List<PdfItem>();
             foreach (var item in data)
@@ -126,6 +130,7 @@ namespace Web_Application_PFE.Controllers
                 });
             }
 
+            document.Open();
             Document.Create(document =>
             {
                 document.Page(page =>
@@ -133,11 +138,17 @@ namespace Web_Application_PFE.Controllers
                     page.Size(PageSizes.A4);
                     page.Margin(2, Unit.Centimetre);
 
+            // Titre
+            var title = new Paragraph("Rapport",
+                new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD));
+            title.Alignment = Element.ALIGN_CENTER;
+            document.Add(title);
                     page.Header()
                         .AlignCenter()
                         .Text("Rapport détaillé")
                         .FontSize(20).Bold();
 
+            document.Add(new Paragraph(" "));
                     page.Content()
                         .PaddingVertical(1, Unit.Centimetre)
                         .Table(table =>
@@ -152,6 +163,9 @@ namespace Web_Application_PFE.Controllers
                                 columns.RelativeColumn();
                             });
 
+            // Tableau des données
+            var table = new PdfPTable(6);
+            table.WidthPercentage = 100;
                             // En-têtes
                             table.Header(header =>
                             {
@@ -162,10 +176,18 @@ namespace Web_Application_PFE.Controllers
                                 header.Cell().Element(Block).Text("Statut RFQ").Bold();
                                 header.Cell().Element(Block).Text("Graphique").Bold();
 
+            // Entêtes
+            table.AddCell(new Phrase("Période", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+            table.AddCell(new Phrase("Client", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+            table.AddCell(new Phrase("Performance", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+            table.AddCell(new Phrase("Secteur", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+            table.AddCell(new Phrase("Statut RFQ", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+            table.AddCell(new Phrase("Graphique", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
                                 header.Cell().Background(Colors.Grey.Lighten3);
                             });
 
-                            // Données
+            // Données
+            foreach (var item in data)
                             foreach (var item in pdfItems)
                             {
                                 table.Cell().Element(Block).Text(item.Periode);
@@ -180,7 +202,13 @@ namespace Web_Application_PFE.Controllers
                     page.Footer()
                         .AlignCenter()
                         .Text(text =>
-                        {
+            {
+                table.AddCell(item.Période);
+                table.AddCell(item.Client);
+                table.AddCell(item.Performance);
+                table.AddCell(item.Secteur);
+                table.AddCell(item.StatutRFQ);
+                table.AddCell(item.Graphique);
                             text.Span("Page ");
                             text.CurrentPageNumber();
                             text.Span(" sur ");
@@ -192,8 +220,10 @@ namespace Web_Application_PFE.Controllers
 
             stream.Position = 0;
             return File(stream, "application/pdf", "Rapport.pdf");
-        }
+            }
 
+            document.Add(table);
+            document.Close();
         // Méthode helper pour les éléments de tableau
         static IContainer Block(IContainer container)
         {
@@ -205,6 +235,7 @@ namespace Web_Application_PFE.Controllers
                 .AlignMiddle();
         }
 
+            return File(stream.ToArray(), "application/pdf", "Rapport.pdf");
         // Classe pour représenter les données PDF
         private class PdfItem
         {

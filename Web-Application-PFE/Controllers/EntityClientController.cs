@@ -46,12 +46,21 @@ namespace Web_Application_PFE.Controllers
         // POST: EntityClient/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(EntityClientViewModel viewModel)
         public async Task<IActionResult> Create(EntityClient entityClient)
         {
             if (ModelState.IsValid)
             {
+                var entityClient = new EntityClient
+                {
+                    Sales = viewModel.Sales,
+                    Customer = viewModel.Customer,
+                    EmailClient = viewModel.EmailClient
+                };
+
                 _context.Add(entityClient);
                 await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
                 return Json(new
                 {
                     success = true,
@@ -59,6 +68,7 @@ namespace Web_Application_PFE.Controllers
                 });
             }
 
+            return View(viewModel);
             var errors = ModelState.Values
                 .SelectMany(v => v.Errors)
                 .Select(e => e.ErrorMessage)

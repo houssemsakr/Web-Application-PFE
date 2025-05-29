@@ -124,7 +124,6 @@ body {
 /* Sidebar Styles */
 .sidebar {
     width: 240px !important;
-    height: 93vh !important; /* Forcer la hauteur */
     min-height: 80vh; /* Empêcher la réduction de la hauteur */
    /* max-height: 85vh;*/ /* Empêcher l'augmentation de la hauteur */
     background: white;
@@ -608,17 +607,11 @@ nav [data-feather] {
         color: inherit; /* Conserve la couleur du texte au survol */
     }
 
+    /* Retirer l'effet de mise à l'échelle et autres animations pour l'état actif et focus */
     .icon-box:active, .icon-box:focus {
-        transform: none !important; 
-        background-color: inherit !important; 
-        outline: none !important; 
-        box-shadow: none !important; 
     }
 
-
     .icon-box:active {
-        transform: none; 
-        background-color: inherit;
         box-shadow: none; /* Supprime l'ombre */
     }
 
@@ -658,8 +651,6 @@ nav [data-feather] {
     border-top: 2px solid #000; /* Ligne grise */
     
 }
-
-
 
 
 .pb-3 {

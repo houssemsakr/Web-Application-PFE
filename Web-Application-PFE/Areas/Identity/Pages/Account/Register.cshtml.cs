@@ -1,4 +1,6 @@
-﻿#nullable disable
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -73,6 +75,8 @@ namespace Web_Application_PFE.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
 
+            [Required]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 0)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
@@ -92,13 +96,21 @@ namespace Web_Application_PFE.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            // Définir l'URL de redirection vers /Users
+            returnUrl = "/Identity/Account/Login";
+
             returnUrl = returnUrl ?? Url.Content("~/Users");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
             {
+                var user = new User
+                {
+                    Nom = Input.Nom,
+                    Prenom = Input.Prenom,
                 var user = CreateUser();
-
+                  
+                };
                 user.Nom = Input.Nom;
                 user.Prenom = Input.Prenom;
                 user.Email = Input.Email;
@@ -124,6 +136,10 @@ namespace Web_Application_PFE.Areas.Identity.Pages.Account
                     user.imagePath = "/images/profiles/" + uniqueFileName;
                 }
 
+
+                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                var result = await _userManager.CreateAsync(user, Input.Password);
                 IdentityResult result;
                 if (string.IsNullOrEmpty(Input.Password))
                 {
@@ -138,18 +154,20 @@ namespace Web_Application_PFE.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    _logger.LogInformation("User created a new account with password.");
                     _logger.LogInformation("User created a new account.");
 
                     // Ajout du rôle
                     if (!string.IsNullOrEmpty(Input.Role))
                     {
-                        await _userManager.AddToRoleAsync(user, Input.Role);
+                    await _userManager.AddToRoleAsync(user, Input.Role);
                     }
 
                     // Envoi de l'email de confirmation
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    // Dans la méthode OnPostAsync, remplacez la génération du callbackUrl par :
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
@@ -161,6 +179,7 @@ namespace Web_Application_PFE.Areas.Identity.Pages.Account
 
                     return LocalRedirect(returnUrl);
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);

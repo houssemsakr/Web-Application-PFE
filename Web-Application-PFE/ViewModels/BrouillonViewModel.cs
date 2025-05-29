@@ -84,6 +84,8 @@ namespace Web_Application_PFE.ViewModels
         public int? MaxRevenue { get; set; }
         public int? EstimatedRevenue { get; set; }
         public int? NRE { get; set; }
+        public bool IsVersion { get; set; } // Indique si c'est une version (true) ou la RFQ originale (false)
+        public int VersionNumber { get; set; } // Numéro de version (0 pour RFQ originale, 1+ pour les versions)
         public bool IsVersion { get; set; } 
         public int VersionNumber { get; set; } 
         public int ClientId { get; set; }

@@ -9,16 +9,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="EPPlus" Version="4.5.3.3" />
+    <PackageReference Include="iTextSharp" Version="5.5.13.4" />
     <PackageReference Include="EPPlus" Version="8.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Localization" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Localization" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+    <PackageReference Include="QuestPDF" Version="2023.10.0" />
     <PackageReference Include="QuestPDF" Version="2025.5.0" />
     <PackageReference Include="System.DirectoryServices" Version="8.0.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.7.0" />
@@ -39,6 +45,8 @@
     <None Remove="Resources\" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Localization\" />
+    <Folder Include="Resources\" />
     <None Remove="C:\Users\HOUSSEM\.nuget\packages\questpdf\2025.5.0\buildTransitive\..\LatoFont\OFL.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -90,9 +98,23 @@
     <None Remove="C:\Users\HOUSSEM\.nuget\packages\questpdf\2025.5.0\buildTransitive\..\LatoFont\Lato-Bold.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="Resources\SharedResource.ar.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>SharedResource.ar.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\SharedResource.en.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>SharedResource.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <None Remove="C:\Users\HOUSSEM\.nuget\packages\questpdf\2025.5.0\buildTransitive\..\LatoFont\Lato-BlackItalic.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Resources\SharedResource.ar.Designer.cs">
+      <DependentUpon>SharedResource.ar.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\SharedResource.en.Designer.cs">
+      <DependentUpon>SharedResource.en.resx</DependentUpon>
+    </Compile>
     <None Remove="C:\Users\HOUSSEM\.nuget\packages\questpdf\2025.5.0\buildTransitive\..\LatoFont\Lato-Black.ttf" />
   </ItemGroup>
 </Project>

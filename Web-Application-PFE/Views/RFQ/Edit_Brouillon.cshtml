@@ -30,7 +30,9 @@
                 Client
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
-                <div class="space-y-2">
+				<div class="space-y-2">
+					<label asp-for="Customer" class="block text-sm font-medium text-gray-700">Customer</label>
+					<select asp-for="Customer" id="Customer" class="border-gray-300" style="width: 50%; max-width: 250px; height: 47%;background-color:lightgray">
                     <label asp-for="Customer" class="block text-sm font-medium text-gray-700">Customer </label>
                     <select asp-for="Customer" id="Customer"
                             class="border-gray-300"
@@ -38,17 +40,17 @@
                             required
                             data-val="true"
                             data-val-required="Le champ Customer est obligatoire">
-                        <option value="">Select a customer...</option>
-                        @if (ViewBag.Customers != null)
-                        {
-                            foreach (var customer in ViewBag.Customers)
-                            {
-                                <option value="@customer">@customer</option>
-                            }
-                        }
-                    </select>
-                    <span asp-validation-for="Customer" class="text-danger"></span>
-                </div>
+						<option value="">Select a customer...</option>
+						@if (ViewBag.Customers != null)
+						{
+							foreach (var customer in ViewBag.Customers)
+							{
+								<option value="@customer">@customer</option>
+							}
+						}
+					</select>
+					<span asp-validation-for="Customer" class="text-danger"></span>
+				</div>
                 <div class="space-y-2">
                     <label class="block text-sm font-medium text-gray-700">Sales</label>
                     <input asp-for="Sales" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" />
@@ -64,6 +66,7 @@
                     <label asp-for="RFQId" class="block text-sm font-medium text-gray-700">N° RFQ</label>
                     <div class="flex flex-col">
                         <input asp-for="RFQId" id="RFQIdInput" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray"
+                               onblur="checkRFQId(this.value)" />
                                onblur="checkRFQId(this.value)" required />
                         <span asp-validation-for="RFQId" class="text-danger mt-1"></span>
                         <div id="rfqIdError" class="text-danger mt-1" style="display:none;"></div>
@@ -118,17 +121,17 @@
                     <label class="block text-sm font-medium text-gray-700">KO Date</label>
                     <input asp-for="KOdate" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;" />
                     <span asp-validation-for="KOdate" class="text-danger"></span>
-                </div>
+            </div>
                 <div class="space-y-2">
                     <label class="block text-sm font-medium text-gray-700">Customer Data Date</label>
                     <input asp-for="CustomerDatadate" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;" />
                     <span asp-validation-for="CustomerDatadate" class="text-danger"></span>
-                </div>
+        </div>
                 <div class="space-y-2">
                     <label class="block text-sm font-medium text-gray-700">Customer Due Date</label>
                     <input asp-for="CustomerDueDate" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;" />
                     <span asp-validation-for="CustomerDueDate" class="text-danger"></span>
-                </div>
+    </div>
             </div>
         </div>
     </div>
@@ -142,6 +145,16 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
                
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">KO Date</label>
+                    <input asp-for="KOdate" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;" />
+                    <span asp-validation-for="KOdate" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Customer Data Date</label>
+                    <input asp-for="CustomerDatadate" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;" />
+                    <span asp-validation-for="CustomerDatadate" class="text-danger"></span>
+                </div>
                 <div class="space-y-2">
                     <label class="block text-sm font-medium text-gray-700">Material Leader</label>
                     <select asp-for="MaterialLeader" class="border-black" style="width: 50%; max-width: 250px; height: 47%;">
@@ -219,6 +232,11 @@
                 </div>
             
                 <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Customer Due Date</label>
+                    <input asp-for="CustomerDueDate" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;" />
+                    <span asp-validation-for="CustomerDueDate" class="text-danger"></span>
+                </div>
+                <div class="space-y-2">
                     <label class="block text-sm font-medium text-gray-700">Working Status</label>
                     <select asp-for="WorkingStatus" class="border-black" style="width: 50%; max-width: 250px; height: 47%;">
                         <option value="">Choisir…</option>
@@ -294,10 +312,29 @@
 
             <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
                 <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                    Feedback
                     Statut
                 </div>
                 <div class="grid grid-cols-2 gap-6">
                     <div style="margin-right:114px;margin-top:-19px">
+                        <div class="rfq-meta">
+                            <div class="rfq-status-select" style="margin-bottom:34px;">
+                                <label asp-for="Statut" class="block text-sm font-medium text-gray-700"></label>
+                                <select asp-for="Statut" style="width: 60%; max-width: 200px; height: 45%;background-color:lightgray; border: 2px solid black; font-size: 15px;"
+                                        class="border-black">
+                                    <option value="">Choisir...</option>
+                                    <option value="approved">Validée</option>
+                                    <option value="rejected">Non Validée</option>
+                                    <option value="pending">En attente de Validation</option>
+                                </select>
+                                <span asp-validation-for="Statut" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="rfq-date">
+                            <label asp-for="FeedbackDate" class="block text-sm font-medium text-gray-700"></label>
+                            <input asp-for="FeedbackDate" type="date" style="width: 60%; max-width: 200px;height:45%" class="border-black" />
+                            <span asp-validation-for="FeedbackDate" class="text-danger"></span>
+                        </div>
                       
                        
                     </div>
@@ -315,6 +352,50 @@
             </div>
         </div>
     }
+    <div class="form-sections-container">
+        <!-- Section Client -->
+        <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                Statut
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                <div class="rfq-meta">
+                    <div class="rfq-status-select" style="margin-bottom:34px;">
+                        <label class="block text-sm font-medium text-gray-700">Statut RFQ</label>
+                        <select asp-for="StatutRFQ"
+                                style="width: 60%; max-width: 200px; height: 45%;background-color:lightgray; border: 2px solid black; font-size: 15px;"
+                                class="border-black"
+                                disabled="@(Model.Statut == "En attente de Validation")">
+                            <option value="">Choisir...</option>
+                            <option value="Win">Win</option>
+                            <option value="Loss">Loss</option>
+                        </select>
+                        <span asp-validation-for="StatutRFQ" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="rfq-meta">
+                    <div class="rfq-status-select" style="margin-bottom:34px;">
+                        <label class="block text-sm font-medium text-gray-700">Time</label>
+                        <select asp-for="TimeRFQ"
+                                style="width: 60%; max-width: 200px; height: 45%;background-color:lightgray; border: 2px solid black; font-size: 15px;"
+                                class="border-black"
+                                disabled="@(Model.Statut == "En attente de Validation")">
+                            <option value="">Choisir...</option>
+                            <option value="Retard">Retard</option>
+                            <option value="On time">On time</option>
+                        </select>
+                        <span asp-validation-for="TimeRFQ" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if (Model.Statut == "Validée" || Model.Statut == "Non Validée")
+        {
+            <div class="alert alert-info mb-4">
+                Les champs Statut RFQ et Time ne peuvent pas être modifiés pour une RFQ déjà validée ou non validée.
+            </div>
+        }
+    </div>
    
     <!-- Boutons d'action -->
     <!-- Boutons d'action -->
@@ -325,11 +406,13 @@
                 <span style="margin: 0 auto;">Retour</span>
             </button>
 
+            <button type="submit" formaction="@Url.Action("ConvertToRFQ", "RFQ")" class="action-btn bg-orange text-white hover:bg-orange-light">
+                <i class="fas fa-save"></i>
             <button type="submit" formaction="@Url.Action("ConvertToRFQ", "RFQ")" class="action-btn2 bg-green text-white hover:bg-navy-light">
                 <i class="fas fa-check"></i>
                 <span style="margin: 0 auto;">Valider</span>
             </button>
-           
+       
        
         </div>
     </div>
@@ -344,6 +427,10 @@
                 feather.replace();
             }
 
+            // Initialisation de Lucide Icons
+            if (lucide) {
+                lucide.createIcons();
+            }
             // // Initialisation de Lucide Icons
             // if (lucide) {
             //     lucide.createIcons();

@@ -18,6 +18,7 @@
 <form asp-action="Create_valid" method="post" class="custom-form px-4 py-8">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     @Html.AntiForgeryToken()
+
     <input type="hidden" asp-for="CreatorId" value="@user?.Id" />
     <input type="hidden" asp-for="CreatorFullName" value="@($"{user?.Prenom} {user?.Nom}")" />
     <!-- Div parente pour regrouper les sections Client et RFQ -->
@@ -29,6 +30,8 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
                 <div class="space-y-2">
+                    <label asp-for="Customer" class="block text-sm font-medium text-gray-700">Customer</label>
+                    <select asp-for="Customer" id="Customer" class="border-gray-300" style="width: 50%; max-width: 250px; height: 47%;background-color:lightgray">
                     <label asp-for="Customer" class="block text-sm font-medium text-gray-700">Customer </label>
                     <select asp-for="Customer" id="Customer"
                             class="border-gray-300"
@@ -63,6 +66,7 @@
                     <label asp-for="RFQId" class="block text-sm font-medium text-gray-700">N° RFQ</label>
                     <div class="flex flex-col">
                         <input asp-for="RFQId" id="RFQIdInput" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray"
+                               onblur="checkRFQId(this.value)" />
                                onblur="checkRFQId(this.value)" required />
                         <span asp-validation-for="RFQId" class="text-danger mt-1"></span>
                         <div id="rfqIdError" class="text-danger mt-1" style="display:none;"></div>
@@ -198,6 +202,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
                 <div class="space-y-2">
                     <label asp-for="VALeader" class="block text-sm font-medium text-gray-700"></label>
+                    <select asp-for="VALeader" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray">
                     <select asp-for="VALeader" class="border-gray-300" style="width: 50%; max-width: 250px; height: 49%;background-color:lightgray">
                         <option value="">Choisir…</option>
                         <option value="Nobody">Nobody</option>
@@ -220,6 +225,7 @@
             
                 <div class="space-y-2">
                     <label asp-for="WorkingStatus" class="block text-sm font-medium text-gray-700"></label>
+                    <select asp-for="WorkingStatus" class="border-gray-300" style="width: 50%; max-width: 250px; height: 47%;background-color:lightgray">
                     <select asp-for="WorkingStatus" class="border-gray-300" style="width: 50%; max-width: 250px; height: 52%;background-color:lightgray">
                         <option value="">Choisir…</option>
                         <option value="Complete">Complete</option>
@@ -245,6 +251,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
                 <div class="space-y-2">
                     <label asp-for="Feasibilityassessment" class="block text-sm font-medium text-gray-700"></label>
+                    <select asp-for="Feasibilityassessment" class="border-gray-300" style="width: 50%; max-width: 250px; height: 47%;background-color:lightgray">
                     <select asp-for="Feasibilityassessment" class="border-gray-300" style="width: 50%; max-width: 250px; height: 52%;background-color:lightgray">
                         <option value="">Choisir…</option>
                         <option value="Not Done">Not Done</option>
@@ -287,6 +294,44 @@
                     <label asp-for="NRE" class="block text-sm font-medium text-gray-700"></label>
                     <input asp-for="NRE" type="number" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" />
                     <span asp-validation-for="NRE" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section mb-8 p-6 bg-white border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+               Statut
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+                <div style="margin-right:114px;margin-top:-19px">
+                  @*   <div class="rfq-meta">
+                        <div class="rfq-status-select" style="margin-bottom:34px;">
+                            <label asp-for="Statut" class="block text-sm font-medium text-gray-700"></label>
+                            <select asp-for="Statut" style="width: 60%; max-width: 200px; height: 45%;background-color:lightgray; border: 2px solid black; font-size: 15px;"
+                                    class="border-black">
+                                <option value="">Choisir...</option>
+                                <option value="approved">Validée</option>
+                                <option value="rejected">Non Validée</option>
+                                <option value="pending">En attente de Validation</option>
+                            </select>
+                            <span asp-validation-for="Statut" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="rfq-date">
+                        <label asp-for="FeedbackDate" class="block text-sm font-medium text-gray-700"></label>
+                        <input asp-for="FeedbackDate" type="date" style="width: 60%; max-width: 200px;height:45%" class="border-black" />
+                        <span asp-validation-for="FeedbackDate" class="text-danger"></span>
+                    </div>
+                </div> *@
+                <div>
+                    <div style="margin-top:-30px;">
+                        <div class="space-y-2">
+                            <label asp-for="Comments" class="block text-sm font-medium text-gray-700"></label>
+                            <textarea asp-for="Comments" style="width: 121%; max-width: 950px; height: 120px; font-size: 20px;"
+                                      class="border-black"></textarea>
+                            <span asp-validation-for="Comments" class="text-danger"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

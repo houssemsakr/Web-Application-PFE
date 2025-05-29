@@ -95,7 +95,7 @@ main {
     from {
         opacity: 0;
         transform: translateY(-20px);
-    }
+}
 
     to {
         opacity: 1;
@@ -292,6 +292,11 @@ body {
 .action-button:hover .action-tooltip {
     display: block;
 }
+
+
+
+
+
 
 
 .text-blue-500 {
@@ -562,6 +567,20 @@ body {
     font-weight: bold;
     color: black;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .search-bar {
     display: flex;
@@ -918,6 +937,26 @@ h6 {
     font-size: 12px;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 h5 {
     font-size: 13px;
     font-weight: 700
@@ -1002,6 +1041,23 @@ tr.document-statut {
     text-align: center; /* Centre le contenu horizontalement */
     padding: 10px; /* Ajoute un peu d'espace autour du contenu */
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* Custom card */
@@ -1162,6 +1218,10 @@ tr.document-statut {
         height: 24px; /* Taille de l'icône */
     }
 
+
+
+/* ==================== Suivi-RFQ.css ==================== *//* ==================== Suivi-RFQ.css ==================== */
+
 .card-header1 {
     display: flex;
     align-items: center;
@@ -1257,6 +1317,14 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+
+
+
+
+
+
+
 /* Structure principale */
 .rfq-main-container {
     background-color: #f9fafb;

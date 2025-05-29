@@ -83,6 +83,7 @@
     <div class="dashboard-content" style="height:100px;margin-right:-60px;margin-left:40px">
         <div class="dashboard-grid" style="margin-left:-49px;margin-top:-26px;">
 
+            <!-- Left Column - Documents 
            
             <!-- Right Column - Alerts -->
             <div class="dashboard-card2">
@@ -110,6 +111,10 @@
                                 </div>
 
                                 <div class="download-group">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="46" height="56" fill="#007AFF" class="bi bi-download" viewBox="0 0 16 16">
+                                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                                    </svg>
                                     <i class="bi bi-download" style="font-size: 2.2rem; font-weight: bold;"></i>
                                     <button type="submit" class="download-button">Télécharger</button>
                                 </div>
@@ -119,12 +124,16 @@
                 </div>
                 <div class="card2-class2">
                     <a asp-area="" asp-controller="Rapport" asp-action="Generer_un_rapport">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+                        </svg>
                         <i class="bi bi-plus-circle-fill" style="font-size: 2.2rem; font-weight: bold;"> </i>
                     </a>
                     <span> Générer un rapport</span>
                 </div>
             </div>
         </div>
+  
     </div>
 </main>
 
@@ -132,7 +141,16 @@
     <partial name="_ValidationScriptsPartial" />
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-           
+            // Initialisation de Feather Icons
+            if (feather) {
+                feather.replace();
+            }
+
+            // Initialisation de Lucide Icons
+            if (lucide) {
+                lucide.createIcons();
+            }
+
             // Gestion des cases à cocher
             const pdfCheckbox = document.getElementById('pdf-checkbox');
             const excelCheckbox = document.getElementById('excel-checkbox');

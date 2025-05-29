@@ -1,0 +1,217 @@
+﻿/* Conteneur principal */
+.max-w-6xl {
+    width: 200%; /* Largeur maximale augmentée */
+    margin-left: 10px; /* Centrage horizontal */
+    margin-right: 90px;
+}
+
+.form-sections-container {
+    position: relative;
+    /*  padding: 20px;*/
+    display: flex;
+    flex-direction: column;
+    gap: 0rem; /* Espacement entre les sections */
+    padding: 1rem; /* Padding intérieur */
+    background-color: #f9fafb; /* Couleur de fond */
+    border-radius: 0.5rem; /* Bordures arrondies */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre légère */
+}
+/* Section du formulaire */
+.form-section {
+    margin-bottom: 0 !important;
+    padding: 0.1rem;
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    width: 85%; /* Ajuste selon le besoin (ex: 60%, 50%, etc.) */
+    margin-right: auto;
+    margin-top: 0.9px;
+}
+
+    /* Titre de la section */
+    /* Pour le carré autour des mots "Client" et "RFQ" avec fond blanc */
+    .form-section > div:first-child {
+        display: inline-block;
+        padding: 0.5rem 1rem; /* Ajuste le padding pour un carré plus ou moins grand */
+        margin-bottom: 0 !important;
+        font-size: 1rem;
+        font-weight: 600;
+        background-color: #ffffff; /* Fond blanc */
+        color: #374151; /* Couleur du texte (gris foncé) */
+        border: 2px solid #e5e7eb; /* Bordure grise légère */
+        border-radius: 0.375rem; /* Bords arrondis */
+        text-transform: uppercase; /* Met les lettres en majuscules */
+        position: relative; /* Permet de déplacer le carré */
+        top: -20px; /* Déplace le carré vers le haut */
+    }
+
+    /* Si vous voulez appliquer la même modification au deuxième carré (RFQ), vous pouvez ajouter cette règle : */
+    .form-section:nth-child(2) > div:first-child {
+        top: -20px; /* Déplace également le carré RFQ vers le haut */
+    }
+
+
+
+
+/* Grille des champs */
+.grid {
+    display: grid;
+    gap: 1px !important; /* Réduit l'espace entre les champs */
+    margin-top: 0 !important; /* Évite tout espace supplémentaire */
+}
+
+.grid-cols-1 {
+    grid-template-columns: repeat(1, 1fr);
+}
+
+@media (min-width: 768px) {
+    .md\:grid-cols-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .lg\:grid-cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Champs de formulaire */
+.space-y-2 > * + * {
+    margin-top: 0.01rem;
+  
+}
+.space-y-2{
+  
+    margin-bottom: 0px !important; /* Réduit l'espace entre label et champ */
+}
+label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+}
+
+/* Boutons d'action */
+.action-btn {
+    display: flex;
+    align-items: center; /* Centre verticalement */
+    justify-content: center; /* Centre l'ensemble du contenu */
+    width: 400px; /* Largeur personnalisée */
+    height: 25px; /* Hauteur augmentée pour un bon affichage */
+    padding: 0 1rem; /* Réduction du padding */
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+    position: relative; /* Permet un positionnement précis */
+}
+
+    .action-btn i {
+        position: absolute;
+        left: 15px; /* Fixe l'icône à gauche */
+    }
+
+
+
+.action-btn2 {
+    display: flex;
+    align-items: center; /* Centre verticalement */
+    justify-content: center; /* Centre l'ensemble du contenu */
+    width: 200px; /* Largeur personnalisée */
+    height: 25px; /* Hauteur augmentée */
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+    position: relative; /* Permet un positionnement précis */
+}
+
+    .action-btn2 i {
+        position: absolute;
+        left: 15px; /* Fixe l'icône à l'extrême gauche */
+    }
+
+
+.bg-orange {
+    background-color: #f97316;
+}
+
+    .bg-orange:hover {
+        background-color: #ea580c;
+    }
+
+.bg-navy {
+    background-color: #1e3a8a;
+}
+
+    .bg-navy:hover {
+        background-color: #1e40af;
+    }
+
+.text-white {
+    color: #fff;
+}
+
+.custom-form {
+    margin-left: 10px; /* Supprime l'auto-centrage */
+    margin-right: auto; /* Garde l'alignement à gauche */
+    max-width: 120%; /* Ajuste la largeur selon votre besoin */
+    height:10px
+}
+
+.custom-width {
+    width: 60%; /* Ajuste selon ton besoin */
+    max-width: 300px; /* Empêche l'input de devenir trop large */
+}
+
+.icon-container {
+    position: absolute;
+    top: 290px; /* Ajustez selon votre besoin */
+    right: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.first-icon {
+    color: limegreen; /* Vert pistache */
+    font-size: 24px; /* Ajuste la taille si nécessaire */
+}
+
+.second-icon {
+    color: #808080; /* Gris */
+    font-size: 24px; /* Ajuste la taille si nécessaire */
+}
+
+.flex.space-x-6 {
+    margin-left: 160px; /* Ajuste l'espace par rapport au bord droit si nécessaire */
+}
+
+.toolbar-container {
+    position: absolute;
+    top: -10px; /* Ajuste la distance depuis le haut */
+    right: 0px; /* Ajuste la distance depuis la droite */
+
+
+    background-color: transparent; /* Rend le fond transparent */
+}
+
+.btn-toolbar {
+    background-color: transparent; /* Assure que la barre d'outils est aussi transparente */
+}
+
+.btn-group .btn {
+    background-color: transparent; /* Rend les boutons transparents */
+}

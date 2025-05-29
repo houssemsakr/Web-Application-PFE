@@ -33,9 +33,11 @@
     color: #721c24;
 }
 
+/* Appliquer un fond lightgray aux champs de type date */
 
 input[type="date"] {
     background-color: lightgray;
+    cursor: not-allowed; /* Optionnel : pour indiquer que le champ est en lecture seule */
     cursor: not-allowed; 
 }
 
@@ -56,6 +58,9 @@ input[type="date"] {
     border-radius: 0.5rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+
+
 
 
 /* Section du formulaire */

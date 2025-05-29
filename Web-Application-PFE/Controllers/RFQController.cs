@@ -26,14 +26,15 @@ namespace Web_Application_PFE.Controllers;
         private readonly ApplicationDbContext _context;
         private readonly IEmailService _emailService;
         private readonly ILogger<AddRFQController> _logger;
+        public RFQController(ApplicationDbContext context, IEmailService emailService, ILogger<AddRFQController> logger)
     private readonly UserManager<User> _userManager;
     public RFQController(ApplicationDbContext context, IEmailService emailService, ILogger<AddRFQController> logger, UserManager<User> userManager)
-    {
-        _context = context;
-        _emailService = emailService;
-        _logger = logger;
+        {
+            _context = context;
+            _emailService = emailService;
+            _logger = logger;
         _userManager = userManager;
-    }
+        }
 
         // Vue principale RFQ
         public IActionResult Rfq()
@@ -187,6 +188,7 @@ namespace Web_Application_PFE.Controllers;
                 LabourDueDate = model.LabourDueDate ?? DateTime.Now,
                 LabourRelease = model.LabourRelease ?? DateTime.Now,
                 CustomerDueDate = model.CustomerDueDate ?? DateTime.Now,
+                WorkingStatus = model.WorkingStatus,
                 WorkingStatus = "Not Started",
                 ApprovalDate = model.ApprovalDate ?? DateTime.Now,
                 ClientId = model.ClientId,
@@ -236,7 +238,7 @@ namespace Web_Application_PFE.Controllers;
 
             _context.Notifications.Add(notification);
             await _context.SaveChangesAsync();
-           
+
             //return RedirectToAction("Gestion_RFQ", "AddRFQ");
 
             TempData["SuccessMessage"] = $"Le brouillon a été converti en RFQ N°{newRFQ.RFQId} avec succès.";

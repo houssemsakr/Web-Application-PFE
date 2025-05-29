@@ -113,6 +113,10 @@ main {
     border-radius: 0.5rem;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
     padding: 1rem;
+    min-height: 100px; /* Hauteur minimale */
+    max-height: 410px; /* Hauteur maximale */
+    overflow-y: auto; /* Ajout du défilement si nécessaire */
+    position: sticky; /* Rend le menu sticky */
     min-height: 100px; 
     max-height: 410px; 
     overflow-y: auto; 
@@ -123,6 +127,8 @@ main {
 }
 
 .left-column-fixed {
+    height: 300px !important; /* Hauteur fixe en pixels */
+    overflow-y: auto; /* Permet le défilement si le contenu dépasse */
     height: 300px !important; 
     overflow-y: auto; 
     position: sticky;
@@ -130,6 +136,7 @@ main {
     display: flex;
     flex-direction: column;
 }
+    /* Conteneur du menu - Prend tout l'espace disponible */
     
     .left-column-fixed .menu {
         flex-grow: 1;
@@ -138,6 +145,7 @@ main {
 /* Colonne de droite - S'adapte librement */
 #dynamic-content {
 
+    min-height: 400px; /* Correspond à la hauteur de la colonne gauche */
     min-height: 400px; 
    
 }
@@ -449,6 +457,8 @@ table.table {
         grid-template-columns: 1fr;
     }
 }
+/* Coloegsdrrgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggnne de droite - S'adapte librement */
+/* General Styles */
 .main-container {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -470,6 +480,8 @@ table.table {
     width: 670px;
     height: 383px
 }
+
+
 
 
 /* RFQ Header */
@@ -495,6 +507,8 @@ table.table {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    margin: 0; /* Supprimer les marges par défaut */
+    padding: 0; /* Supprimer les paddings par défaut */
     margin: 0; 
     padding: 0; 
 }

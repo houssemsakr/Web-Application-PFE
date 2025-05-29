@@ -50,8 +50,11 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/sweetalert2.min.js" asp-append-version="true"></script>
     <script>
+               document.addEventListener("DOMContentLoaded", function() {
                 document.addEventListener("DOMContentLoaded", function () {
             // Initialisation des icônes
+            if (feather) feather.replace();
+            if (lucide) lucide.createIcons();
             if (feather) {
                 feather.replace();
             }

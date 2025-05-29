@@ -18,6 +18,11 @@ main {
    
   
 }
+/*.table {
+    width: 100%;
+    table-layout: fixed;
+}*/
+/* Dashboard Content */
 
 .dashboard-content {
     flex: 1;
@@ -90,8 +95,12 @@ main {
         border: none;
         outline: none;
         /*flex: 1;*/ /* Prend tout l'espace disponible */
+        padding: 0.5rem; /* Ajustez ce padding pour changer la hauteur de l'input */
         padding: 0.5rem; 
         font-size: 1rem;
+        background-color: #3b82f6; /* Couleur de fond bleu */
+        color: white; /* Couleur du texte en blanc */
+        height: 11%; /* Assurez-vous que l'input prend toute la hauteur de la barre */
         background-color: #3b82f6; 
         color: white; 
         height: 11%; 
@@ -99,6 +108,10 @@ main {
     }
 
     .search-bar i {
+        color: white; /* Couleur de l'icône en blanc */
+        margin-right: 0.5rem; /* Espacement entre l'icône et le texte */
+        font-size: 1.2rem; /* Ajustez la taille de l'icône si nécessaire */
+        transform: rotate(90deg); /* Pivote l'icône de 90 degrés */
         color: white; 
         margin-right: 0.5rem; 
         font-size: 1.2rem; 
@@ -109,6 +122,7 @@ main {
     position: relative;
     display: flex;
     gap: 10px;
+    /* Supprime la bordure pour éviter une double ligne */
     border-bottom: none;
     padding-bottom: 5px;
 }
@@ -138,6 +152,7 @@ main {
     transition: all 0.3s ease-in-out;
 }
 
+/* Vérifie que l'indicateur est bien limité à la zone des boutons */
 
 .tab-container {
     position: relative;
@@ -330,6 +345,22 @@ main {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+/*.icon-style {
+    filter: invert(1) brightness(1000%);*/ /* Tout devient blanc */
+/*width: 50px;
+    height: 50px;
+    position: relative;
+}*/
+
+/* Ajoute une couleur bleue sur le point d’exclamation */
+/*.icon-style::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 102, 255, 0.7);*/ /* Bleu semi-transparent */
+/*mix-blend-mode: multiply;
+    }*/
 .table thead tr, .table tbody tr {
     border-bottom: 1.5px solid blue; /* Ligne bleue et épaisse */
     font-weight: bold; /* Texte en gras */

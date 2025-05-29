@@ -76,6 +76,45 @@ namespace Web_Application_PFE.Controllers
             return View(userViewModel);
         }
 
+        // GET: Users/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Users/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(UserViewModel userViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var currentUserId = HttpContext.Items["CurrentUserId"]?.ToString();
+                var user = new User
+                {
+                    Nom = userViewModel.Nom,
+                    Prenom = userViewModel.Prenom,
+                    Email = userViewModel.Email,
+                    UserName = userViewModel.Email,
+                };
+
+                var result = await _userManager.CreateAsync(user, userViewModel.Password);
+                if (result.Succeeded)
+                {
+                    await _auditService.LogAsync("Création", "Utilisateur", user.Id,
+                        $"Créé par: {currentUserId}, Email: {user.Email}");
+                    return RedirectToAction(nameof(Index));
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            return View(userViewModel);
+        }
+
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -224,6 +263,68 @@ namespace Web_Application_PFE.Controllers
             return _context.Users.Any(e => e.Id == id);
         }
 
-       
+        // GET: Users/EditRole/5
+        public async Task<IActionResult> EditRole(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Get user's current role
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var currentRole = userRoles.FirstOrDefault();
+
+            var model = new UserViewModel
+            {
+                Id = user.Id,
+                Nom = user.Nom,
+                Prenom = user.Prenom,
+                Email = user.Email,
+                Role = currentRole
+            };
+
+            return View(model);
+        }
+
+        // POST: Users/EditRole/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditRole(string id, UserViewModel model)
+        {
+            if (id != model.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByIdAsync(id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                // Get user's current roles and remove them
+                var userRoles = await _userManager.GetRolesAsync(user);
+                await _userManager.RemoveFromRolesAsync(user, userRoles);
+
+                // Add the new role
+                if (!string.IsNullOrEmpty(model.Role))
+                {
+                    await _userManager.AddToRoleAsync(user, model.Role);
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(model);
+        }
     }
 }

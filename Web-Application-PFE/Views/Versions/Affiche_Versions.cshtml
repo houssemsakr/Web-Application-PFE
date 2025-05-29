@@ -79,10 +79,7 @@
                             <td>@(version?.Customer ?? "N/A")</td>
                             <td>@(version?.DateCreation.ToString("dd/MM/yyyy HH:mm") ?? "N/A")</td>
                             <td>
-                                        @if (version?.WorkingStatus != null)
                                 {
-                                            <span class="badge @GetStatusBadgeClass(version.WorkingStatus)">
-                                                @version.WorkingStatus
                                     </span>
                                 }
                                 else
@@ -139,7 +136,6 @@
     </div>
 </div>
     </div>
-</main>
     @section Scripts {
         <script>
 
@@ -201,6 +197,7 @@
              });
         
      </script>
+    
 
 
 @functions {
@@ -208,11 +205,8 @@
     {
         switch (statut)
         {
-            case "Complete":
                 return "badge-success";
-            case "In Progress":
                 return "badge-warning";
-            case "Not Started":
                 return "badge-danger";
             default:
                 return "badge-secondary";
@@ -220,6 +214,5 @@
     }
 }
 
-       
     }
 

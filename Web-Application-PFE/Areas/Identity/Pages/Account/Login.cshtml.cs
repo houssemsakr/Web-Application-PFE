@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 
 using System.ComponentModel.DataAnnotations;
 
@@ -15,6 +16,9 @@ using System.Reflection.PortableExecutable;
 using Web_Application_PFE.Models;
 
 using Web_Application_PFE.Services;
+//using System.DirectoryServices;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+using System.Reflection.PortableExecutable;
 
 using System.DirectoryServices.ActiveDirectory;
 
@@ -85,6 +89,7 @@ namespace Web_Application_PFE.Areas.Identity.Pages.Account
         {
 
             [Required]
+            [EmailAddress]
 
             public string Email { get; set; }
 
@@ -140,27 +145,56 @@ namespace Web_Application_PFE.Areas.Identity.Pages.Account
 
         }
 
+        private bool AuthenticateUser(string username, string password, out string fullName)
 
 
         public bool AuthenticateUser(string username, string password)
 
         {
+            fullName = null;
 
             try
 
+            //try
+            //{
+            //    using (DirectoryEntry entry = new DirectoryEntry("LDAP://asteelflash.europe.lan", username, password))
+            //    {
+            //        object nativeObject = entry.NativeObject;
             {
 
+            //        DirectorySearcher searcher = new DirectorySearcher(entry)
+            //        {
+            //            Filter = $"(&(ObjectClass=user)(sAMAccountName={username}))"
+            //        };
                 using (var entry = new System.DirectoryServices.DirectoryEntry("LDAP://asteelflash.europe.lan", username, password))
 
+            //        SearchResult user = searcher.FindOne();
+            //        if (user != null)
+            //        {
+            //            fullName = user.Properties["displayName"][0]?.ToString();
+            //            return true;
+            //        }
+            //    }
+            //}
+            //catch (Exception)
+            //{
+            //    return false;
+            //}
                 {
-                   
+
+            return true;
+        }
                     if (entry.NativeObject != null)
 
-                    {
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        {
+            returnUrl ??= Url.Content("~/");
 
                         using (var searcher = new DirectorySearcher(entry))
 
-                        {
+            if (ModelState.IsValid)
+            {
+                if (Input.AuthType == "LDAP")
 
                             searcher.Filter = $"(&(ObjectClass=user)(sAMAccountName={username}))";
 
@@ -172,7 +206,13 @@ namespace Web_Application_PFE.Areas.Identity.Pages.Account
 
                             if (user != null && user.Properties["displayName"].Count > 0)
 
-                            {
+                {
+                    // Authentification LDAP
+                    var user = await _userManager.FindByEmailAsync(Input.Email);
+                    if (user == null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        return Page();
 
                                 string fullName = user.Properties["displayName"][0].ToString();
 
@@ -180,8 +220,9 @@ namespace Web_Application_PFE.Areas.Identity.Pages.Account
 
                                 return true;
 
-                            }
+                    }
 
+                    if (AuthenticateUser(Input.Email, Input.Password, out string fullName))
                         }
 
                     }
@@ -192,8 +233,12 @@ namespace Web_Application_PFE.Areas.Identity.Pages.Account
 
             catch (Exception ex)
 
-            {
+                    {
+                        await _signInManager.SignInAsync(user, Input.RememberMe);
+                        _logger.LogInformation($"User {Input.Email} logged in via LDAP.");
 
+                        var token = await _jwtService.GenerateToken(user);
+                        Response.Cookies.Append("X-Access-Token", token, new CookieOptions
                 Console.WriteLine($"Erreur lors de l'authentification : {ex.Message}");
 
             }
@@ -212,8 +257,14 @@ namespace Web_Application_PFE.Areas.Identity.Pages.Account
 
         private string NormalizeEmail(string emailInput)
 
-        {
+                        {
+                            HttpOnly = true,
+                            Secure = true,
+                            SameSite = SameSiteMode.Strict,
+                            Expires = DateTime.Now.AddMinutes(60)
+                        });
 
+                        if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             if (string.IsNullOrWhiteSpace(emailInput))
 
                 return emailInput;
@@ -224,17 +275,20 @@ namespace Web_Application_PFE.Areas.Identity.Pages.Account
 
             if (!emailInput.Contains("@"))
 
-            {
+                        {
+                            return new JsonResult(new { token, returnUrl });
 
                 return $"{emailInput.Trim()}@asteelflash.com";
 
-            }
+                        }
 
+                        return LocalRedirect(returnUrl);
 
 
             return emailInput.Trim();
 
-        }
+                    }
+                    else
 
 
 
@@ -250,7 +304,12 @@ namespace Web_Application_PFE.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
 
-            {
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid LDAP credentials.");
+                        return Page();
+                    }
+                }
+                else
 
                 //A ne pas toucher
 
@@ -261,15 +320,20 @@ namespace Web_Application_PFE.Areas.Identity.Pages.Account
 
                 if (testuser == true)
                 {
+                    // Authentification normale (base de données)
+                    var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                    if (result.Succeeded)
                     EmailActif = NormalizeEmail(Input.Email);
                     var user = await _userManager.FindByEmailAsync(EmailActif);
 
                     if (user != null)
                     {
+                        _logger.LogInformation("User logged in.");
                         // Connecter l'utilisateur
                         await _signInManager.SignInAsync(user, Input.RememberMe);
                         _logger.LogInformation($"User {Input.Email} logged in.");
 
+                        var user = await _userManager.FindByEmailAsync(Input.Email);
                         // Générer le token JWT
                         var token = await _jwtService.GenerateToken(user);
 
@@ -290,8 +354,18 @@ namespace Web_Application_PFE.Areas.Identity.Pages.Account
 
                         return LocalRedirect(returnUrl);
                     }
+                    if (result.RequiresTwoFactor)
+                    {
+                        return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    }
+                    if (result.IsLockedOut)
+                    {
+                        _logger.LogWarning("User account locked out.");
+                        return RedirectToPage("./Lockout");
+                    }
                     else
                     {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                         ModelState.AddModelError(string.Empty, "User account not found.");
                         return Page();
                     }
