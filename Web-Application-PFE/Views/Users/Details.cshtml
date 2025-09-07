@@ -1,0 +1,44 @@
+﻿@model Web_Application_PFE.ViewModels.UserViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/Gestion-RFQ.css" />
+}
+<main role="main" style="margin-left:153px; margin-top:10px;">
+    <div class="card shadow-sm p-2 mb-2 bg-white rounded" style="width: 22rem;">
+        <div class="card-body p-2">
+            <h6 class="card-title text-center mb-2" style="font-size: 16px;">Détails utilisateur</h6>
+
+            <p style="margin-bottom: 4px; font-size: 13px;">
+                <strong>@Html.DisplayNameFor(model => model.Nom):</strong> @Html.DisplayFor(model => model.Nom)
+            </p>
+            <p style="margin-bottom: 4px; font-size: 13px;">
+                <strong>@Html.DisplayNameFor(model => model.Prenom):</strong> @Html.DisplayFor(model => model.Prenom)
+            </p>
+            <p style="margin-bottom: 4px; font-size: 13px;">
+                <strong>@Html.DisplayNameFor(model => model.Role):</strong> @Html.DisplayFor(model => model.Role)
+            </p>
+            <p style="margin-bottom: 4px; font-size: 13px;">
+                <strong>@Html.DisplayNameFor(model => model.Email):</strong> @Html.DisplayFor(model => model.Email)
+            </p>
+
+            <p style="margin-bottom: 4px; font-size: 13px;"><strong>Photo de profil:</strong></p>
+            @if (!string.IsNullOrEmpty(Model.ExistingImagePath))
+            {
+                <img src="@Model.ExistingImagePath" class="img-thumbnail mb-1" width="120" />
+            }
+            else
+            {
+                <p style="margin-bottom: 4px; font-size: 13px;">Aucune photo de profil</p>
+            }
+
+            <div class="text-center mt-2">
+                <a asp-action="Index" class="btn btn-primary btn-sm" style="padding: 4px 8px; font-size: 12px;">Retour</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+

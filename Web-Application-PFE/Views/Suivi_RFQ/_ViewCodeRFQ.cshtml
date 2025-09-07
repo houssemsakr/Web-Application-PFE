@@ -1,0 +1,265 @@
+﻿@model Web_Application_PFE.ViewModels.AddRFQViewModel
+
+<div id="errorMessage" class="alert alert-danger" style="display: none; position: fixed; top: 20px; right: 20px; z-index: 1000;">
+    Vous n'avez pas les droits nécessaires pour modifier cette RFQ.
+</div>
+
+<div class="main-card">
+    <h6 class="section-title" style="margin-top: 0.1px;">Consulter par code RFQ</h6>
+    <div>
+        <div class="search-container" style="width: 100%;height: 30px">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Rechercher" aria-label="Rechercher">
+        </div>
+        <br />
+        <div>
+            <div class="document-header-section" data-current-id="">
+                <div class="header-content-wrapper">
+                    <div class="document-title-section">
+                        <div class="document-content-wrapper">
+                            <div class="action-buttons-wrapper">
+                                     @if (!User.IsInRole("Lecteur"))
+    {
+                                <button class="btn-action" data-action="Edit" data-base-url="@Url.Action("Edit", "Suivi_RFQ")">
+                                        <i class="bi bi-pencil-square" style="font-size: 0.9rem;"></i>
+
+                                    <span class="tooltip-text">Edit Document</span>
+                                </button>
+                                }
+                                <button class="btn-action" data-action="Details" data-base-url="@Url.Action("Details", "Suivi_RFQ")">
+                                    <i class="bi bi-eye" style="font-size: 1.1rem;" ></i>
+
+
+                                    <span class="tooltip-text">View</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="document-header-wrapper">
+                        <div class="header-details-wrapper">
+                            <div class="icon-container">
+                                <img src="/images/RFQ.png" alt="Logo" class="logo-size">
+                            </div>
+                            <div>
+                                <div class="title-wrapper">
+                                    <span class="document-id">RFQ N°0 @Html.DisplayFor(model => model.RFQId)</span>
+                                </div>
+                                <div class="description-text" style="font-size:10px;">Format RFQ</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="date-text"></div>
+                </div>
+            </div>
+
+            <div>
+                <h3 id="statut-text" style="font-size:20px; font-weight: normal;margin-bottom:9px;margin-top:10px">@Html.DisplayFor(model => model.WorkingStatus)</h3>
+            </div>
+
+            <div class="grid grid-cols-2 gap-1">
+                <div style="margin-right:114px;margin-top:-19px">
+                    <div>
+                        <label id="Feed"
+                               name="Date"
+                               style="display: inline-block; width: 38%;background-color:lightgray; max-width: 950px; height: 37px; margin: 13px; text-align: center; margin-left: -4px; line-height: 37px; border: 1px solid #ccc; border-radius: 4px;"
+                               class="border-style">
+                            Feedback
+                        </label>
+                    </div>
+
+                    <div>
+                        <div class="input-group">
+                            <label for="Comments" class="input-label">Comments</label>
+                            <input id="Comments"
+                                   name="comments"
+                                   value="@Html.DisplayFor(model => model.Comments)"
+                                   style="width: 1600px; height: 87px; text-align: center; line-height: 150px; font-size: 20px;"
+                                   class="border-style" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-left:114px;margin-top:100px">
+                    <div class="date-info">
+                        <label for="FeedbackDate" class="input-label">Feedback Date</label>
+                        <input id="FeedbackDate"
+                               name="FeedbackDate"
+                               value="@Html.DisplayFor(model => model.FeedbackDate)"
+                               style="width: 60%; max-width: 200px;height:45%"
+                               class="border-style" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+   
+    // Fonction pour gérer la recherche
+    function setupRFQSearch() {
+        const searchInput = document.getElementById('searchInput');
+        const headerSection = document.querySelector('.document-header-section');
+
+        searchInput.addEventListener('input', function () {
+            const rfqId = searchInput.value.trim();
+
+            if (rfqId) {
+                fetch(`/Suivi_RFQ/GetRFQById?rfqId=${rfqId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('RFQ non trouvée');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("Données reçues:", data);
+
+                        // Stocker l'ID dans l'attribut data
+                        headerSection.setAttribute('data-current-id', data.id);
+
+                        // Mettre à jour l'affichage
+                        if (document.querySelector('.document-id')) {
+                            document.querySelector('.document-id').textContent = `RFQ N°0 ${data.rfqId}`;
+                        }
+
+                        if (document.querySelector('.date-text')) {
+                            document.querySelector('.date-text').textContent = `${new Date(data.dateCreation).toLocaleDateString()}`;
+                        }
+
+                        const statutElement = document.getElementById('statut-text');
+                        if (statutElement) {
+                            statutElement.textContent = data.workingStatus || 'Statut non disponible';
+
+                            if (data.workingStatus === "Complete") {
+                                statutElement.style.color = "green";
+                            } else if (data.workingStatus === "In Progress") {
+                                statutElement.style.color = "orange";
+                            } else if (data.workingStatus === "Not Started") {
+                                statutElement.style.color = "red";
+                            } else {
+                                statutElement.style.color = "black";
+                            }
+                        }
+
+                        const commentsInput = document.querySelector('input[name="comments"]');
+                        if (commentsInput) {
+                            commentsInput.value = data.comments || 'Pas de commentaire';
+                        }
+
+                        const feedbackInput = document.querySelector('input[name="FeedbackDate"]');
+                        if (feedbackInput) {
+                            feedbackInput.value = data.feedbackDate ? new Date(data.feedbackDate).toLocaleDateString() : 'N/A';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        resetView();
+                    });
+            } else {
+                resetView();
+            }
+        });
+    }
+
+    function resetView() {
+        const headerSection = document.querySelector('.document-header-section');
+        headerSection.removeAttribute('data-current-id');
+
+        if (document.querySelector('.document-id')) {
+            document.querySelector('.document-id').textContent = 'RFQ N°0';
+        }
+
+        const statutElement = document.getElementById('statut-text');
+        if (statutElement) {
+            statutElement.textContent = '';
+            statutElement.style.color = "black";
+        }
+
+        const commentsInput = document.querySelector('input[name="comments"]');
+        if (commentsInput) {
+            commentsInput.value = 'Pas de commentaire';
+        }
+
+        const feedbackInput = document.querySelector('input[name="FeedbackDate"]');
+        if (feedbackInput) {
+            feedbackInput.value = ' ../../….';
+        }
+    }
+
+    // Gestion des clics sur les boutons d'action
+    function setupActionButtons() {
+        document.querySelectorAll('.btn-action').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const action = this.getAttribute('data-action');
+                const baseUrl = this.getAttribute('data-base-url');
+                const currentId = document.querySelector('.document-header-section').getAttribute('data-current-id');
+
+                if (!currentId) {
+                    alert('Veuillez d\'abord rechercher une RFQ');
+                    return;
+                }
+
+                const url = `${baseUrl}/${currentId}`;
+
+                if (action === 'Edit') {
+                    window.location.href = url;
+                } else {
+                    window.location.href = url;
+                }
+            });
+        });
+    }
+
+    // Initialisation
+    document.addEventListener("DOMContentLoaded", function() {
+        setupRFQSearch();
+        setupActionButtons();
+    });
+
+    // Si la vue partielle est chargée après le DOMContentLoaded
+    if (document.readyState === 'complete') {
+        setupRFQSearch();
+        setupActionButtons();
+    }
+
+
+        document.querySelector('.btn-action[data-action="Edit"]')?.addEventListener('click', async function(e) {
+        e.preventDefault();
+
+        const currentId = document.querySelector('.document-header-section')?.getAttribute('data-current-id');
+        if (!currentId) {
+            alert('Veuillez d\'abord rechercher une RFQ');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/Suivi_RFQ/CheckEditPermission?id=${currentId}`);
+            const data = await response.json();
+
+            if (data.hasPermission) {
+                window.location.href = this.getAttribute('data-base-url') + '/' + currentId;
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Accès refusé',
+                    text: 'Vous n\'avez pas les droits nécessaires pour modifier cette RFQ',
+                    timer: 7000,
+                    showConfirmButton: false
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: 'Une erreur est survenue lors de la vérification des permissions',
+                timer: 7000
+            });
+        }
+    });
+</script>

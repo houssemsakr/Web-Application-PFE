@@ -1,0 +1,102 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model Web_Application_PFE.ViewModels.EntityClientViewModel
+@{
+    ViewData["Title"] = "Créer Client";
+    Layout = "~/Views/Shared/_Layout-2.cshtml";
+    var clients = ViewBag.Clients as IEnumerable<Web_Application_PFE.Models.EntityClient> ?? new List<Web_Application_PFE.Models.EntityClient>();
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Gestion-RFQ.css" />
+}
+
+<main role="main">
+    <div class="container-fluid">
+        <div class="card shadow" style="margin-left:41px;width:97%;margin-top:40px">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Gestion des Clients</h6>
+            </div>
+            <div class="card-body">
+                <!-- Formulaire de création -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <form asp-action="CreateClient" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="form-group">
+                                <label asp-for="Sales" class="control-label">Sales</label>
+                                <input asp-for="Sales" class="form-control" />
+                                <span asp-validation-for="Sales" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Customer" class="control-label">Customer</label>
+                                <input asp-for="Customer" class="form-control" />
+                                <span asp-validation-for="Customer" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="EmailClient" class="control-label">Email</label>
+                                <input asp-for="EmailClient" class="form-control" />
+                                <span asp-validation-for="EmailClient" class="text-danger"></span>
+                            </div>
+
+                            <div>
+                                <input type="submit" value="Ajouter Client" class="btn btn-primary" style="background-color:blue;margin-top:10px"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tableau des clients -->
+                <div class="table-responsive">
+                    <table class="table table-bordered" width="100%" cellspacing="0">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Sales</th>
+                                <th>Customer</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (clients.Any())
+                            {
+                                @foreach (var client in clients)
+                                {
+                                    <tr>
+                                        <td>@client.Sales</td>
+                                        <td>@client.Customer</td>
+                                        <td>@client.EmailClient</td>
+                                        <td>
+                                            <form asp-action="DeleteClient" method="post" asp-route-id="@client.Id" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce client ?');">
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="bi bi-trash"></i> Supprimer
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center">Aucun client trouvé</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <button type="button" style="width:100px" class="action-btn2 bg-red text-white hover:bg-navy-light" onclick="window.location.href='@Url.Action("Gestion_RFQ", "AddRFQ")'">
+                        <i class="bi bi-arrow-left-short fs-3"></i>
+                        <span style="margin: 0 auto;">Retour</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

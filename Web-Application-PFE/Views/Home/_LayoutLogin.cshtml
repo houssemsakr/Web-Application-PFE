@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html lang="@System.Threading.Thread.CurrentThread.CurrentUICulture.Name">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/Style.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/all.min.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true">
+    <script src="~/js/npm.lucide-iconslatest.dist.umd.lucide-icons.min.js"></script>
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+ 
+    <div class="login-background">
+
+        @RenderBody()
+    </div>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+
+    @RenderSection("Scripts", required: false)
+
+    <script>
+        // Initialize Lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+       
+    </script>
+</body>
+</html>

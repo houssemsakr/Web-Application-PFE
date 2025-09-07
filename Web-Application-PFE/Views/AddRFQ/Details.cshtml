@@ -1,0 +1,242 @@
+﻿@model Web_Application_PFE.ViewModels.AddRFQViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout-2.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Edit.css" />
+}
+
+<main role="main" class="custom-form px-4 py-8">
+    <div class="form-sections-container">
+        <!-- Section Client -->
+        <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                Client
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Sales</label>
+                    <input value="@(Model.Sales ?? "")" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Customer</label>
+                    <input value="@(Model.Customer ?? "")" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Client ID</label>
+                    <input value="@(Model.ClientId.ToString() ?? "")" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">N° RFQ</label>
+                    <input value="@(Model.RFQId?.ToString() ?? "")" class="border-gray-300" style="width: 50%; max-width: 250px; height: 45%;background-color:lightgray" readonly />
+                </div>
+            </div>
+        </div>
+
+        <!-- Section RFQ -->
+        <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                RFQ
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Quote Name</label>
+                    <input value="@(Model.QuoteName ?? "")" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Market Segment</label>
+                    <input value="@(Model.MarketSegment ?? "")" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Number of Ref to be quoted</label>
+                    <input value="@(Model.NumberOfRefToBeQuoted.ToString() ?? "")" type="number" class="border-black bg-lightgray" style="width: 50%; max-width: 250px; height: 45%;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">SOP Date</label>
+                    <input value="@(Model.SOPDate.ToString("yyyy-MM-dd") ?? "")" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Max Volume</label>
+                    <input value="@(Model.MaxVolume.ToString() ?? "")" type="number" class="border-black bg-lightgray" style="width: 50%; max-width: 250px; height: 45%;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Estimated Volume</label>
+                    <input value="@(Model.EstimatedVolume.ToString() ?? "")" type="number" class="border-black bg-lightgray" style="width: 50%; max-width: 250px; height: 45%;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">KO Date</label>
+                    <input value="@(Model.KOdate.ToString("yyyy-MM-dd") ?? "")" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Customer Data Date</label>
+                    <input value="@(Model.CustomerDatadate.ToString("yyyy-MM-dd") ?? "")" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Customer Due Date</label>
+                    <input value="@(Model.CustomerDueDate.ToString("yyyy-MM-dd") ?? "")" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Matériels -->
+        <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                Matériels
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+              
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Material Leader</label>
+                    <input value="@(Model.MaterialLeader ?? "")" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Material Due Date</label>
+                    <input value="@(Model.MaterialDueDate.ToString("yyyy-MM-dd") ?? "")" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Material Release</label>
+                    <input value="@(Model.MaterialRelease.ToString("yyyy-MM-dd") ?? "")" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Teste -->
+        <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                Teste
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Test Leader</label>
+                    <input value="@(Model.TestLeader ?? "")" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Test Due Date</label>
+                    <input value="@(Model.TestDueDate.ToString("yyyy-MM-dd") ?? "")" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Test Release</label>
+                    <input value="@(Model.TestRelease.ToString("yyyy-MM-dd") ?? "")" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+            </div>
+        </div>
+
+        <!-- Section VA -->
+        <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                VA
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">VA Leader</label>
+                    <input value="@(Model.VALeader ?? "")" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Labour Due Date</label>
+                    <input value="@(Model.LabourDueDate.ToString("yyyy-MM-dd") ?? "")" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Labour Release</label>
+                    <input value="@(Model.LabourRelease.ToString("yyyy-MM-dd") ?? "")" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+              
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Working Status</label>
+                    <input value="@(Model.WorkingStatus ?? "")" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Approval Date</label>
+                    <input value="@(Model.ApprovalDate.ToString("yyyy-MM-dd") ?? "")" type="date" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Validation (si l'utilisateur est validateur) -->
+      
+            <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
+                <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                    Validation
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Feasibility Assessment</label>
+                        <input value="@(Model.Feasibilityassessment ?? "")" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">DFM</label>
+                        <input value="@(Model.DFM ?? "")" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">DFT</label>
+                        <input value="@(Model.DFT ?? "")" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Max Revenue</label>
+                        <input value="@(Model.MaxRevenue?.ToString() ?? "")" type="number" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Estimated Revenue</label>
+                        <input value="@(Model.EstimatedRevenue?.ToString() ?? "")" type="number" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">NRE</label>
+                        <input value="@(Model.NRE?.ToString() ?? "")" type="number" class="border-black" style="width: 50%; max-width: 250px; height: 45%;background-color: lightgray;" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section mb-8 p-6 border border-border rounded-md shadow-sm">
+                <div class="inline-block px-3 py-1 mb-6 text-sm font-medium bg-muted rounded-md">
+                Statut
+                </div>
+                <div class="grid grid-cols-2 gap-6">
+                    <div style="margin-right:114px;margin-top:-19px">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Statut RFQ</label>
+                        <input value="@(Model.StatutRFQ ?? "")" class="border-black" style="width: 60%; max-width: 200px; height: 45%;background-color: lightgray;" readonly />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Time RFQ</label>
+                        <input value="@(Model.TimeRFQ ?? "")" class="border-black" style="width: 60%; max-width: 200px; height: 45%;background-color: lightgray;" readonly />
+                    </div>
+                    </div>
+                    <div>
+                        <div style="margin-right:170px;margin-left:-210px;margin-top:-30px;">
+                        <div class="space-y-2">
+                            <label asp-for="Comments" class="block text-sm font-medium text-gray-700"></label>
+                            <textarea asp-for="Comments" class="border-black" style="width: 121%; max-width: 950px; height: 120px; font-size: 20px;"></textarea>
+                            <span asp-validation-for="Comments" class="text-danger"></span>
+                        </div>
+                        </div>
+                    </div>
+
+             
+                </div>
+            </div>
+        
+
+        <!-- Section Statut -->
+       
+    </div>
+
+    <!-- Bouton de retour -->
+    <div class="flex justify-end mt-6">
+        <button type="button" class="action-btn2 bg-red text-white hover:bg-navy-light" onclick="window.location.href='@Url.Action("Gestion_RFQ", "AddRFQ")'">
+            <i class="bi bi-arrow-left-short fs-3"></i>
+            <span style="margin: 0 auto;">Retour</span>
+        </button>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (feather) feather.replace();
+            if (lucide) lucide.createIcons();
+        });
+    </script>
+}

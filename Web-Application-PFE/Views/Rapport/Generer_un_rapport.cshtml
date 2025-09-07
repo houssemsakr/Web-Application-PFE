@@ -1,0 +1,268 @@
+﻿@{
+    ViewData["Title"] = "Generer_un_rapport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/Générer_un_rapport.css" />
+}
+
+<main role="main" class="pb-3" style="margin-top: 0.1px; height:4px">
+    <!-- Formulaire pour soumettre les données -->
+    <form asp-action="Generer_un_rapport" method="post" id="reportForm">
+        <!-- Right Column - Alerts -->
+        <div class="dashboard-card" style="height:390px;margin-right:-61px;width:105%">
+            <!-- Section RFQ -->
+            <div class="grid grid-cols-4 gap-6">
+                <div style="margin-right:114px;">
+                    <div class="space-y-2">
+                        <label for="FeedbackDate" class="block text-sm font-medium text-gray-700"> Période</label>
+                        <label style="background-color:lightskyblue; border: 2px solid black; font-size: 15px;" id="calendarLabel">Calendrier</label>
+                        <input type="hidden" id="periode" name="periode" required />
+
+                        <!-- Calendrier -->
+                        <div class="calendar-dropdown" id="calendar-dropdown">
+                            <div class="calendar-header">
+                                <button type="button" class="calendar-nav" id="prev-month">&lt;</button>
+                                <h2 class="calendar-title" id="calendar-title">Janvier 2024</h2>
+                                <button type="button" class="calendar-nav" id="next-month">&gt;</button>
+                            </div>
+
+                            <div class="calendar-days">
+                                <div>Lu</div>
+                                <div>Ma</div>
+                                <div>Me</div>
+                                <div>Je</div>
+                                <div>Ve</div>
+                                <div>Sa</div>
+                                <div>Di</div>
+                            </div>
+
+                            <div class="calendar-dates" id="calendar-dates">
+                                <!-- Les jours seront générés dynamiquement -->
+                            </div>
+
+                            <div class="calendar-footer">
+                                <button type="button" class="apply-button" id="apply-button">Appliquer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="rfq-meta">
+                        <div class="rfq-status-select" style="margin-bottom:34px;">
+                            <label for="Client" class="block text-sm font-medium text-gray-700"> Client</label>
+                            <select id="client" name="client" required
+                                    style="width: 60%; max-width: 200px; height: 45%;background-color:lightskyblue; border: 2px solid black; font-size: 15px;"
+                                    class="border-black">
+                                <option value="">Choisir...</option>
+                                <option value="approved">Validée</option>
+                                <option value="rejected">Non Validée</option>
+                                <option value="pending">En attente de Validation</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="rfq-date">
+                        <label for="Performance" class="block text-sm font-medium text-gray-700"> Performance</label>
+                        <select id="performance" name="performance" required
+                                style="width: 60%; max-width: 200px; height: 45%;background-color:lightskyblue; border: 2px solid black; font-size: 15px;"
+                                class="border-black">
+                            <option value="">Choisir...</option>
+                            <option value="OEE">OEE</option>
+                            <option value="FPY">FPY</option>
+                            <option value="Efficience">Efficience</option>
+                            <option value="Marge">Marge</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="rfq-meta">
+                        <div class="rfq-status-select" style="margin-bottom:34px;">
+                            <label for="Secteur" class="block text-sm font-medium text-gray-700"> Secteur</label>
+                            <select id="secteur" name="secteur" required
+                                    style="width: 60%; max-width: 200px; height: 45%;background-color:lightskyblue; border: 2px solid black; font-size: 15px;"
+                                    class="border-black">
+                                <option value="">Choisir...</option>
+                                <option value="Industrial">Industrial</option>
+                                <option value="Automotive">Automotive</option>
+                                <option value="Medical">Medical</option>
+                                <option value="Consumer">Consumer</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="rfq-date">
+                        <label for="StatutRFQ" class="block text-sm font-medium text-gray-700"> Statut RFQ</label>
+                        <select id="statutRFQ" name="statutRFQ" required
+                                style="width: 60%; max-width: 200px; height: 45%;background-color:lightskyblue; border: 2px solid black; font-size: 15px;"
+                                class="border-black">
+                            <option value="">Choisir...</option>
+                            <option value="Win">Win</option>
+                            <option value="Loss">Loss</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="rfq-meta">
+                        <div class="rfq-status-select" style="margin-bottom:34px;">
+                            <label for="Graphique" class="block text-sm font-medium text-gray-700"> Graphique</label>
+                            <select id="graphique" name="graphique" required
+                                    style="width: 60%; max-width: 200px; height: 45%;background-color:lightskyblue; border: 2px solid black; font-size: 15px;"
+                                    class="border-black">
+                                <option value="">Choisir...</option>
+                                <option value="Par RFQ">Par RFQ</option>
+                                <option value="Par Temps RFQ">Par Temps RFQ</option>
+                                <option value="Par statut">Par statut</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="action-buttons" style="top:110px">
+                <button type="button" class="action-button" onclick="window.history.back()">Retour</button>
+                <button type="submit" class="action-button" id="suivant-button">Suivant</button>
+            </div>
+        </div>
+    </form>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          
+            // Références aux éléments du DOM
+            const calendarTitle = document.getElementById('calendar-title');
+            const calendarDates = document.getElementById('calendar-dates');
+            const prevMonthButton = document.getElementById('prev-month');
+            const nextMonthButton = document.getElementById('next-month');
+            const applyButton = document.getElementById('apply-button');
+            const periodeInput = document.getElementById('periode');
+            const calendarLabel = document.getElementById('calendarLabel');
+            const form = document.getElementById('reportForm');
+
+            let currentDate = new Date();
+            let selectedDate = null;
+
+            // Fonction de validation du formulaire
+            function validateForm() {
+                const requiredFields = [
+                    'periode', 'client', 'performance',
+                    'secteur', 'statutRFQ', 'graphique'
+                ];
+
+                let isValid = true;
+
+                requiredFields.forEach(field => {
+                    const input = document.getElementById(field);
+                    if (!input.value) {
+                        isValid = false;
+                        // Mettre en évidence le champ vide
+                        if (input.tagName === 'SELECT') {
+                            input.style.borderColor = 'red';
+                        }
+                    } else {
+                        if (input.tagName === 'SELECT') {
+                            input.style.borderColor = 'black';
+                        }
+                    }
+                });
+
+                return isValid;
+            }
+
+            // Intercepter la soumission du formulaire
+            form.addEventListener('submit', function(e) {
+                if (!validateForm()) {
+                    e.preventDefault();
+                    alert('Veuillez remplir tous les champs obligatoires.');
+                }
+            });
+
+            // Mettre à jour le calendrier
+            function updateCalendar() {
+                const monthNames = [
+                    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+                ];
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth();
+
+                // Mettre à jour le titre
+                calendarTitle.textContent = `${monthNames[month]} ${year}`;
+
+                // Effacer les dates précédentes
+                calendarDates.innerHTML = '';
+
+                // Obtenir le premier jour du mois
+                const firstDay = new Date(year, month, 1);
+                const startingDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+
+                // Obtenir le nombre de jours dans le mois
+                const totalDays = new Date(year, month + 1, 0).getDate();
+
+                // Ajouter des boutons vides pour les jours précédents
+                for (let i = 0; i < startingDay; i++) {
+                    const emptyButton = document.createElement('button');
+                    emptyButton.classList.add('date-button', 'empty');
+                    calendarDates.appendChild(emptyButton);
+                }
+
+                // Ajouter les jours du mois
+                for (let day = 1; day <= totalDays; day++) {
+                    const dateButton = document.createElement('button');
+                    dateButton.type = 'button';
+                    dateButton.classList.add('date-button');
+                    dateButton.textContent = day;
+
+                    // Vérifier si ce jour est sélectionné
+                    if (selectedDate &&
+                        selectedDate.getFullYear() === year &&
+                        selectedDate.getMonth() === month &&
+                        selectedDate.getDate() === day) {
+                        dateButton.classList.add('selected');
+                    }
+
+                    // Gérer la sélection d'un jour
+                    dateButton.addEventListener('click', function() {
+                        selectedDate = new Date(year, month, day);
+                        updateCalendar();
+                    });
+
+                    calendarDates.appendChild(dateButton);
+                }
+            }
+
+            // Navigation entre les mois
+            prevMonthButton.addEventListener('click', function() {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                updateCalendar();
+            });
+
+            nextMonthButton.addEventListener('click', function() {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                updateCalendar();
+            });
+
+            // Appliquer la sélection
+            applyButton.addEventListener('click', function() {
+                if (selectedDate) {
+                    const formattedDate = selectedDate.toLocaleDateString('fr-FR');
+                    periodeInput.value = formattedDate;
+                    calendarLabel.textContent = formattedDate;
+                } else {
+                    alert('Veuillez sélectionner une date.');
+                }
+            });
+
+            // Initialiser le calendrier
+            updateCalendar();
+        });
+    </script>
+}

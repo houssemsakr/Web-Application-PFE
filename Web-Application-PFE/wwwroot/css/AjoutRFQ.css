@@ -1,0 +1,379 @@
+﻿
+/* Cas particuliers */
+input[type="date"],
+input[type="number"],
+input[type="text"],
+select {
+    background-color: lightgray !important;
+}
+
+/* Appliquer un fond lightgray aux champs de type date */
+input[type="date"] {
+    background-color: lightgray;
+    cursor: not-allowed; /* Optionnel : pour indiquer que le champ est en lecture seule */
+}
+
+/* Conteneur principal */
+.max-w-6xl {
+    width: 20%;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.form-sections-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    padding: 1rem;
+    background-color: white; /* Fond blanc */
+    border-radius: 0.5rem;
+   
+}
+
+
+
+
+
+/* Section du formulaire */
+.form-section {
+    margin-bottom: 0.001rem;
+    padding: 1.5rem;
+    background-color: white; /* Fond blanc */
+    border: 2px solid #808080;
+    border-radius: 0.375rem;
+    width: 85%;
+    margin-right: 14px;
+    margin-top: 30px;
+    padding-top: 90px;
+    margin-left: 81px
+}
+
+    /* Titre de la section */
+    .form-section > div:first-child {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
+        font-weight: 500;
+        background-color: white; /* Fond blanc */
+        color: #374151; /* Texte en lightgray */
+        border: 2px solid #808080;
+        border-radius: 0.375rem;
+        position: relative;
+        top: -30px;
+        z-index: 1;
+    }
+
+
+/* Grille des champs */
+.grid {
+    display: grid;
+    gap: 1.9rem;
+    background-color: white !important;
+}
+
+.grid-cols-1 {
+    grid-template-columns: repeat(1, 1fr);
+}
+
+@media (min-width: 768px) {
+    .md\:grid-cols-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .lg\:grid-cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.bg-lightgray {
+    background-color: lightgray;
+}
+/* Champs de formulaire */
+.space-y-2 > * + * {
+    margin-top: 0.5rem;
+    background-color: white;
+}
+
+label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: black; /* Texte en lightgray */
+}
+
+.space-y-2 {
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #808080 !important;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    color: black; /* Texte en lightgray */
+    background-color: lightgray; /* Fond blanc */
+}
+
+    input[type="number"] {
+        background-color: lightgray !important;
+        color: black !important;
+        box-shadow: none !important;
+        appearance: none;
+        -moz-appearance: textfield; /* Pour Firefox */
+        border-radius: 5px;
+    }
+  
+
+/* Boutons d'action */
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+    height: 25px;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+    position: relative;
+    background-color: lightgray; /* Couleur d'origine */
+    color: white; /* Texte en blanc */
+}
+
+    .action-btn i {
+        position: absolute;
+        left: 15px;
+    }
+
+.action-btn2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 25px;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+    position: relative;
+    background-color: lightgray; /* Couleur d'origine */
+    color: white; /* Texte en blanc */
+}
+
+    .action-btn2 i {
+        position: absolute;
+        left: 15px;
+    }
+
+.bg-orange {
+    background-color: #f97316;
+}
+
+    .bg-orange:hover {
+        background-color: #ea580c;
+    }
+
+.bg-navy {
+    background-color: limegreen;
+}
+
+    .bg-navy:hover {
+        background-color: limegreen;
+    }
+
+.bg-red {
+    background-color: red;
+}
+
+    .bg-red:hover {
+        background-color: red;
+    }
+.text-white {
+    color: white;
+}
+
+.custom-form {
+    margin-left: 10px;
+    margin-right: auto;
+    max-width: 120%;
+}
+
+.custom-width {
+    width: 60%;
+    max-width: 300px;
+}
+
+.icon-container {
+    position: absolute;
+    top: 290px;
+    right: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.first-icon {
+    color: limegreen;
+    font-size: 24px;
+}
+
+.second-icon {
+    color: #808080;
+    font-size: 24px;
+}
+
+.flex.space-x-6 {
+    margin-left: 280px;
+}
+
+.toolbar-container {
+    position: absolute;
+    top: -10px;
+    right: 0px;
+    background-color: transparent;
+}
+
+.btn-toolbar {
+    background-color: lightgray;
+}
+
+.btn-group .btn {
+    background-color: lightgray;
+}
+
+
+/* Section RFQ */
+.grid {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.gap-6 {
+    gap: 1.5rem;
+}
+
+/* Input Fields */
+.space-y-2 > * + * {
+    margin-top: 0.5rem;
+}
+
+label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.25rem;
+}
+
+input {
+    width: 90%;
+    max-width: 250px;
+    padding: 0.35rem;
+    border: 2px solid #808080;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    background-color: lightgray;
+    color: #374151;
+}
+
+    input:read-only {
+        background-color: lightgray;
+        cursor: not-allowed;
+    }
+
+/* Specific Styles for RFQ Section */
+.rfq-meta {
+    margin-bottom: 34px;
+}
+
+.rfq-status-select {
+    margin-bottom: 34px;
+}
+
+    .rfq-status-select select {
+        width: 60%;
+        max-width: 200px;
+        height: 45%;
+        background-color: lightgrey;
+        border: 2px solid #808080;
+        font-size: 15px;
+        border-radius: 0.375rem;
+    }
+
+.rfq-date input {
+    width: 60%;
+    max-width: 200px;
+    height: 45%;
+    background-color: lightgray;
+    border: 2px solid #808080;
+    font-size: 0.875rem;
+    border-radius: 0.375rem;
+}
+
+/* Specific Styles for Feedback Input */
+#Feed {
+    width: 28%;
+    max-width: 950px;
+    height: 37px;
+    margin: 13px;
+    text-align: center;
+    margin-left: -4px;
+    background-color: lightgray;
+    border: 2px solid #808080;
+    font-size: 0.875rem;
+    border-radius: 0.375rem;
+}
+
+/* Specific Styles for Comments Input */
+#Comments {
+    width: 130%;
+    max-width: 950px;
+    height: 120px;
+    text-align: center;
+    line-height: 150px;
+    font-size: 20px;
+    background-color: lightgray;
+    border: 2px solid #808080;
+    border-radius: 0.375rem;
+}
+
+/* Specific Styles for Feedback Date Input */
+#FeedbackDate {
+    width: 60%;
+    max-width: 200px;
+    height: 45%;
+    background-color: lightgray;
+    border: 2px solid #808080;
+    font-size: 0.875rem;
+    border-radius: 0.375rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .rfq-status-select select,
+    .rfq-date input,
+    #Feed,
+    #Comments,
+    #FeedbackDate {
+        width: 100%;
+        max-width: none;
+    }
+}

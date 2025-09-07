@@ -1,0 +1,170 @@
+﻿@model Web_Application_PFE.ViewModels.AddRFQViewModel
+@Html.AntiForgeryToken()
+
+
+
+<!-- Right Column - Content -->
+<div class="content-card">
+    <div class="document-table-header">
+        <div class="document-header-container">
+            <!-- Titre du RFQ (à gauche) -->
+            <div class="document-name-header">
+                <div class="document-card-content">
+                    <div class="document-actions">
+                       
+                        <button class="action-button" onclick="loadDetails('@Url.Action("Details", "AddRFQ", new { id = Model.Id })')">
+                            <i class="bi bi-eye" style="font-size: 1.2rem; font-weight: bold;"></i>
+                            <span class="action-tooltip">View</span>
+                        </button>
+                        @if (User.IsInRole("Validateur"))
+                        {
+                            <button class="action-button" onclick="confirmDelete(@Model.Id)">
+
+                                <i class="bi bi-trash3-fill" style="font-size: 1.2rem; font-weight: bold;"> </i>
+                                <span class="action-tooltip">Delete</span>
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Détails du RFQ (au centre) -->
+            <div class="document-card-header">
+                <div class="document-header-content">
+                    <div class="document-icon-wrapper">
+                        <img src="/images/RFQ.png" alt="Logo" class="w-8 h-11">
+                    </div>
+                    <div>
+                        <div class="document-title">
+                            <span class="document-number">RFQ N°0  @Html.DisplayFor(model => model.RFQId)</span>
+                        </div>
+                        <div class="document-description">Format RFQ</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Date de création (à droite) -->
+            <div class="document-date"> @Html.DisplayFor(model => model.DateCreation)</div>
+        </div>
+    </div>
+
+
+    <div class="status-indicator" style="  margin-top: 1rem;"> <h4> @Html.DisplayFor(model => model.Statut)</h4></div>
+    <br />
+
+    <div class="flex flex-col gap-3 transform -translate-y-4">
+
+        <!-- Client Section -->
+        <div class="form-section-container p-6 border-2 border-gray-300 rounded-md shadow-sm">
+            <div class="inline-block px-3 py-1 mb-1 mt-1 text-sm font-medium bg-muted rounded-md">
+                Client
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-1">
+
+                <div class="space-y-2">
+                    <label for="sales" class="block text-sm font-medium text-gray-700">Sales</label>
+
+                    <input id="sales"
+                           name="sales"
+                           value=" @Html.DisplayFor(model => model.Sales)"
+                           style="width: 90%; max-width: 250px;height:45%"
+                           class="input" readonly />
+
+                </div>
+                <div class="space-y-2">
+                    <label for="customer" class="block text-sm font-medium text-gray-700">Customer</label>
+
+                    <input id="customer"
+                           name="customer"
+                           value=" @Html.DisplayFor(model => model.Customer)"
+                           style="width: 90%; max-width: 250px;height:45%"
+                           class="input" readonly />
+
+                </div>
+                <div class="space-y-2">
+                    <label for="cqNumber" class="block text-sm font-medium text-gray-700">CQ #</label>
+
+                    <input id="cqNumber"
+                           name="cqNumber"
+                           value=" @Html.DisplayFor(model => model.ClientId)"
+                           style="width: 90%; max-width: 250px;height:45%"
+                           class="input" readonly />
+
+                </div>
+            </div>
+        </div>
+
+        <!-- RFQ Section -->
+        <div class="form-section-container p-6 border-2 border-gray-300 rounded-md shadow-sm">
+
+            <div class="inline-block px-3 py-1 mb-1 text-sm font-medium bg-muted rounded-md">
+
+                RFQ
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3">
+
+                <div class="space-y-2">
+                    <label for="quoteName" class="field-label">Quote Name</label>
+                    <input id="quoteName"
+                           name="quoteName"
+                           value=" @Html.DisplayFor(model => model.QuoteName)"
+                           style="width: 90%; max-width: 250px;height:45%"
+                           class="input" readonly />
+
+                </div>
+                <div class="space-y-2">
+                    <label for="marketSegment" class="block text-sm font-medium text-gray-700">Market Segment</label>
+
+                    <input id="marketSegment"
+                           name="marketSegment"
+                           value=" @Html.DisplayFor(model => model.MarketSegment)"
+                           style="width: 90%; max-width: 250px;height:45%"
+                           class="input" readonly />
+
+                </div>
+                <div class="space-y-2">
+                    <label for="refNumber" class="block text-sm font-medium text-gray-700">Number of Ref to be quoted</label>
+
+                    <input id="refNumber"
+                           name="refNumber"
+                           value=" @Html.DisplayFor(model => model.NumberOfRefToBeQuoted)"
+                           style="width: 90%; max-width: 250px;height:45%"
+                           class="input" readonly />
+
+
+                </div>
+                <div class="space-y-2">
+                    <label for="sopDate" class="block text-sm font-medium text-gray-700">SOP Date</label>
+
+
+                    <input id="sopDate"
+                           name="sopDate"
+                           value=" @Html.DisplayFor(model => model.SOPDate)"
+                           style="width: 90%; max-width: 250px;height:45%"
+                           class="w-full input" readonly />
+
+                </div>
+                <div class="space-y-2">
+                    <label for="maxVolume" class="block text-sm font-medium text-gray-700">Max Volume</label>
+
+                    <input id="maxVolume"
+                           name="maxVolume"
+                           value=" @Html.DisplayFor(model => model.MaxVolume)"
+                           style="width: 90%; max-width: 250px;height:45%"
+                           class="w-full input" readonly />
+
+                </div>
+                <div class="space-y-2">
+                    <label for="estimatedVolume" class="block text-sm font-medium text-gray-700">Estimated Volume</label>
+
+                    <input id="estimatedVolume"
+                           name="estimatedVolume"
+                           value=" @Html.DisplayFor(model => model.EstimatedVolume)"
+                           style="width: 90%; max-width: 250px;height:45%"
+                           class="w-full input" readonly />
+                </div>
+            </div>
+        </div>
+        </>
+    </div>
+</div>

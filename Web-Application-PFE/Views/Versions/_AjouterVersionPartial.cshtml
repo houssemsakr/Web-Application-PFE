@@ -1,0 +1,116 @@
+﻿@model Web_Application_PFE.ViewModels.AddRFQViewModel
+@{
+    Layout = null;
+}
+
+<div class="dashboard-card2">
+    <h6 class="centered-bold-title" style="margin-top: 0.1px;">Sélectionner la RFQ</h6>
+    <div>
+        <div class="search-bar" style="width: 100%;height: 30px">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="searchInputAjouter" placeholder="Rechercher par RFQ ID" aria-label="Rechercher">
+        </div>
+        <!-- Existing client-side error message div -->
+        <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+
+        <br />
+        <div>
+            <div>
+                <div class="document-title">
+                    <span>Documents</span>
+                    <div class="blue-line"></div>
+                </div>
+            </div>
+            <br />
+
+            <div class="document-table-header2">
+                <div class="document-header-container">
+                    <div class="document-name-header">
+                        <div class="document-card-content">
+                            <div class="document-name-header" style="margin-bottom:0px;">
+                                <i data-feather="file" class="w-98 h-8 text-wihte-400"></i>
+                                <span style="color: black; font-weight: normal;">Nom</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="document-card-header">
+                        <div class="document-header-content">
+                            <span style="color: black; font-weight: normal;">Statut</span>
+                        </div>
+                    </div>
+
+                    <div class="document-date5">
+                        <span style="color: black; font-weight: normal;">Date de création</span>
+                    </div>
+                </div>
+            </div>
+            <div class="blue-line2"></div>
+            <br /><br />
+            <!-- Replace the existing TempData block with this -->
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div id="tempDataErrorMessage" class="alert alert-danger">
+                    @TempData["ErrorMessage"]
+                </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const errorMessage = document.getElementById('tempDataErrorMessage');
+                        if (errorMessage) {
+                            errorMessage.style.display = 'block';
+                            setTimeout(function () {
+                                errorMessage.style.display = 'none';
+                            }, 2000);
+                        }
+                    });
+                </script>
+            }
+            <div id="rfqInfoContainer" style="display: none;">
+                <div class="document-table-header">
+                    <div class="document-header-container">
+                        <div class="document-name-header">
+                            <div>
+                                <div class="document-title" style="margin-left:20px;">
+                                    <div class="document-header-content">
+                                        <div class="document-icon-wrapper">
+                                            <img src="/images/RFQ.png" alt="Logo" class="w-8 h-11">
+                                        </div>
+                                        <div>
+                                            <div class="document-title">
+                                                <span class="document-number" id="rfqNumberDisplay">RFQ N°00 @Html.DisplayFor(model => model.RFQId)</span>
+                                            </div>
+                                            <div class="document-description">Format RFQ</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="document-card-header">
+                            <h3 id="statut-text" style="font-size:22px; font-weight: normal;">@Html.DisplayFor(model => model.WorkingStatus)</h3>
+                        </div>
+
+                        <div class="document-date" id="dateCreationDisplay">
+                            @Html.DisplayFor(model => model.DateCreation)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="rfqDetailsAjouter" style="display: none;">
+                 @if (!User.IsInRole("Lecteur"))
+    {
+                <form asp-action="Ajouter_versions" method="get">
+                    <input type="hidden" name="rfqId" id="rfqIdAjouter" />
+                    <button type="submit" class="add-version">
+                        <div class="add-button-icon">
+                                <i class="bi bi-plus-circle-fill" style="font-size: 1.5rem"></i>
+                        </div>
+                        <span class="add-button-text">Ajouter une version</span>
+                    </button>
+                </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>

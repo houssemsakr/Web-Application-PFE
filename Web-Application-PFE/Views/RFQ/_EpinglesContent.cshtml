@@ -1,0 +1,122 @@
+﻿@model IEnumerable<Web_Application_PFE.Models.Epingle>
+@{
+    // Définir Model comme une liste vide si null
+    var epingles = Model ?? new List<Web_Application_PFE.Models.Epingle>();
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Gestion-RFQ.css" />
+}
+<!-- Right Column - Alerts -->
+<div class="search-bar" style="height:35px">
+    <i class="fa-solid fa-search"></i>
+    <input type="text" id="searchInput" placeholder="Rechercher" aria-label="Rechercher" style="height:20px">
+</div>
+<br />
+<div>
+    @if (epingles.Any())
+    {
+        <table class="table" id="rfqTable">
+            <thead>
+                <tr>
+                    <th scope="col" style="width: 70%; font-weight: normal;">
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            &nbsp;&nbsp;<i data-feather="file" class="w-8 h-8 text-white-500"></i>&nbsp;&nbsp;
+                            <span>Nom</span>
+                        </div>
+                    </th>
+                    <th scope="col" style="width: 30%; font-weight: normal;margin-top:92px">Date de création</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in epingles)
+                {
+
+                    <tr>
+                        <td>
+                            <div class="document-card" style="animation-delay: 0ms;">
+                                <div class="document-card-header">
+                                    <div class="document-header-content">
+                                        <div class="document-icon-wrapper">
+                                            <div>
+                                                <img src="/images/RFQ.png" alt="Logo" class="w-8 h-11">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="document-title">
+                                                <span class="document-number" style="color: black;">
+                                                    RFQ N°0   @if (item.RFQId.HasValue && item.RFQId > 0)
+                                                    {
+                                                        @item.RFQId
+                                                    }
+                                                    else
+                                                    {
+                                                        <text>RFQ N°@item.Id</text>
+                                                    }
+                                                </span>
+                                            </div>
+                                            <div class="document-description"> Format RFQ</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="document-card-content">
+
+
+                                    <div class="document-actions">
+
+
+                                        <a href="@Url.Action("DetailsEpingle", "RFQ", new { id = item.Id })" class="action-button">
+
+
+                                            <i class="bi bi-eye"></i>
+                                            <span class="action-tooltip">View</span>
+                                        </a>
+
+                                        <button class="action-button" onclick="detachEpingle(@item.Id)">
+                                            <i class="bi bi-pin-fill"></i>
+                                            <span class="action-tooltip">Attach Files</span>
+                                        </button>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="document-card" style="animation-delay: 0ms;">
+                                <div class="document-card-header">
+                                    <span style="font-size:14px">   @item.DateCreation?.ToString("dd/MM/yyyy HH:mm")    </span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div>
+            <div class="document-title">
+                <span style="color: black;font-weight:600">Documents</span>
+                <div class="blue-line"></div>
+            </div>
+        </div>
+
+        <div class="document-table-header">
+            <div class="document-name-header">
+                <i data-feather="file" class="w-98 h-8 text-wihte-500"></i>&nbsp;&nbsp;&nbsp;&nbsp;
+                <span>Nom</span>
+            </div>
+            <div class="document-date">Date de création</div>
+        </div>
+        <div class="blue-line2"></div>
+        <br />
+        <div>
+            Epinglez les fichiers de votre choix pour les retrouver facilement plus tard. Cliquez sur l'icone d'épingle qui s'affiche
+            lorsque vous placez le pointeur sur un fichier.
+        </div>
+        <br />
+        <div><strong>Aucun document épinglé</strong></div>
+    }
+</div>

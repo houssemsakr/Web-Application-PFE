@@ -1,0 +1,194 @@
+﻿
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+main {
+    padding-bottom: 0 !important;
+}
+.pb-3 {
+    width: 91%;
+    margin-left: 116px;
+    margin-top: 2px;
+}
+/* Dashboard Content */
+.dashboard-content {
+    flex: 1;
+    padding: 1rem;
+    margin-top: 10px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns:  100%;
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.dashboard-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+}
+
+.dashboard-card2 {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* Espace entre les deux classes */
+    top:99px;
+    width:95%
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #2563eb;
+}
+.class1 {
+    background-color: lightgrey;
+    height: 180px;
+    width: 100%; /* Ajustez la largeur si nécessaire */
+}
+
+/* Styles pour card2-class2 */
+.card2-class2 {
+    display: flex;
+    flex-direction: column; /* Empile l'icône et le texte */
+    align-items: center; /* Centre horizontalement */
+    justify-content: center;
+    height: 150px; /* Ajuste la hauteur selon tes besoins */
+    width: 97%; /* Largeur de la carte */
+    background-color: lightgrey; /* Fond gris clair */
+    border-radius: 10px; /* Coins arrondis */
+    cursor: pointer; /* Change le curseur pour indiquer un clic */
+}
+
+    .card2-class2 svg {
+        width: 50px; /* Taille de l'icône */
+        height: 50px;
+        fill: blue; /* Couleur de l'icône */
+    }
+
+    .card2-class2 span {
+        margin-top: 10px; /* Espace entre l'icône et le texte */
+        font-size: 14px;
+        font-weight: bold; /* Texte en gras */
+        color: blue; /* Couleur du texte */
+    }
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+.content h2 {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 600;
+    margin-left: 72px;
+    margin-top: 19px
+}
+
+.format-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.format-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.checkbox-container {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #007AFF;
+    border-radius: 4px;
+    margin-right: 10px;
+    position: relative;
+}
+
+    .checkbox-container.checked::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 6px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
+
+.checkbox-label {
+    font-size: 14px;
+    color: #333;
+    font-weight: 600;
+}
+
+.download-button {
+    background-color: #007AFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 160%;
+    margin-bottom: 20px;
+    font-weight: 600;
+    height: 32px
+}
+
+.generate-report {
+    margin-top: 20px;
+}
+
+.generate-link {
+    text-decoration: none;
+    color: #007AFF;
+    font-size: 16px;
+}
+/* Styles pour le conteneur parent */
+.download-container {
+    display: flex;
+    align-items: center; /* Alignement vertical au centre */
+    gap: 260px; /* Espace entre les éléments */
+    margin-left:200px
+}
+/* Styles pour le groupe de téléchargement (icône + bouton) */
+.download-group {
+    display: flex;
+    flex-direction: column; /* Alignement vertical */
+    align-items: center; /* Centrage horizontal */
+    gap: 1px; /* Espace entre l'icône et le bouton */
+}

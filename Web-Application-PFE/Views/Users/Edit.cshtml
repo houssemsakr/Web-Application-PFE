@@ -1,0 +1,76 @@
+﻿@model Web_Application_PFE.ViewModels.UserViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/View_Par_Statut.csss" />
+}
+<main role="main" class="pb-3">
+
+    <div class="container" style="margin-left:63px">
+       
+        <form asp-action="Edit" enctype="multipart/form-data">
+          <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+          <input type="hidden" asp-for="Id" />
+            <div class="row">
+                <!-- Colonne de gauche (4 champs) -->
+                <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Nom" class="control-label"style="font-weight:bold;margin-bottom:5px"></label>
+                    <input asp-for="Nom" class="form-control" />
+                    <span asp-validation-for="Nom" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                        <label asp-for="Prenom" class="control-label" style="font-weight:bold;margin-top:5px"></label>
+                    <input asp-for="Prenom" class="form-control" />
+                    <span asp-validation-for="Prenom" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                        <label asp-for="Email" class="control-label" style="font-weight:bold;margin-top:5px"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                        <label asp-for="Role" class="control-label" style="font-weight:bold;margin-top:5px"></label>
+                    <select asp-for="Role" class="form-control" required>
+                        <option selected disabled value="">Choisissez...</option>
+                        <option>Admin</option>
+                        <option>Ingénieur RFQ</option>
+                        <option>Validateur</option>
+                        <option>Lecteur</option>
+                    </select>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                        <label asp-for="ProfileImage" class="control-label" style="font-weight:bold;margin-top:5px"></label>
+                    <input type="file" asp-for="ProfileImage" class="form-control" />
+                    <span asp-validation-for="ProfileImage" class="text-danger"></span>
+
+                    @if (!string.IsNullOrEmpty(Model.ExistingImagePath))
+                    {
+                        <img src="@Model.ExistingImagePath" class="img-thumbnail" width="200" />
+                        <input type="hidden" asp-for="ExistingImagePath" />
+                    }
+                </div>
+
+                <div class="form-group" style="margin-top:10px">
+                    <input type="submit" value="Enregistrer" class="btn btn-primary" />
+                    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+                </div>
+                </div>
+            </div>
+        </form>
+      
+    </div>
+</main>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,552 @@
+﻿@inject Web_Application_PFE.Services.Interfaces.IDashboardService DashboardService
+@using Microsoft.AspNetCore.Identity
+@using Web_Application_PFE.Models
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "_Layout";
+
+    // Initialize with default values
+    var nom = "Utilisateur inconnu";
+    var prenom = "Non défini";
+    var photoPath = "/images/person.jpg";
+    var role = "Aucun rôle";
+    var isAdmin = false;
+    var isValidateur = false;
+
+    // Retrieve user info if signed in
+    if (SignInManager.IsSignedIn(User))
+    {
+        var user = await UserManager.GetUserAsync(User);
+        if (user != null)
+        {
+            nom = user.Nom ?? nom;
+            prenom = user.Prenom ?? prenom;
+            photoPath = string.IsNullOrEmpty(user.imagePath) ? 
+                photoPath : 
+                user.imagePath.StartsWith("/") ? user.imagePath : $"/images/{user.imagePath}";
+
+            var roles = await UserManager.GetRolesAsync(user);
+            role = roles.FirstOrDefault() ?? role;
+            isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
+            isValidateur = await UserManager.IsInRoleAsync(user, "Validateur");
+        }
+    }
+
+    var dashboardStats = DashboardService.GetDashboardStats();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title> RFQ - PLATEFORME </title>
+
+    <link href="~/css/tailwind.min.css" rel="stylesheet" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/all.min.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/Style.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/bootstrap-icons.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/sweetalert2.min.css" asp-append-version="true">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+
+    <script src="~/js/lucide.min.js" asp-append-version="true" defer></script>
+    <script src="~/js/feather.min.js" asp-append-version="true" defer></script>
+
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <div class="min-h-screen bg-gray-100 flex flex-col">
+        <!-- Main Navigation -->
+        <nav class="bg-blue-500 text-white py-1 px-4 w-full">
+            <!-- First row of navbar -->
+            <div class="flex justify-between items-center w-full">
+                <div class="flex items-center gap-9">
+                    <button class="ghost-btn text-white">
+                        <span class="sr-only">Menu</span> ≡
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <img src="/images/logo_transparent.png" alt="Logo" class="w-9 h-5">
+                    <h1 class="text-base" style="margin-top:4px; margin-left:15px">RFQ - PLATEFORME</h1>
+                </div>
+
+                <div class="flex items-center gap-3 nav-right">
+                    <!-- Buttons to the left of the photo -->
+                    <div class="flex items-center gap-2">
+                        <div class="relative">
+                            <button>
+                                <div class="d-flex justify-content-center align-items-center rounded-circle" style="width: 28px; height: 28px; border: 1px solid white;">
+                                    <i class="bi bi-bell" style="font-size: 1.1rem; transform: scale(0.8);"></i>
+                                </div>
+                            </button>
+                        </div>
+                        <!-- Mail icon -->
+                        <button class="ghost-btn text-white p-1 border-2 border-white rounded-full">
+                            <div class="d-flex justify-content-center align-items-center rounded-circle" style="width: 28px; height: 28px; border: 1px solid white;">
+                                <i class="bi bi-envelope" style="font-size: 1.1rem; transform: scale(0.8);"></i>
+                            </div>
+                        </button>
+                        <!-- Alert icon -->
+                        <button class="ghost-btn text-white p-1 border-2 border-white rounded-full">
+                            <div class="d-flex justify-content-center align-items-center rounded-circle" style="width: 28px; height: 28px; border: 1px solid white;">
+                                <i class="bi bi-exclamation-triangle" style="font-size: 1.1rem; transform: scale(0.8);"></i>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Photo in the center -->
+                    <div class="relative">
+                        <div id="profile-menu" class="cursor-pointer">
+                            <i class="bi bi-person-fill" style="font-size: 2.2rem;"></i>
+                        </div>
+                        <div id="dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden">
+                            <form class="w-full" asp-area="Identity" asp-page="/Account/Manage/ChangePassword" method="post">
+                                <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Paramètre
+                                </button>
+                            </form>
+                            <form class="w-full" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                                <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Text to the right of the photo -->
+                    <div class="text-right">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <div class="text-right">
+                                <span class="block text-white" style="font-weight:100;font-size:9px;margin-right:80px">@role</span>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-xs font-bold text-white" style="font-weight:548;font-size:13px">@nom</span>
+                                    <span class="text-xs font-bold text-white" style="font-weight:547;font-size:13px">@prenom</span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Second row of navbar -->
+            <div class="flex justify-between items-center mt-2 navbar-second-row">
+                <!-- Left element -->
+                <div class="flex items-center gap-1 ml-40 " style="margin-left:240px;">
+                    <button class="ghost-btn text-white py-1 px-1 flex items-center gap-1" data-title="Accueil" onclick="updateTitle(this)">
+                        <i class="bi bi-house-fill" style="font-size: 1.2rem;"></i>
+                        <a href="@Url.Action("Index", "Home")" style="text-decoration: none; color: inherit;">
+                            <span style="font-weight:400;font-size:12px">Accueil</span>
+                        </a>
+                    </button>
+
+                    <i data-feather="chevron-right" class="w-7 h-7 text-white-500"></i>
+                    <span style="font-weight:400;font-size:12px;margin-top:3px" id="page-title">x</span>
+                </div>
+
+                <div id="route-data"
+                     data-controller="@ViewContext.RouteData.Values["Controller"]"
+                     data-action="@ViewContext.RouteData.Values["Action"]"
+                     data-area="@ViewContext.RouteData.Values["Area"]">
+                </div>
+
+
+
+                <!-- Right element -->
+                <div class="flex items-center gap-2 ml-auto">
+                    <button class="period-button active">AUJ</button>
+                    <button class="period-button">7 jrs</button>
+                    <button class="period-button">15 jrs</button>
+                    <button class="period-button">30 jrs</button>
+                    <button class="period-button">90 jrs</button>
+                </div>
+            </div>
+
+            <!-- Third row of navbar -->
+            <div class="stats-container mt-3" style="margin-left:243px;">
+                <div class="flex items-center gap-4">
+                    <div class="stat-card bg-transparent p-4 rounded-lg shadow-md relative">
+                        <div class="absolute top-0 left-4 flex flex-col items-center gap-2 text-white-600">
+                            <div class="text-4xl">⚠️</div>
+                            <div class="text-base font-bold">Alertes</div>
+                        </div>
+                        <div class="absolute bottom-0 right-4 text-3xl font-bold text-white-600">@dashboardStats?.PendingCount</div>
+                    </div>
+
+                    <div class="stat-card bg-transparent p-4 rounded-lg shadow-md relative">
+                        <div class="absolute bottom-0 left-4 flex flex-col items-center gap-2 text-white-600">
+                            <div class="text-4xl">🏅</div>
+                            <div class="text-base font-bold">Réalisation</div>
+                        </div>
+                        <div class="absolute bottom-0 right-4 text-3xl font-bold text-white-600">@dashboardStats?.WinCount</div>
+                    </div>
+                    <div class="stat-card bg-transparent p-4 rounded-lg shadow-md relative">
+                        <div class="absolute bottom-0 left-4 flex flex-col items-center gap-2 text-white-600">
+                            <div class="text-4xl">📋</div>
+                            <div class="text-base font-bold">Tableau de bord</div>
+                        </div>
+                        <div class="absolute bottom-0 right-4 text-3xl font-bold text-white-600">+ @dashboardStats?.Sum</div>
+                    </div>
+
+                    <button class="add-button">
+                        <i data-feather="plus" class="w-9 h-9 text-blue-500"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-2 mt-[-100px]">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="profile">
+                <div class="avatar">
+                    <img src="@photoPath" alt="Photo de profil" />
+                </div>
+                <div class="flex items-center gap-1">
+                    <span class="text-base text-black">@nom</span>
+                    <span class="text-base text-black">@prenom</span>
+                </div>
+
+                <br />
+                <div class="icon-container flex justify-center items-center gap-2">
+                    <div class="flex space-x-2">
+                        <!-- Grid Icon -->
+                        <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-green-50 p-2">
+                            <i class="bi bi-grid-3x3" style="color:limegreen;font-size: 1rem; transform: scale(1.2);"></i>
+                        </div>
+
+                        <!-- Mail Icon -->
+                        <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-blue-50 p-2">
+                            <i class="bi bi-envelope" style="font-size: 1.5rem;color: #3b82f6;text-shadow: 0 0 0.5px #3b82f6;"></i>
+                        </div>
+
+                        <!-- Notification Button -->
+                        <div class="relative" style="top:-4px">
+                            <button id="notification-btn" class="ghost-btn text-white p-1 border-2 border-white rounded-full">
+                                <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-red-50 p-2">
+                                    <i class="bi bi-bell-fill" style="font-size: 1.4rem;color: red;text-shadow: 0 0 0.5px red;"></i>
+                                    <span id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center hidden">0</span>
+                                </div>
+                            </button>
+
+                            <!-- Notification Dropdown -->
+                            <div id="notification-dropdown" class="absolute mt-2 bg-white rounded-md shadow-lg z-50 hidden" style="left: 0; width: 230px;">
+                                <div class="p-3 border-b">
+                                    <h3 class="font-semibold text-gray-800">Notifications</h3>
+                                </div>
+                                <div id="notification-list" class="max-h-96 overflow-y-auto">
+                                    <div class="p-4 text-center text-gray-500">
+                                        Chargement des notifications...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="overline"></p>
+            </div>
+
+            <ul class="menu">
+                <hr>
+                @if (User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Audit" asp-action="Journal"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Audit" && ViewContext.RouteData.Values["Action"]?.ToString() == "Journal" ? "active" : "")">
+                            <i class="bi bi-activity" style="font-size: 1.5rem; color: #3b82f6; font-weight: bold;"></i>
+                            &nbsp;Journal d'activité
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole("Validateur") || User.IsInRole("Ingénieur RFQ") || User.IsInRole("Lecteur"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Home" asp-action="Index"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">
+                            <i class="bi bi-house" style="font-size: 1rem; font-weight: bold;"></i> &nbsp;Tableau de bord
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-area="" asp-controller="RFQ" asp-action="Rfq"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "RFQ" && ViewContext.RouteData.Values["Action"]?.ToString() == "Rfq" ? "active" : "")">
+                            <i class="bi bi-folder2" style="font-size: 1rem; font-weight: bold;"></i> &nbsp;RFQ
+                        </a>
+                    </li>
+                }
+
+                @if (User.IsInRole("Validateur") || User.IsInRole("Lecteur"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Statistiques" asp-action="Statistiques"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Statistiques" && ViewContext.RouteData.Values["Action"]?.ToString() == "Statistiques" ? "active" : "")">
+                            <i class="bi bi-bar-chart" style="font-size: 1rem; font-weight: bold;"></i>&nbsp;Statistiques
+                        </a>
+                    </li>
+                }
+                <hr class="profile-line">
+                @if (User.IsInRole("Validateur") || User.IsInRole("Ingénieur RFQ"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="AddRFQ" asp-action="Gestion_RFQ"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "AddRFQ" && ViewContext.RouteData.Values["Action"]?.ToString() == "Gestion_RFQ" ? "active" : "")">
+                            <i class="bi bi-card-list"></i>
+                            &nbsp;Gestion RFQ
+                        </a>
+                    </li>
+                }
+
+                @if (User.IsInRole("Validateur") || User.IsInRole("Ingénieur RFQ") || User.IsInRole("Lecteur"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Suivi_RFQ" asp-action="SuiviRFQ"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Suivi_RFQ" && ViewContext.RouteData.Values["Action"]?.ToString() == "SuiviRFQ" ? "active" : "")">
+                            <i class="bi bi-eye" style="font-size: 1rem; font-weight: bold;"></i>&nbsp;Suivi RFQ
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="" asp-controller="Versions" asp-action="Ajouter_une_version"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Versions" && ViewContext.RouteData.Values["Action"]?.ToString() == "Ajouter_une_version" ? "active" : "")">
+                            <i class="bi bi-book"></i>
+                            &nbsp;Versions
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Users" asp-action="Index"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Users" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">
+                            <i class="bi bi-people-fill"></i>
+                            &nbsp;Gestion des utilisateurs
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Versions" asp-action="Affiche_Versions"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Versions" && ViewContext.RouteData.Values["Action"]?.ToString() == "Affiche_Versions" ? "active" : "")">
+                            <i class="bi bi-layers"></i>
+                            &nbsp;Gestion des Versions
+                        </a>
+                    </li>
+                }
+
+                @if (User.IsInRole("Validateur") || User.IsInRole("Lecteur"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Rapport" asp-action="Rapport"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Rapport" && ViewContext.RouteData.Values["Action"]?.ToString() == "Rapport" ? "active" : "")">
+                            <i class="bi bi-file-earmark"></i> &nbsp;Rapport
+                        </a>
+                    </li>
+                }
+            </ul>
+        </aside>
+    </div>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/jquery-3.6.0.min.js" asp-append-version="true" defer></script>
+    <script src="~/js/bootstrap.bundle.min.js" asp-append-version="true" defer></script>
+    <script src="~/js/feather.min.js" asp-append-version="true" defer></script>
+    <script src="~/js/sweetalert2.all.min.js" asp-append-version="true" defer></script>
+    <script src="~/js/site.js" asp-append-version="true" defer></script>
+
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            // Initialisation de Feather Icons
+            if (feather) {
+                feather.replace();
+            }
+
+            // Initialisation de Lucide Icons
+            if (lucide) {
+                lucide.createIcons();
+            }
+
+
+            // Profile menu toggle
+            const profileMenu = document.getElementById('profile-menu');
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            profileMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('hidden');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!profileMenu.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                    dropdownMenu.classList.add('hidden');
+                }
+            });
+
+            // Notification handling
+            const notificationBtn = document.getElementById('notification-btn');
+            const notificationDropdown = document.getElementById('notification-dropdown');
+            const notificationList = document.getElementById('notification-list');
+            const notificationBadge = document.getElementById('notification-badge');
+
+            notificationBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                loadNotifications();
+                notificationDropdown.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', function() {
+                notificationDropdown.classList.add('hidden');
+            });
+
+            notificationDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+
+            function loadNotifications() {
+                fetch('/AddRFQ/GetNotifications')
+                    .then(response => response.json())
+                    .then(data => {
+                        updateNotificationList(data);
+                        updateNotificationBadge(data);
+                    })
+                    .catch(error => {
+                        console.error('Error loading notifications:', error);
+                        notificationList.innerHTML = `
+                            <div class="p-4 text-center text-red-500">
+                                Erreur lors du chargement des notifications
+                            </div>
+                        `;
+                    });
+            }
+
+            function updateNotificationList(notifications) {
+                if (notifications.length === 0) {
+                    notificationList.innerHTML = `
+                        <div class="p-4 text-center text-gray-500">
+                            Aucune notification disponible
+                        </div>
+                    `;
+                    return;
+                }
+
+                notificationList.innerHTML = notifications.map(notification => {
+                    let message = '';
+                    if (notification.status === "En attente de Validation") {
+                        message = `
+                            <span class="font-semibold text-blue-600">${notification.userRole}</span>
+                            <span class="font-semibold">${notification.userName}</span> a créé une nouvelle RFQ
+                            <span class="font-bold text-indigo-700">N°${notification.rfqnumber}</span>
+                        `;
+                    } else if (notification.status === "Validée") {
+                        message = `
+                            <span class="font-semibold text-green-600">Validateur</span>
+                            <span class="font-semibold">${notification.userName}</span> a validé la RFQ
+                            <span class="font-bold text-indigo-700">N°${notification.rfqnumber}</span>
+                        `;
+                    } else if (notification.status === "Non Validée") {
+                        message = `
+                            <span class="font-semibold text-red-600">Validateur</span>
+                            <span class="font-semibold">${notification.userName}</span> a rejeté la RFQ
+                            <span class="font-bold text-indigo-700">N°${notification.rfqnumber}</span>
+                        `;
+                    }
+
+                    return `
+                        <div class="p-3 border-b hover:bg-gray-50 cursor-pointer ${notification.isRead ? '' : 'bg-blue-50'}"
+                             onclick="markAsRead(${notification.id}, this)">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-800">
+                                        ${message}
+                                    </p>
+                                </div>
+                                <br />
+                                <span class="text-xs text-gray-400">${formatDate(notification.creationDate)}</span>
+                            </div>
+                            ${notification.comment ? `<p class="text-xs mt-1 text-gray-600">Commentaire: ${notification.comment}</p>` : ''}
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            function updateNotificationBadge(notifications) {
+                const unreadCount = notifications.filter(n => !n.isRead).length;
+                if (unreadCount > 0) {
+                    notificationBadge.textContent = unreadCount;
+                    notificationBadge.classList.remove('hidden');
+                } else {
+                    notificationBadge.classList.add('hidden');
+                }
+            }
+
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' ' +
+                       date.toLocaleDateString([], { day: '2-digit', month: '2-digit' });
+            }
+
+            window.markAsRead = function(id, element) {
+                fetch('/AddRFQ/MarkNotificationAsRead?id=' + id, {
+                    method: 'POST'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        element.classList.remove('bg-blue-50');
+                        const currentCount = parseInt(notificationBadge.textContent);
+                        if (currentCount > 1) {
+                            notificationBadge.textContent = currentCount - 1;
+                        } else {
+                            notificationBadge.classList.add('hidden');
+                        }
+                    }
+                })
+                .catch(error => console.error('Error marking as read:', error));
+            }
+
+            loadNotifications();
+            setInterval(loadNotifications, 30000);
+
+            // Set page title based on controller/action
+            (function() {
+        @{
+            var controller = ViewContext.RouteData.Values["Controller"]?.ToString();
+            var action = ViewContext.RouteData.Values["Action"]?.ToString();
+            var title = "Tableau de bord";
+
+            if (controller == "Home" && action == "Index")
+                title = "Tableau de bord";
+            else if (controller == "AddRFQ" && action == "Create")
+                title = "Créer nouvelle RFQ";
+            else if (controller == "AddRFQ" && action == "Gestion_RFQ")
+                title = "Gestion RFQ";
+        }
+
+                const titleElement = document.getElementById('page-title');
+                if (titleElement) {
+                    titleElement.textContent = '@title';
+                }
+            })();
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

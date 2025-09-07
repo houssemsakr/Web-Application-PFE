@@ -1,0 +1,330 @@
+﻿@{
+    ViewData["Title"] = "Gestion_RFQ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Gestion-RFQ.css" />
+
+}
+
+<main role="main" class="pb-3">
+    <div class="dashboard-content" style="height:100px; margin-right:-144px">
+        <div class="dashboard-grid" style="margin-top:-26px;">
+            <!-- Partie fixe - Menu de navigation -->
+            <div class="dashboard-card left-column-fixed" style="height:250px;margin-left:42px">
+                <div class="card-header">
+                    <img src="~/images/PRFQ.png" alt="folder" class="w-7 h-9 inline-block">
+                    <h2 class="card-title">Gestion RFQ</h2>
+                </div>
+
+                <ul class="menu">
+
+                    <li>
+                        <a href="#" class="menu-item active @(ViewContext.RouteData.Values["Action"]?.ToString() == "PartialView1" ? "active" : "")"
+                           onclick="loadPartialView('@Url.Action("PartialView1", "AddRFQ")')"
+                           data-action="PartialView1">
+                            <i data-feather="file-text" class="w-4 h-4 mr-2"></i>Créer nouvelle RFQ
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="menu-item @(ViewContext.RouteData.Values["Action"]?.ToString() == "PartialView2" ? "active" : "")"
+                           onclick="loadPartialView('@Url.Action("PartialView2", "AddRFQ")')"
+                           data-action="PartialView2">
+                            <i data-feather="eye" class="w-4 h-4 mr-2"></i> &nbsp;Consulter RFQ
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Partie dynamique -->
+            <div id="dynamicContent" style=" width:680px;margin-left:21px;height:250px">
+                @* Le contenu sera chargé ici via JavaScript *@
+            </div>
+        </div>
+    </div>
+</main>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/sweetalert2.min.js" asp-append-version="true"></script>
+    <script>
+                document.addEventListener("DOMContentLoaded", function () {
+            // Initialisation des icônes
+            if (feather) {
+                feather.replace();
+            }
+            if (lucide) {
+                lucide.createIcons();
+            }
+
+            // Gestion du clic sur les éléments du menu
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    // Supprimer la classe active de tous les éléments
+                    document.querySelectorAll('.menu-item').forEach(el => {
+                        el.classList.remove('active');
+                    });
+
+                    // Ajouter la classe active à l'élément cliqué
+                    this.classList.add('active');
+
+                    // Mettre à jour l'URL dans l'historique
+                    const action = this.getAttribute('data-action');
+                    history.pushState(null, '', `?action=${action}`);
+                });
+            });
+
+            // Charger la vue par défaut au démarrage
+            const defaultAction = '@Url.Action("PartialView1", "AddRFQ")';
+            loadPartialView(defaultAction);
+
+            // Gérer le bouton retour
+            window.addEventListener('popstate', function() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const action = urlParams.get('action');
+                if (action) {
+                    const url = `@Url.Action("${action}", "AddRFQ")`;
+                    loadPartialView(url);
+
+                    // Mettre à jour la classe active
+                    document.querySelectorAll('.menu-item').forEach(item => {
+                        item.classList.remove('active');
+                        if (item.getAttribute('data-action') === action) {
+                            item.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+
+        function loadPartialView(url) {
+            console.log("Loading:", url);
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network error');
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('dynamicContent').innerHTML = html;
+                    if (feather) feather.replace();
+                    if (lucide) lucide.createIcons();
+
+                    if (url.includes('PartialView2')) {
+                        initSearchFunctionality();
+                    }
+
+                    // Mettre à jour l'action dans l'URL
+                    const action = url.includes('PartialView2') ? 'PartialView2' : 'PartialView1';
+                    history.replaceState(null, '', `?action=${action}`);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('dynamicContent').innerHTML = `
+                        <div class="error">
+                            Erreur de chargement: ${error.message}
+                        </div>`;
+                });
+        }
+
+        function loadDetailsView(url) {
+            console.log("Loading details:", url); // Debug
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network error');
+                    return response.text();
+                })
+                .then(html => {
+                    console.log("Details HTML received:", html.length); // Debug
+                    document.getElementById('dynamicContent').innerHTML = html;
+                    if (feather) feather.replace();
+                    if (lucide) lucide.createIcons();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('dynamicContent').innerHTML = `
+                        <div class="error">
+                            Erreur de chargement des détails: ${error.message}
+                        </div>`;
+                });
+        }
+
+        function initSearchFunctionality() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchText = this.value.toLowerCase();
+                    const rows = document.querySelectorAll('#rfqTable tbody tr');
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(searchText) ? '' : 'none';
+                    });
+                });
+            }
+        }
+                function loadClientCreateView(url) {
+            console.log("Attempting to load:", url);
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        console.error("HTTP error:", response.status, response.statusText);
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    console.log("Successfully loaded partial view");
+                    document.getElementById('dynamicContent').innerHTML = html;
+
+                    // Réinitialise les validateurs pour le nouveau contenu
+                    $.validator.unobtrusive.parse(document.getElementById('dynamicContent'));
+
+                    if (feather) feather.replace();
+                    if (lucide) lucide.createIcons();
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    document.getElementById('dynamicContent').innerHTML = `
+                        <div class="alert alert-danger">
+                            Erreur de chargement: ${error.message}<br>
+                            URL tentée: ${url}
+                        </div>`;
+                });
+        }
+                function loadDetails(url) {
+            window.location.href = url; // Redirige vers la page de détails
+        }
+                function confirmDelete(id) {
+            Swal.fire({
+                title: 'Êtes-vous sûr?',
+                text: "Vous ne pourrez pas annuler cette action!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Oui, supprimer!',
+                cancelButtonText: 'Annuler'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteRFQ(id);
+                }
+            });
+        }
+
+                 function deleteRFQ(id) {
+            Swal.fire({
+                title: 'Confirmation',
+                text: "Êtes-vous sûr de vouloir supprimer ce RFQ? Toutes les versions associées seront également supprimées.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Oui, supprimer!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                    fetch(`/AddRFQ/DeleteConfirmed?id=${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': token,
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(async response => {
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.detail || errorData.error);
+                        }
+                        return response.json();
+                    })
+                    .then(() => {
+                        Swal.fire(
+                            'Supprimé!',
+                            'Le RFQ et ses versions associées ont été supprimés.',
+                            'success'
+                        ).then(() => {
+                            loadPartialView('@Url.Action("PartialView2", "AddRFQ")');
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire(
+                            'Erreur!',
+                            `Échec de la suppression: ${error.message}`,
+                            'error'
+                        );
+                    });
+                }
+            });
+        }
+
+           async function pinRFQ(rfqId) {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            try {
+                // 1. Afficher le loader
+                Swal.fire({
+                    title: 'Épinglage en cours',
+                    html: 'Veuillez patienter...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                // 2. Appel API
+                const response = await fetch(`/Gestion_RFQ/PinRFQ?rfqId=${rfqId}`, {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': token,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                // 3. Traitement réponse
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || data.details || "Échec de l'opération");
+                }
+
+                // 4. Succès
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Terminé!',
+                    text: data.message,
+                    timer: 2000
+                });
+            } catch (error) {
+                // 5. Erreur
+                console.error("Erreur complète:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Échec',
+                    html: `<strong>Erreur technique</strong><br>
+                          <small>${error.message}</small>`,
+                    footer: 'Contactez le support si le problème persiste'
+                });
+            }
+        }
+           function editRFQ(id) {
+            location.href = '@Url.Action("Edit", "AddRFQ")/' + id;
+        }
+
+             function showEditNotAllowedMessage() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Accès refusé',
+                text: 'Vous ne pouvez modifier que les RFQ que vous avez créés.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3085d6'
+            });
+        }
+
+    </script>
+  
+}

@@ -1,0 +1,111 @@
+﻿@model Web_Application_PFE.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+}
+<main role="main" class="pb-3" style="margin-top: 0;margin-bottom: 10px">
+    <div class="dashboard-content" style="height:100px;margin-top: 0;">
+        <div class="dashboard-grid" style="margin-right: 0;">
+
+            <!-- Left Column - Documents -->
+            <div class="dashboard-card1">
+                <div class="card-header">
+                    <img src="~/images/images.png" alt="folder" class="w-9 h-9 inline-block">
+                    <h2 class="card-title">RFQ</h2>
+                </div>
+                <div class="search-bar">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" placeholder="Rechercher" aria-label="Rechercher">
+                </div>
+
+                <div class="tab-container">
+                    <div class="tabs">
+                        <button class="tab-button active" data-tab="recent" style="font-size:13px">Récent</button>
+                        <button class="tab-button" data-tab="pinned" style="font-size:13px">Épinglé</button>
+                        <button class="tab-button" data-tab="shared" style="font-size:13px"> Partagés avec moi</button>
+                        <div class="tab-indicator"></div>
+                    </div>
+                </div>
+                <div class="tab-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 900px; font-weight: normal;">
+                                <span style="display: flex; align-items: center; gap: 1px;font-size:12px">
+                                    <i data-feather="file" class="w-5 h-5 text-black-500"></i> Nom
+                                </span>
+                            </th>
+
+                            <th scope="col" style="width: 500px; font-weight: normal;font-size:12px">Date de modification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                           
+                        </tr>
+                        <tr>
+                            
+                        </tr>
+                    </tbody>
+                </table>
+
+                </div>
+            </div>
+            <!-- Right Column - Alerts -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <i class="fa-solid fa-triangle-exclamation text-blue-500" style="font-size: 40px;"></i>
+                    <h2 class="card-title">Alertes</h2>
+                </div>
+                <br />
+                <div class="alerts-grid">
+                    <div class="alert-card">
+                        <i class="bi bi-pin-angle-fill" style="font-size: 3.2rem; font-weight: bold;"> </i>
+                        <div class="alert-value">@Model.PinnedCount</div>
+                        <div class="alert-label">Epinglé</div>
+                    </div>
+
+                    <div class="alert-card">
+
+                        <i class="bi bi-trophy-fill" style="font-size: 3.2rem; font-weight: bold;"> </i>
+                        <div class="alert-value">@Model.WinCount</div>
+                        <div class="alert-label">Gagner</div>
+                    </div>
+
+                    <div class="alert-card">
+                        <i class="fa-solid fa-check alert-icon"></i>
+                        <div class="alert-value">@Model.ValidatedCount</div>
+                        <div class="alert-label">Complete</div>
+                    </div>
+
+                    <div class="alert-card">
+                        <i class="bi bi-x-circle-fill" style="font-size: 3.2rem; font-weight: bold;"></i>
+                        <div class="alert-value">@Model.RejectedCount</div>
+                        <div class="alert-label">Not Started</div>
+                    </div>
+
+                    <div class="alert-card">
+                        <i class="bi bi-alarm" style="font-size: 3.2rem; font-weight: bold;"></i> <div class="alert-value">@Model.PendingCount</div>
+                        <div class="alert-label">In Progress</div>
+                    </div>
+
+                    <div class="alert-card">
+                        <i class="fa-solid fa-floppy-disk alert-icon"></i>
+                        <div class="alert-value">@Model.DraftsCount</div>
+                        <div class="alert-label">Brouillons</div>
+                    </div>
+                </div>
+
+                <div class="more-link">
+                    <a href="#" class="blue-link">Plus <div class="refresh-icon">↻</div></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    feather.replace(); // Pour que Feather Icons fonctionne
+</script>

@@ -1,0 +1,407 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Web_Application_PFE.Models
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "_Layout";
+
+    // Récupérer l'utilisateur connecté
+    var user = await UserManager.GetUserAsync(User);
+    var nom = user?.Nom ?? "Utilisateur inconnu";
+    var prenom = user?.Prenom ?? "Non défini";
+    var photoPath = string.IsNullOrEmpty(user?.imagePath) ?
+    "/images/person.jpg" :
+    user.imagePath.StartsWith("/") ? user.imagePath : $"/images/{user.imagePath}";
+
+    // Récupérer le rôle de l'utilisateur
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();
+    var role = roles.FirstOrDefault() ?? "Aucun rôle";
+
+    // Vérifier si l'utilisateur a le rôle Validateur
+    var isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
+    var isValidateur = await UserManager.IsInRoleAsync(user, "Validateur");
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@ViewData["Title"] - Web_Application_PFE</title>
+
+    <link href="~/css/tailwind.min.css" rel="stylesheet" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/all.min.css" asp-append-version="true">
+ 
+
+    <link rel="stylesheet" href="~/css/Layout2.css">
+
+    <script src="/js/feather.min.js"></script>
+    <link rel="stylesheet" href="~/css/bootstrap-icons/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/bootstrap-icons.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/sweetalert2.min.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/lucide.css">
+    <script src="/js/lucide.js"></script>
+
+
+   @*  <link rel="stylesheet" href="vue4.css"> *@
+    <!-- icon -->
+    @RenderSection("Styles", required: false)
+</head>
+
+<body>
+    <div class="min-h-screen bg-gray-100 flex flex-col">
+
+        <!-- Main Navigation -->
+        <nav class="bg-blue-500 text-white py-1 px-4 w-full">
+            <!-- Première ligne de la navbar -->
+            <div class="flex justify-between items-center w-full">
+                <div class="flex items-center gap-9">
+                    <button class="ghost-btn text-white">
+                        <span class="sr-only">Menu</span> &#8801;
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <img src="/images/logo_transparent.png" alt="Logo" class="w-9 h-5">
+                    <h1 class="text-base" style="margin-top:4px; margin-left:15px">RFQ - PLATEFORME</h1>
+                </div>
+
+                <div class="flex items-center gap-3" style="margin-right:-30px">
+                    <!-- Boutons à gauche de la photo -->
+                    <div class="flex items-center gap-2">
+                        <div class="relative">
+                            <button>
+                                <div class="d-flex justify-content-center align-items-center rounded-circle" style="width: 28px; height: 28px; border: 1px solid white;">
+                                    <i class="bi bi-bell" style="font-size: 1.1rem; transform: scale(0.8);"></i>
+                                </div>
+
+
+
+                            </button>
+                        </div>
+                        <!-- Icône de mail -->
+                        <button class="ghost-btn text-white p-1 border-2 border-white rounded-full" style="border-color: white !important;">
+                            <div class="d-flex justify-content-center align-items-center rounded-circle" style="width: 28px; height: 28px; border: 1px solid white;">
+                                <i class="bi bi-envelope" style="font-size: 1.1rem; transform: scale(0.8);"></i>
+                            </div>
+
+                        </button>
+                        <!-- Icône d'alerte -->
+                        <button class="ghost-btn text-white p-1 border-2 border-white rounded-full" style="border-color: white !important;">
+                            <div class="d-flex justify-content-center align-items-center rounded-circle" style="width: 28px; height: 28px; border: 1px solid white;">
+
+                                <i class="bi bi-exclamation-triangle" style="font-size: 1.1rem; transform: scale(0.8);"></i>
+
+                            </div>
+
+                        </button>
+                    </div>
+
+
+
+                    <!-- Photo au centre -->
+                    <div class="relative">
+                        <div style="margin-right:-14px;" id="profile-menu" class="cursor-pointer">
+                            <i class="bi bi-person-fill" style="font-size: 2.2rem; "></i>
+                        </div>
+                        <div id="dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden">
+                            <form class="w-full" asp-area="Identity" asp-page="/Account/Manage/ChangePassword" method="post">
+                                <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Paramètre
+                                </button>
+                            </form>
+                            <form class="w-full" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                                <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Texte à droite de la photo -->
+
+
+
+                    <div class="text-right">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <div class="text-right">
+                                <span class="block  text-white" style="font-weight:100;font-size:9px;margin-right:80px">@role</span>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-xs font-bold text-white" style="font-weight:548;font-size:13px">@nom</span>
+                                    <span class="text-xs font-bold text-white" style="font-weight:547;font-size:13px">@prenom</span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                        }
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Deuxième ligne de la navbar -->
+            <div class="flex justify-between items-center w-full mt-2">
+                <!-- Élément 1 à gauche -->
+                <!-- Élément 1 à gauche -->
+                <div class="flex items-center gap-2 ml-40">
+                    <button class="ghost-btn text-white py-1 px-1 flex items-center gap-1" data-title="Accueil" onclick="updateTitle(this)">
+
+                        <i class="bi bi-house-fill" style="font-size: 1.2rem;"></i>
+
+                        <a href="@Url.Action("Index", "Home")" style="text-decoration: none; color: inherit;">
+                            <span style="font-weight:400;font-size:12px">Accueil</span>
+                        </a>
+                    </button>
+
+                    <i data-feather="chevron-right" class="w-9 h-9 text-wihte-500"></i>
+                    <span style="font-weight:600;font-size:12px" id="page-title">x</span>
+                </div>
+            </div>
+
+            <div id="route-data"
+                 data-controller="@ViewContext.RouteData.Values["Controller"]"
+                 data-action="@ViewContext.RouteData.Values["Action"]"
+                 data-area="@ViewContext.RouteData.Values["Area"]">
+            </div>
+            <!-- Troisième ligne de la navbar -->
+            <!-- Status Cards -->
+           
+        </nav>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-1 mt-[-50px] w-90">
+            <main role="main" class="pb-3" style="min-height: 90vh;">
+                @RenderBody()
+            </main>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="profile">
+                <div class="avatar">
+                    <img src="@photoPath" alt="Photo de profil" />
+                </div>
+                <div class="flex items-center gap-1">
+                    <span class="text-base font-semibold text-black">
+                        @(nom?.FirstOrDefault().ToString().ToUpper())
+                    </span>
+                    <span class="text-base font-semibold text-black">
+                        @(prenom?.FirstOrDefault().ToString().ToUpper())
+                    </span>
+                </div>
+				<p class="overline"></p>
+            </div>
+            <hr class="profile-line">
+            <ul class="menu">
+             
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Audit" asp-action="Journal"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Audit" && ViewContext.RouteData.Values["Action"]?.ToString() == "Journal" ? "active" : "")">
+                            <i class="bi bi-activity" style="font-size: 1.5rem; color: #3b82f6; font-weight: bold;"></i>
+
+                           
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole("Validateur") || User.IsInRole("Ingénieur RFQ") || User.IsInRole("Lecteur"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Home" asp-action="Index"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">
+                            <i class="bi bi-house" style="font-size: 1rem; font-weight: bold;"></i> 
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-area="" asp-controller="RFQ" asp-action="Rfq"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "RFQ" && ViewContext.RouteData.Values["Action"]?.ToString() == "Rfq" ? "active" : "")">
+                            <i class="bi bi-folder2" style="font-size: 1rem; font-weight: bold;"></i>
+                        </a>
+                    </li>
+                }
+
+                @if (User.IsInRole("Validateur") || User.IsInRole("Lecteur"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Statistiques" asp-action="Statistiques"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Statistiques" && ViewContext.RouteData.Values["Action"]?.ToString() == "Statistiques" ? "active" : "")">
+                            <i class="bi bi-bar-chart" style="font-size: 1rem; font-weight: bold;"></i>
+                        </a>
+                    </li>
+                }
+                <hr class="profile-line">
+                @if (User.IsInRole("Validateur") || User.IsInRole("Ingénieur RFQ"))
+                {
+
+                    <li style="background-color: dodgerblue;">
+                        <a asp-area="" asp-controller="AddRFQ" asp-action="Gestion_RFQ"
+                           class="text-decoration-none text-reset @(ViewContext.RouteData.Values["Controller"]?.ToString() == "AddRFQ" && ViewContext.RouteData.Values["Action"]?.ToString() == "Gestion_RFQ" ? "active text-blue" : "")">
+                            <i class="bi bi-card-list"></i>
+                        </a>
+                    </li>
+                }
+
+                @if (User.IsInRole("Validateur") || User.IsInRole("Ingénieur RFQ") || User.IsInRole("Lecteur"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Suivi_RFQ" asp-action="SuiviRFQ"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Suivi_RFQ" && ViewContext.RouteData.Values["Action"]?.ToString() == "SuiviRFQ" ? "active" : "")">
+                            <i class="bi bi-eye" style="font-size: 1rem; font-weight: bold;"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="" asp-controller="Versions" asp-action="Ajouter_une_version"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Versions" && ViewContext.RouteData.Values["Action"]?.ToString() == "Ajouter_une_version" ? "active" : "")">
+                            <i class="bi bi-book"></i>
+                           
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Users" asp-action="Index"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Users" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")">
+                            <i class="bi bi-people-fill"></i>
+                            
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Versions" asp-action="Affiche_Versions"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Versions" && ViewContext.RouteData.Values["Action"]?.ToString() == "Affiche_Versions" ? "active" : "")">
+                            <i class="bi bi-layers"></i>
+                          
+                        </a>
+                    </li>
+                }
+
+                @if (User.IsInRole("Validateur") || User.IsInRole("Lecteur"))
+                {
+                    <li>
+                        <a asp-area="" asp-controller="Rapport" asp-action="Rapport"
+                           class="@(ViewContext.RouteData.Values["Controller"]?.ToString() == "Rapport" && ViewContext.RouteData.Values["Action"]?.ToString() == "Rapport" ? "active" : "")">
+                            <i class="bi bi-file-earmark"></i> 
+                        </a>
+                    </li>
+                }
+
+
+
+            </ul>
+
+        </aside>
+    </div>
+
+    
+ @*    <script>site.js</script> *@
+
+    <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            // Initialisation de Feather Icons
+            if (feather) {
+                feather.replace();
+            }
+
+            // Initialisation de Lucide Icons
+            if (lucide) {
+                lucide.createIcons();
+            }
+        });
+     
+
+    </script>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Récupérer les données de route depuis le HTML
+            const routeData = document.getElementById('route-data');
+            const controller = routeData.getAttribute('data-controller');
+            const action = routeData.getAttribute('data-action');
+            const area = routeData.getAttribute('data-area');
+
+            console.log(`Route: Area=${area}, Controller=${controller}, Action=${action}`);
+
+            // Mapping basé sur le contrôleur et l'action
+            const routeTitles = {
+                'Home': {
+                    'Index': 'Tableau de bord'
+
+                },
+                'RFQ': {
+                    'Rfq': 'RFQ'
+
+                },
+                'AddRFQ': {
+                    'Create': 'Créer nouvelle RFQ',
+                    'Edit': 'Modifier RFQ',
+                    'Details': 'Gestion RFQ',
+                    'Gestion_RFQ': 'Gestion RFQ'
+                },
+                'Suivi_RFQ': {
+                    'SuiviRFQ': 'Suivi RFQ'
+                },
+                'Versions': {
+                    'Ajouter_une_version': 'Versions',
+                     'Ajouter_versions': ' Ajouter une version'
+                }
+            };
+
+            // Définir le titre par défaut
+            let title = 'Tableau de bord';
+
+            // Vérifier si une correspondance existe
+            if (controller && action && routeTitles[controller] && routeTitles[controller][action]) {
+                title = routeTitles[controller][action];
+            }
+
+            // Appliquer le titre à l'élément HTML
+            const titleElement = document.getElementById('page-title');
+            if (titleElement) {
+                titleElement.textContent = title;
+                console.log('Titre appliqué:', title);
+            } else {
+                console.error('Element #page-title non trouvé');
+            }
+        });
+                document.addEventListener("DOMContentLoaded", function () {
+            const profileMenu = document.getElementById("profile-menu");
+            const dropdownMenu = document.getElementById("dropdown-menu");
+
+            profileMenu.addEventListener("click", function (event) {
+                // Empêcher la propagation pour éviter la fermeture instantanée
+                event.stopPropagation();
+
+                // Toggle (ouvrir/fermer) le menu
+                dropdownMenu.classList.toggle("hidden");
+            });
+
+            // Cacher le menu lorsqu'on clique en dehors
+            document.addEventListener("click", function (event) {
+                if (!profileMenu.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.add("hidden");
+                }
+            });
+        });
+
+
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/jquery-3.6.0.min.js" asp-append-version="true"></script>
+    <!-- Bootstrap en second -->
+    <script src="/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+﻿@model IEnumerable<Web_Application_PFE.ViewModels.AddRFQViewModel>
+<link rel="stylesheet" href="~/css/bootstrap-icons.css">
+
+@{
+    ViewData["Title"] = "Suivi RFQ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/View_Par_Statut.css" />
+}
+
+
+            <main role="main" class="pb-3" style="margin-top: 0px;margin-bottom:10px">
+    <div class="dashboard-content" style="height:110px;margin-top: -15px;">
+        <div class="dashboard-grid" style="margin-right: -9px;margin-bottom:0px">
+            <!-- Left Column - Menu -->
+            <div class="dashboard-card1">
+                <div class="card-header1">
+                    <img src="~/images/suivi.png" alt="folder" class="w-9 h-9 inline-block">
+                    <h2 class="card-title1">Suivi RFQ</h2>
+                </div>
+                <ul class="menu">
+                    <li>
+                        <a href="#" class="menu-item view-link active" data-action="SuiviRFQ" data-view="ConsulterRFQ">
+                            <i class="bi bi-eye fs-6"></i> &nbsp; &nbsp; Consulter RFQ
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="menu-item view-link" data-action="View_code_RFQ" data-view="ViewCodeRFQ">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; Consulter par code RFQ
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="menu-item view-link" data-action="View_Par_Statut" data-view="ViewParStatut">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Consulter par Statut
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Right Column - Dynamic Content -->
+            <div id="dynamicContent">
+                @await Html.PartialAsync("_ConsulterRFQ", Model)
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/sweetalert2.min.js"></script>
+
+    <script>
+        function loadView(action, viewName) {
+            fetch(`/Suivi_RFQ/${action}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.text();
+            })
+            .then(html => {
+                document.getElementById('dynamicContent').innerHTML = html;
+
+                // Réexécuter les scripts inclus dans le contenu dynamique
+                const scripts = document.getElementById('dynamicContent').querySelectorAll('script');
+                scripts.forEach(script => {
+                    if (script.src) {
+                        const newScript = document.createElement('script');
+                        newScript.src = script.src;
+                        document.body.appendChild(newScript).remove();
+                    } else {
+                        try {
+                            new Function(script.textContent)();
+                        } catch (e) {
+                            console.error('Error executing script:', e);
+                        }
+                    }
+                });
+
+                // Appeler une fonction d'initialisation si nécessaire
+                if (viewName === 'ViewParStatut' && typeof initViewParStatut === 'function') {
+                    initViewParStatut();
+                }
+            })
+            .catch(error => {
+                console.error('Error loading view:', error);
+                window.location.href = `/Suivi_RFQ/${action}`;
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Gérer les clics sur le menu
+            document.querySelectorAll('.view-link').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    // Supprimer 'active' de tous
+                    document.querySelectorAll('.view-link').forEach(l => l.classList.remove('active'));
+
+                    // Ajouter 'active' à celui cliqué
+                    this.classList.add('active');
+
+                    // Charger la vue demandée
+                    const action = this.getAttribute('data-action');
+                    const view = this.getAttribute('data-view');
+                    loadView(action, view);
+                });
+            });
+
+            // Mettre une couleur selon le statut
+            function applyStatusColors() {
+                document.querySelectorAll('.status-display, .rfq-status-display, #statut-text, .left-text .document-card-header').forEach(display => {
+                    const status = display.textContent.trim();
+                    if (status === "In Progress") {
+                        display.style.color = '#f97316';
+                    } else if (status === "Complete") {
+                        display.style.color = '#22c55e';
+                    } else if (status === "Not Started") {
+                        display.style.color = '#ef4444';
+                    }
+                });
+            }
+
+            applyStatusColors();
+        });
+         function loadDetails(url) {
+            window.location.href = url; // Redirige vers la page de détails
+        }
+         async function pinRFQ(rfqId) {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            try {
+                // 1. Afficher le loader
+                Swal.fire({
+                    title: 'Épinglage en cours',
+                    html: 'Veuillez patienter...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                // 2. Appel API
+                const response = await fetch(`/Gestion_RFQ/PinRFQ?rfqId=${rfqId}`, {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': token,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                // 3. Traitement réponse
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || data.details || "Échec de l'opération");
+                }
+
+                // 4. Succès
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Terminé!',
+                    text: data.message,
+                    timer: 2000
+                });
+            } catch (error) {
+                // 5. Erreur
+                console.error("Erreur complète:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Échec',
+                    html: `<strong>Erreur technique</strong><br>
+                          <small>${error.message}</small>`,
+                    footer: 'Contactez le support si le problème persiste'
+                });
+            }
+        }
+             // Fonction pour gérer les clics sur les boutons d'action
+             // Gestion des clics sur les boutons d'action
+        function setupActionButtons() {
+            document.querySelectorAll('.btn-action').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const action = this.getAttribute('data-action');
+                    const baseUrl = this.getAttribute('data-base-url');
+                    const currentId = document.querySelector('.document-header-section').getAttribute('data-current-id');
+
+                    if (!currentId) {
+                        alert('Veuillez d\'abord rechercher une RFQ');
+                        return;
+                    }
+
+                    const url = `${baseUrl}/${currentId}`;
+
+                    if (action === 'Edit') {
+                        // Vérifier les permissions avant de rediriger
+                        fetch(`/Suivi_RFQ/CheckEditPermission?id=${currentId}`)
+                            .then(response => {
+                                if (!response.ok) throw new Error('Erreur de vérification des permissions');
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.hasPermission) {
+                                    window.location.href = url;
+                                } else {
+                                    showErrorMessage();
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erreur:', error);
+                                showErrorMessage();
+                            });
+                    } else {
+                        window.location.href = url;
+                    }
+                });
+            });
+        }
+
+        // Fonction pour afficher le message d'erreur
+        function showErrorMessage() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Accès refusé',
+                text: 'Vous n\'avez pas les droits nécessaires pour modifier cette RFQ',
+                timer: 7000,
+                showConfirmButton: false
+            });
+        }
+    </script>
+}

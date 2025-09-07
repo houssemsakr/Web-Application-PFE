@@ -1,0 +1,92 @@
+﻿<!-- Right Column - Alerts -->
+<div class="dashboard-card2" style="background-color:lightgray">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="successMessage" class="alert alert-success" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @* <a asp-area="" asp-controller="AddRFQ" asp-action="CreatClient" class="dashboard-card2-link">
+        <i class="bi bi-plus-circle-fill" style="font-size: 1.2rem; font-weight: bold;"> </i> Ajouter client
+    </a>
+
+    @if (User.IsInRole("Validateur"))
+    {
+        <a asp-area="" asp-controller="AddRFQ" asp-action="Create_valid" class="dashboard-card2-link">  <i class="bi bi-plus-circle-fill" style="font-size: 1.2rem; font-weight: bold;"> </i> Créer une nouvelle RFQ</a>
+    }
+    else
+    {
+        <a asp-area="" asp-controller="AddRFQ" asp-action="Create" class="dashboard-card2-link">  <i class="bi bi-plus-circle-fill" style="font-size: 1.2rem; font-weight: bold;"> </i> Créer une nouvelle RFQ</a>
+    } *@
+
+
+
+
+
+    @*  <a asp-area="" asp-controller="EntityClient" asp-action="Create">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+        </svg>
+    </a> *@
+    <a asp-area="" asp-controller="AddRFQ" asp-action="CreatClient" class="dashboard-card2-link">
+        <i class="bi bi-plus-circle-fill" style="font-size: 8.2rem; font-weight: bold;"> </i>
+    </a>
+
+    @if (User.IsInRole("Validateur"))
+    {
+        <a asp-area="" asp-controller="AddRFQ" asp-action="Create_valid" class="dashboard-card2-link">Créer une nouvelle RFQ</a>
+    }
+    else
+    {
+        <a asp-area="" asp-controller="AddRFQ" asp-action="Create" class="dashboard-card2-link">Créer une nouvelle RFQ</a>
+    }
+
+</div>
+
+@section Scripts {
+   
+
+    <script>
+          <script>
+        function loadClientCreateView(url) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(response) {
+                    // Créer une modal simple pour afficher le contenu
+                    var modal = `
+                        <div class="modal fade" id="clientCreateModal" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Nouveau Client</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        ${response}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+
+                    // Ajouter la modal au DOM
+                    $('body').append(modal);
+
+                    // Afficher la modal
+                    $('#clientCreateModal').modal('show');
+                },
+                error: function(xhr, status, error) {
+                    console.error("Erreur de chargement: " + error);
+                    alert("Une erreur est survenue lors du chargement du contenu.");
+                }
+            });
+        }
+    </script>
+    </script>
+}

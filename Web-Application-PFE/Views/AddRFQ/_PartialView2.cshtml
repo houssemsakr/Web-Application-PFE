@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Web_Application_PFE.ViewModels.AddRFQViewModel>
+@inject UserManager<User> _userManager
+
+@Html.AntiForgeryToken()
+
+<!-- Right Column - Alerts -->
+<div class="dashboard-card" style="height:390px">
+    <div class="search-bar" style="height:35px">
+        <i class="fa-solid fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Rechercher" aria-label="Rechercher">
+    </div>
+    <br />
+    <div>
+        <div>
+            <div class="document-title">
+                <span style="color: black;">Documents</span>
+                <div class="blue-line"></div>
+            </div>
+        </div>
+        <table class="table" id="rfqTable">
+            <thead>
+                <tr>
+                    <th scope="col" style="width: 70%; font-weight: normal;">
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            &nbsp;&nbsp;<i data-feather="file" class="w-8 h-8 text-white-500"></i>&nbsp;&nbsp;
+                            <span>Nom</span>
+                        </div>
+                    </th>
+                    <th scope="col" style="width: 30%; font-weight: normal;">Date de création</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                   
+                var currentUserId = _userManager.GetUserId(User);
+                var isCreator = item.CreatorId == currentUserId;
+
+                    <tr>
+
+                        <td>
+                            <div class="document-card" style="animation-delay: 0ms;">
+                                <div class="document-card-header">
+                                    <div class="document-header-content">
+                                        <div class="document-icon-wrapper">
+                                            <div>
+                                                <img src="/images/RFQ.png" alt="Logo" class="w-8 h-11">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="document-title">
+                                                <span class="document-number" style="color: black;">RFQ N°0 @Html.DisplayFor(modelItem => item.RFQId)</span>
+                                            </div>
+                                            <div class="document-description">Format RFQ</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="document-card-content">
+
+
+                                    <div class="document-actions">
+                                        @if (!User.IsInRole("Lecteur"))
+                                        {
+                                            <button class="action-button" onclick="@(isCreator || User.IsInRole("Validateur") ? $"editRFQ({item.Id})" : "showEditNotAllowedMessage()")">
+                                                <i class="bi bi-pencil-square" style="font-size: 1.1rem; font-weight: bold;"> </i>
+                                                <span class="action-tooltip">Edit Document</span>
+                                            </button>
+                                        }
+                                        <button class="action-button" onclick="loadDetailsView('@Url.Action("_Details", "AddRFQ", new { id = item.Id })')">
+                                            <i class="bi bi-eye" style="font-size: 1.1rem; font-weight: bold;"></i>
+                                            <span class="action-tooltip">View</span>
+                                        </button>
+
+                                        <button class="action-button" onclick="pinRFQ(@item.RFQId)">
+                                            <i class="bi bi-pin-angle-fill" style="font-size: 1.1rem; font-weight: bold;"> </i>
+                                            <span class="action-tooltip">Attach Files</span>
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </td>
+                        <td>
+                            <div class="document-card" style="animation-delay: 0ms;">
+                                <div class="document-card-header">
+                            @Html.DisplayFor(modelItem => item.DateCreation)
+                             </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

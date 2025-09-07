@@ -1,0 +1,252 @@
+﻿@model IEnumerable<Web_Application_PFE.ViewModels.AddRFQViewModel>
+
+<div class="dashboard-card2">
+    <div>
+        <div class="search-bar" style="width: 100%;height: 30px">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Rechercher" aria-label="Rechercher">
+        </div>
+        <br />
+        <div>
+            <div>
+                <div class="document-title">
+                    <div class="title-wrapper">
+                        <span style="color: black;">Documents</span>
+                        <div class="blue-line"></div>
+                    </div>
+                    <div class="container">
+                        <div class="status-indicator status-invalid" data-workingstatus="Not Started">
+                            <h6>Not Started</h6>
+                        </div>
+                        <div class="status-indicator status-pending" data-workingstatus="In Progress">
+                            <h6>In Progress</h6>
+                        </div>
+                        <div class="status-indicator status-valid" data-workingstatus="Complete">
+                            <h6>Complete</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table" id="rfqTable">
+                <thead>
+                    <tr>
+                        <th style="width:40%; font-weight: normal;">
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                &nbsp;&nbsp;<i class="bi bi-file-earmark fs-4"></i>&nbsp;&nbsp;
+                                <span style="color: black; font-weight: normal;">Nom</span>
+                            </div>
+                        </th>
+                        <th style="width:40%; font-weight: normal;" class="text-center">
+                            <span style="color: black; font-weight: normal; margin-right:60px;">Statut</span>
+                        </th>
+                        <th style="width:40%; font-weight: normal;">
+                            <span style="color: black; font-weight: normal;">Date de création</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tr class="document-statut">
+                    <td class="statut-cell">
+                        <div class="document-statut" style="background-color:white">
+                            <div class="container3">
+                                <div class="status total-status">
+                                    <h5>Totale</h5>
+                                </div>
+                                <div class="status count-status">
+                                    <h5 id="rfqCount">@Model.Count()</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                <tbody>
+                    @foreach (var rfq in Model)
+                    {
+                        <tr class="rfq-row" data-workingstatus="@rfq.WorkingStatus">
+                            <td>
+                                <div class="document-card" style="animation-delay: 0ms;">
+                                    <div class="document-card-header">
+                                        <div class="document-header-content">
+                                            <div class="document-icon-wrapper">
+                                                <div>
+                                                    <img src="/images/RFQ.png" alt="Logo" class="w-8 h-11">
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <span class="document-number" style="color: black; font-weight: normal; font-size: 12px;">
+                                                    RFQ N°00 @rfq.RFQId
+                                                </span>
+                                                <div class="document-description">Format RFQ</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="document-card-content"></div>
+                                </div>
+                            </td>
+                            <td class="left-text">
+                                <div class="document-title-section">
+                                    <div class="document-content-wrapper">
+                                        <div class="action-buttons-wrapper">
+                                            @if (!User.IsInRole("Lecteur"))
+                                            {
+                                                <button class="rfq-edit-btn" data-rfq-id="@rfq.Id">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </button>
+                                            }
+                                            <button class="btn-action" onclick="loadDetails('@Url.Action("Details", "Suivi_RFQ", new { id = rfq.Id })')">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn-action" onclick="pinRFQ(@rfq.RFQId)">
+                                                <i class="bi bi-pin-angle-fill"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="document-card" style="animation-delay: 0ms;">
+                                    <div class="document-card-header">
+                                        @rfq.DateCreation.ToShortDateString()
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/sweetalert2.min.js"></script>
+
+<script>
+    async function checkEditPermission(rfqId) {
+        try {
+            const btn = document.querySelector(`.rfq-edit-btn[data-rfq-id="${rfqId}"]`);
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+
+            const response = await fetch(`/Suivi_RFQ/CheckEditPermission?id=${rfqId}`);
+
+            if (!response.ok) throw new Error('Erreur de vérification des permissions');
+
+            const data = await response.json();
+
+            if (data.hasPermission) {
+                window.location.href = `@Url.Action("Edit", "Suivi_RFQ")/${rfqId}`;
+            } else {
+                showPermissionError();
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            showPermissionError();
+        } finally {
+            const btn = document.querySelector(`.rfq-edit-btn[data-rfq-id="${rfqId}"]`);
+            if (btn) {
+                btn.innerHTML = '<i class="bi bi-pencil-square"></i>';
+                btn.disabled = false;
+            }
+        }
+    }
+
+    function showPermissionError() {
+        Swal.fire({
+            icon: 'error',
+            title: 'Accès refusé',
+            text: 'Vous n\'avez pas les droits nécessaires pour modifier cette RFQ',
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            position: 'center',
+            toast: true,
+            background: '#f8d7da',
+            iconColor: '#721c24'
+        });
+    }
+
+    function setupEditButtons() {
+        document.querySelectorAll('.rfq-edit-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const rfqId = this.getAttribute('data-rfq-id');
+                checkEditPermission(rfqId);
+            });
+        });
+    }
+
+    function filterByStatus(status) {
+        const rfqTable = document.getElementById('rfqTable');
+        const rows = rfqTable.querySelectorAll('.rfq-row');
+        let count = 0;
+
+        rows.forEach(row => {
+            const rowStatus = row.getAttribute('data-workingstatus');
+            if (status === 'All' || rowStatus === status) {
+                row.style.display = '';
+                if (rowStatus === status) count++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        document.getElementById('rfqCount').textContent = status === 'All' ? rows.length : count;
+        document.querySelector('tr.document-statut').style.display = '';
+
+        updateStatusStyle(status);
+    }
+
+    function updateStatusStyle(status) {
+        const indicator = document.querySelector(`.status-indicator[data-workingstatus="${status}"]`);
+        if (indicator) {
+            const color = window.getComputedStyle(indicator).color;
+            document.querySelector('.total-status h5').style.border = `2px solid ${color}`;
+            document.querySelector('.total-status h5').style.color = color;
+            document.querySelector('.count-status h5').style.border = `2px solid ${color}`;
+            document.querySelector('.count-status h5').style.color = color;
+        }
+    }
+
+    function handleSearch() {
+        const searchText = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('.rfq-row');
+
+        rows.forEach(row => {
+            const idCell = row.querySelector('.document-number');
+            if (idCell) {
+                const idText = idCell.textContent.toLowerCase();
+                row.style.display = idText.includes(searchText) ? '' : 'none';
+            }
+        });
+    }
+
+    function initViewParStatut() {
+        console.log("Initialisation de ViewParStatut");
+
+        const searchInput = document.getElementById('searchInput');
+        const statutRow = document.querySelector('tr.document-statut');
+        if (statutRow) statutRow.style.display = 'none';
+
+        setupEditButtons();
+
+        document.querySelectorAll('.status-indicator').forEach(indicator => {
+            indicator.addEventListener('click', function () {
+                const status = this.getAttribute('data-workingstatus');
+                filterByStatus(status);
+            });
+        });
+
+        if (searchInput) {
+            searchInput.addEventListener('input', handleSearch);
+        }
+    }
+
+    if (document.readyState === 'complete') {
+        initViewParStatut();
+    } else {
+        document.addEventListener('DOMContentLoaded', initViewParStatut);
+    }
+
+    window.initViewParStatut = initViewParStatut;
+</script>

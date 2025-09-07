@@ -1,0 +1,498 @@
+﻿@model Web_Application_PFE.ViewModels.AddRFQViewModel
+@{
+    ViewData["Title"] = "Ajouter une version";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Ajouter_une_version.css" />
+}
+@{
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<main role="main" class="pb-3" style="margin-top: 0px;margin-bottom:10px">
+    <div class="dashboard-content" style="height:100px;margin-top: -15px;">
+        <div class="dashboard-grid" style="margin-right: -9px;">
+            <!-- Partie fixe - Menu de gauche -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <img src="~/images/versions.png" alt="folder" class="w-9 h-9 inline-block">
+                    <h2 class="card-title">Versions</h2>
+                </div>
+
+                <ul class="menu">
+                   
+                        <li>
+                            <a href="@Url.Action("Ajouter_une_version")" class="menu-link @(currentAction == "Ajouter_une_version" ? "active" : "")">
+                                Ajouter une version
+                            </a>
+                        </li>
+                    
+                    <li>
+                        <a href="@Url.Action("Consulter_les_versions")" class="menu-link @(currentAction == "Consulter_les_versions" ? "active" : "")">
+                            Consulter les versions
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Partie dynamique -->
+            <div id="dynamic-content">
+                @if (ViewContext.RouteData.Values["action"].ToString() == "Ajouter_une_version")
+                {
+                    @await Html.PartialAsync("_AjouterVersionPartial")
+                }
+                else if (ViewContext.RouteData.Values["action"].ToString() == "Consulter_les_versions")
+                {
+                    @await Html.PartialAsync("_ConsulterVersionsPartial", Model)
+                }
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Fonction utilitaire pour limiter la fréquence d'exécution
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this, args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
+            };
+        }
+
+        // Fonctions pour gérer les statuts
+        function getStatusClass(statut) {
+            switch (statut) {
+                case 'Complete': return 'status-validated';
+                case 'In Progress': return 'status-pending';
+                case 'Not Started': return 'status-not-validated';
+                default: return '';
+            }
+        }
+
+        function getStatusColor(statut) {
+            switch (statut) {
+                case 'Complete': return 'green';
+                case 'In Progress': return 'orange';
+                case 'Not Started': return 'red';
+                default: return 'black';
+            }
+        }
+
+        // Fonction pour ajouter une ligne RFQ dans le tableau
+             function addRFQRow(tableBody, data, versionNumber) {
+            const row = document.createElement('tr');
+            const isReader = @(User.IsInRole("Lecteur") ? "true" : "false");
+
+            // Pas de boutons pour V0
+            let actionButtons = '';
+
+            if (versionNumber > 0) {
+                let viewButton = `
+                    <button type="button" class="custom-button"
+                            style="border: 1px solid #ddd; border-radius: 4px; margin: 2px; padding: 5px 8px;"
+                            onclick="viewVersion(${data.id}, ${versionNumber})">
+                        <i class="bi bi-eye"></i>
+                    </button>`;
+
+                if (!isReader) {
+                    let editButton = `
+                        <button type="button" class="custom-button"
+                                style="border: 1px solid #ddd; border-radius: 4px; margin: 2px; padding: 5px 8px;"
+                                onclick="editVersion(${data.id}, ${versionNumber})">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>`;
+                    actionButtons = `
+                        <div class="action-buttons-wrapper"
+                             style="display: flex; border: 1px solid #ccc; border-radius: 6px; padding: 3px; background: #f8f9fa;">
+                            ${editButton}
+                            <div style="border-left: 1px solid #ccc; margin: 0 3px;"></div>
+                            ${viewButton}
+                        </div>`;
+                } else {
+                    actionButtons = `
+                        <div class="action-buttons-wrapper"
+                             style="display: flex; border: 1px solid #ccc; border-radius: 6px; padding: 3px; background: #f8f9fa;">
+                            ${viewButton}
+                        </div>`;
+                }
+            }
+
+            row.innerHTML = `
+                <td>
+                    <div class="document-card">
+                        <div class="document-card-header">
+                            <div class="document-header-content">
+                                <div class="document-icon-wrapper">
+                                    <img src="/images/RFQ.png" alt="Logo" class="w-8 h-11">
+                                </div>
+                                <div>
+                                    <span class="document-number">RFQ N°0${data.rfqId} ___ V${versionNumber}</span>
+                                    <div class="document-description">Format RFQ</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="custom-card" style="animation-delay: 0ms;">
+                        <div class="custom-actions" style="width: 30%;background:white">
+                            <div class="document-title-section">
+                                <div class="document-content-wrapper">
+                                    ${actionButtons}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="document-header-content" style="width: 130%; max-width: 450px; height: 120px; font-size: 20px;">
+                        <span class="status-badge ${getStatusClass(data.workingStatus)}" style="color: ${getStatusColor(data.workingStatus)};">
+                            ${data.workingStatus || 'N/A'}
+                        </span>
+                    </div>
+                </td>
+                <td>
+                    <div class="document-header-content" style="width: 130%; max-width: 450px; height: 120px; font-size: 20px;">
+                        ${new Date(data.dateCreation).toLocaleDateString()}
+                    </div>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        }
+
+        // Fonction pour cacher les infos RFQ
+        function hideRFQInfo() {
+            const rfqInfoContainer = document.getElementById('rfqInfoContainer');
+            if (rfqInfoContainer) rfqInfoContainer.style.display = 'none';
+
+            const rfqDetailsAjouter = document.getElementById('rfqDetailsAjouter');
+            if (rfqDetailsAjouter) rfqDetailsAjouter.style.display = 'none';
+        }
+
+        // Fonction pour afficher les infos RFQ
+        function showRFQInfo(data) {
+            const rfqInfoContainer = document.getElementById('rfqInfoContainer');
+            if (rfqInfoContainer) {
+                rfqInfoContainer.style.display = 'block';
+                updateRFQFields(data);
+            }
+
+            const rfqDetailsAjouter = document.getElementById('rfqDetailsAjouter');
+            if (rfqDetailsAjouter) rfqDetailsAjouter.style.display = 'block';
+        }
+
+        // Fonction pour mettre à jour les champs RFQ
+        function updateRFQFields(data) {
+            const rfqNumberDisplay = document.getElementById('rfqNumberDisplay');
+            const dateCreationDisplay = document.getElementById('dateCreationDisplay');
+            const statutElement = document.getElementById('statut-text');
+            const rfqIdInput = document.getElementById('rfqIdAjouter');
+
+            if (rfqNumberDisplay) rfqNumberDisplay.textContent = `RFQ N°0${data.rfqId}`;
+            if (dateCreationDisplay) dateCreationDisplay.textContent = new Date(data.dateCreation).toLocaleDateString();
+            if (statutElement) {
+                statutElement.textContent = data.workingStatus || 'Statut non disponible';
+                statutElement.style.color = getStatusColor(data.workingStatus);
+            }
+            if (rfqIdInput) rfqIdInput.value = data.rfqId;
+        }
+
+        // Fonction principale de recherche
+        function fetchRFQDetails(rfqId) {
+            const errorDiv = document.getElementById('errorMessage');
+            if (errorDiv) errorDiv.style.display = 'none';
+
+            if (!rfqId || isNaN(rfqId)) {
+                hideRFQInfo();
+                return;
+            }
+
+            fetch(`/Versions/GetRFQById?id=${rfqId}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('RFQ non trouvée');
+                return response.json();
+            })
+            .then(data => {
+                if (!data) throw new Error('Données invalides');
+                showRFQInfo(data);
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                hideRFQInfo();
+                if (errorDiv) {
+                    errorDiv.textContent = error.message;
+                    errorDiv.style.display = 'block';
+                }
+            });
+        }
+
+        // Fonction pour récupérer une RFQ avec ses versions
+        function fetchRFQWithVersions(rfqId) {
+            localStorage.setItem('lastSearchedRFQ', rfqId);
+            fetch(`/Versions/GetRFQById?id=${rfqId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erreur lors de la récupération des données');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const tableBody = document.querySelector('#rfqTable tbody');
+                    if (!tableBody) return;
+
+                    tableBody.innerHTML = '';
+                    const addVersionForm = document.getElementById('addVersionForm');
+
+                    // Vérification du statut de la RFQ originale
+                    if (data.workingStatus !== "Complete") {
+                        const errorRow = document.createElement('tr');
+                        errorRow.innerHTML = `
+ @if (!User.IsInRole("Lecteur"))
+        {
+                            <td colspan="3" class="alert alert-danger">
+       
+                                Impossible de créer une version : La RFQ originale est en statut "${data.workingStatus}"
+        
+                            </td>
+        }
+                        `;
+                        tableBody.appendChild(errorRow);
+                        if (addVersionForm) addVersionForm.style.display = 'none';
+                        return;
+                    }
+
+                    // Vérification du statut de la dernière version
+                    let canAddNewVersion = true;
+                    if (data.versions && data.versions.length > 0) {
+                        const lastVersion = data.versions[data.versions.length - 1];
+                        if (lastVersion.workingStatus !== "Complete") {
+                            canAddNewVersion = false;
+                            const errorRow = document.createElement('tr');
+                            errorRow.innerHTML = `
+        @if (!User.IsInRole("Lecteur"))
+        {
+                                <td colspan="3" class="alert alert-danger">
+                                    Impossible de créer une version : La dernière version (V${data.versions.length})
+                                    est en statut "${lastVersion.workingStatus}"
+                                </td>
+        }
+                            `;
+                            tableBody.appendChild(errorRow);
+                        }
+                    }
+
+                    // Afficher ou masquer le bouton en fonction des vérifications et du rôle
+                    const isReader = @(User.IsInRole("Lecteur") ? "true" : "false");
+                    if (addVersionForm) {
+                        addVersionForm.style.display = (canAddNewVersion && !isReader) ? 'block' : 'none';
+                    }
+
+                    // RFQ originale (V0)
+                    addRFQRow(tableBody, {
+                        id: data.id,
+                        rfqId: data.rfqId,
+                        dateCreation: data.dateCreation,
+                        workingStatus: data.workingStatus,
+                        statut: data.statut
+                    }, 0);
+
+                    // Versions (V1, V2...)
+                    if (data.versions) {
+                        data.versions.forEach((version, index) => {
+                            addRFQRow(tableBody, {
+                                id: version.id,
+                                rfqId: version.rfqId,
+                                dateCreation: version.dateCreation,
+                                statut: version.statut,
+                                workingStatus: version.workingStatus,
+                            }, index + 1);
+                        });
+                    }
+
+                    // Mettre à jour l'input hidden avec l'ID RFQ
+                    const rfqIdInput = document.getElementById('rfqIdConsulter');
+                    if (rfqIdInput) {
+                        rfqIdInput.value = rfqId;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const tableBody = document.querySelector('#rfqTable tbody');
+                    if (tableBody) {
+                        tableBody.innerHTML = `
+                            <tr>
+                                <td colspan="3" class="alert alert-danger">
+                                    ${error.message}
+                                </td>
+                            </tr>
+                        `;
+                    }
+                    const addVersionForm = document.getElementById('addVersionForm');
+                    if (addVersionForm) {
+                        addVersionForm.style.display = 'none';
+                    }
+                });
+        }
+
+        // Initialisation du contenu dynamique
+        function initializeDynamicContent() {
+            // Vérifier si l'utilisateur est un lecteur
+            const isReader = @(User.IsInRole("Lecteur") ? "true" : "false");
+
+            // Initialisation spécifique à "Ajouter une version"
+            const searchInputAjouter = document.getElementById('searchInputAjouter');
+            if (searchInputAjouter && !isReader) {
+                searchInputAjouter.addEventListener('input', debounce(function() {
+                    const rfqId = this.value.trim();
+                    if (rfqId) {
+                        fetchRFQDetails(rfqId);
+                    } else {
+                        hideRFQInfo();
+                    }
+                }, 300));
+            }
+
+            // Initialisation spécifique à "Consulter les versions"
+            const searchInputConsulter = document.getElementById('searchInputConsulter');
+            if (searchInputConsulter) {
+                searchInputConsulter.addEventListener('input', debounce(function() {
+                    const rfqId = this.value.trim();
+                    if (rfqId) {
+                        fetchRFQWithVersions(rfqId);
+                    } else {
+                        const tbody = document.querySelector('#rfqTable tbody');
+                        if (tbody) tbody.innerHTML = '<tr><td colspan="3">Veuillez entrer un ID de RFQ.</td></tr>';
+                    }
+                }, 300));
+            }
+        }
+
+        // Configuration de la navigation AJAX
+        function setupAjaxNavigation() {
+            document.querySelectorAll('.menu-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Empêcher les lecteurs d'accéder à "Ajouter une version"
+                    const isReader = @(User.IsInRole("Lecteur") ? "true" : "false");
+                    if (isReader && this.getAttribute('href').includes("Ajouter_une_version")) {
+                        e.preventDefault();
+                        return;
+                    }
+
+                    e.preventDefault();
+                    const url = this.getAttribute('href');
+
+                    // Afficher un indicateur de chargement
+                    const dynamicContent = document.getElementById('dynamic-content');
+                    if (dynamicContent) {
+                        dynamicContent.innerHTML = `
+                            <div class="loading-spinner">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Chargement...</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    fetch(url, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Erreur réseau');
+                        return response.text();
+                    })
+                    .then(html => {
+                        const container = document.getElementById('dynamic-content');
+                        if (container) {
+                            container.innerHTML = html;
+
+                            // Mettre à jour l'URL
+                            history.pushState(null, '', url);
+
+                            // Appliquer la classe active après le chargement réussi
+                            document.querySelectorAll('.menu-link').forEach(link => {
+                                link.classList.remove('active');
+                                if (link.getAttribute('href') === url) {
+                                    link.classList.add('active');
+                                }
+                            });
+
+                            // Réinitialiser les comportements dynamiques
+                            initializeDynamicContent();
+
+                            // Relancer la recherche si nécessaire
+                            const rfqInput = document.getElementById('searchInputConsulter');
+                            const lastRFQ = localStorage.getItem('lastSearchedRFQ');
+                            if (rfqInput && lastRFQ) {
+                                rfqInput.value = lastRFQ;
+                                fetchRFQWithVersions(lastRFQ);
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur :', error);
+                        const container = document.getElementById('dynamic-content');
+                        if (container) {
+                            container.innerHTML = `
+                                <div class="alert alert-danger">
+                                    Erreur lors du chargement. <a href="${url}" class="reload-link">Réessayer</a>
+                                </div>
+                            `;
+                        }
+                    });
+                });
+            });
+        }
+
+        function editVersion(id, versionNumber) {
+            // Stocker l'état avant la navigation
+            localStorage.setItem('forceReload', 'true');
+            window.location.href = `/Versions/View_Version?id=${id}&version=${versionNumber}`;
+        }
+
+        function viewVersion(id, versionNumber) {
+            // Stocker l'ID et le numéro de version dans localStorage
+            localStorage.setItem('versionToViewId', id);
+            localStorage.setItem('versionToViewNumber', versionNumber);
+
+            // Rediriger vers la page Affiche_Details
+            window.location.href = `/Versions/AfficheDetails?id=${id}&version=${versionNumber}`;
+        }
+
+        // Initialisation au chargement
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialiser les icônes
+            if (window.feather) feather.replace();
+            if (window.lucide) lucide.createIcons();
+
+            // Configurer la navigation AJAX
+            setupAjaxNavigation();
+
+            // Initialiser le contenu dynamique
+            initializeDynamicContent();
+
+            // Gestion du bouton retour
+            window.addEventListener('popstate', function() {
+                location.reload();
+            });
+
+            // Dans initializeConsulterView()
+            if (localStorage.getItem('forceReload') === 'true') {
+                localStorage.removeItem('forceReload');
+                window.location.reload();
+            }
+        });
+    </script>
+}
